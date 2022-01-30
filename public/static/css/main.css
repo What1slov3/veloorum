@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Jura:wght@300;400;500;600;700&family=Manrope:wght@200;300;400;500;600;700;800&family=Montserrat:wght@100;200;300;400;500;600;700;800;900&family=Raleway:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  border: 0;
+  font-family: 'Noto Sans', sans-serif;
+  font-size: 14px;
+  text-decoration: none;
+  list-style-type: none;
+  outline: none;
+  color: var(--base-grey);
+  line-height: 1.5em;
+  user-select: none;
+}
+
+*::selection {
+  background: var(--astro);
+  color: #fff;
+}
+
+:root {
+  --darker-grey: #1f2124;
+  --dark-grey: #222427;
+  --charcoal: #292b30;
+  --slate-grey: #444b53;
+  --hover-grey-light: #31333a;
+  --campfire: #686c73;
+  --med-grey: #8c939c;
+  --light-grey: #c2c8cf;
+  --base-grey: #eee;
+  --white: #fff;
+  --astro: #c38fff;
+  --action: #2b96de;
+  --success: #38d493;
+  --alert: #efc663;
+  --notification: #e16070;
+  --pending: #9677df;
+  --green: #353c45;
+  --yellow: #d9a322;
+  --orange: #e76d3b;
+  --red: #cc3e4a;
+  --pink: #d96eae;
+  --purple: #7049a3;
+  --tooltip: #171718;
+}
+
+body {
+  max-height: 100vh;
+  max-width: 100vw;
+  background: var(--charcoal);
+}
+
+h1 {
+  font-size: 28px;
+}
+
+h2 {
+  font-size: 26px;
+}
+
+h3 {
+  font-size: 24px;
+}
+
+h4 {
+  font-size: 22px;
+}
+
+h5 {
+  font-size: 20px;
+}
+
+h6 {
+  font-size: 18px;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+.logo {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  font-family: Jura, sans-serif;
+  width: 60px;
+}

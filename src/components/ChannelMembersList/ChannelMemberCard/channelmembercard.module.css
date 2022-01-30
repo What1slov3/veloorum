@@ -1,0 +1,31 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 5px;
+  user-select: none;
+  cursor: pointer;
+}
+
+.wrapper:hover {
+  background: #31333a5e;
+}
+
+.wrapper:hover .username {
+  color: var(--base-grey);
+}
+
+.username {
+  font-weight: 500;
+  color: var(--light-grey);
+  display: flex;
+  align-items: center;
+}
+
+.icon {
+  margin-left: 5px;
+}
+
+.icon > i {
+  font-size: 12px;
+}

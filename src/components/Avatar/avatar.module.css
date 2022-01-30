@@ -1,0 +1,23 @@
+.avatar {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  min-width: 40px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 100%;
+}
+
+.stub {
+  width: 40px;
+  height: 40px;
+  min-height: 40px;
+  min-width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 100px;
+  text-transform: uppercase;
+  font-weight: 500;
+  line-height: 0.9em;
+}

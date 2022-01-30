@@ -1,0 +1,165 @@
+body {
+  min-width: 100vw;
+  overflow-x: hidden;
+}
+
+.page_wrapper {
+  background: url('../img/nebo.svg') no-repeat;
+  background-size: cover;
+  background-position: top;
+}
+
+section {
+  position: relative;
+  min-width: 100vw;
+  height: 100vh;
+}
+
+.container {
+  max-width: 1440px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 0 20px;
+}
+
+.window__wrapper {
+  margin-top: 180px;
+  padding: 60px 90px;
+  background: #414457b9;
+  border-radius: 10px;
+  max-width: 670px;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+}
+
+h1 {
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.login_tagline {
+  color: #8c939c;
+  font-size: 14px;
+  font-family: Manrope, sans-serif;
+}
+
+.input_field {
+  background: #3b3e50;
+  padding: 15px 20px;
+  border: 2px solid #323641;
+  border-radius: 10px;
+  transition: 0.2s;
+  width: 100%;
+}
+
+.input_field::placeholder {
+  color: #ffffffc4;
+  text-transform: uppercase;
+}
+
+.input_field:active,
+.input_field:focus {
+  border: 2px solid #9677df;
+}
+
+.password_wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.eye {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 15px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  filter: invert(100%) opacity(0.7);
+}
+
+.password_forgot {
+  font-family: Manrope, sans-serif;
+  font-size: 14px;
+  color: #2b96de;
+  cursor: pointer;
+}
+
+.password_forgot:hover {
+  text-decoration: underline;
+}
+
+.password {
+  padding-right: 45px;
+}
+
+.btn {
+  margin: 25px 0;
+  border-radius: 10px;
+  background: var(--astro);
+  padding: 15px;
+  cursor: pointer;
+  font-size: 20px;
+  text-align: center;
+}
+
+.new_user {
+  color: #c2c8cf;
+  font-family: Manrope;
+  margin: 20px 0;
+}
+
+.new_user > span {
+  color: #2b96de;
+  cursor: pointer;
+}
+
+.new_user > span:hover {
+  text-decoration: underline;
+}
+
+.privacy_policy,
+.privacy_policy > * {
+  font-size: 13px;
+  color: #8c939c;
+  font-family: Manrope;
+}
+
+.privacy_policy > span {
+  font-weight: 600;
+}
+
+.background {
+  position: absolute;
+  object-fit: cover;
+  min-width: 100vw;
+}
+
+section:first-child img {
+  object-position: top;
+  max-height: 140vh;
+}
+
+section:last-child {
+  height: 110vh;
+  overflow: hidden;
+}
+
+section:last-child img {
+  object-position: bottom;
+  max-height: 110vh;
+  min-width: 110vw;
+  left: -20px;
+}
+
+.error {
+  color: var(--notification);
+}
+
+.invisible {
+  display: none;
+}

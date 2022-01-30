@@ -1,0 +1,30 @@
+.wrapper {
+  display: grid;
+}
+
+.main {
+  max-height: 100vh;
+  height: 100vh;
+  max-width: 100vw;
+  width: 100vw;
+  grid-template-rows: 75px 1fr;
+  grid-template-columns: 1fr;
+}
+
+.channel_page {
+  height: 100%;
+  max-width: 100vw;
+  width: 100%;
+  grid-template-columns: 300px 1fr 250px;
+  grid-template-rows: 1fr;
+  max-height: calc(100vh - 75px);
+}
+
+.settings_page {
+  height: 100%;
+  max-width: 100vw;
+  width: 100%;
+  grid-template-columns: 300px 1fr;
+  grid-template-rows: 1fr;
+  max-height: calc(100vh - 75px);
+}

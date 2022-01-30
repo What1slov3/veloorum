@@ -1,0 +1,39 @@
+.wrapper {
+  width: 100%;
+}
+
+.wrapper input {
+  border: 1px solid var(--darker-grey);
+  transition: 0.2s;
+  border-radius: 5px;
+  background: var(--dark-grey);
+  padding: 10px;
+  width: 100%;
+}
+
+.wrapper input:active,
+.wrapper input:focus {
+  border: 1px solid var(--astro);
+}
+
+.wrapper input::placeholder {
+  color: var(--med-grey);
+}
+
+.wrapper h1,
+.wrapper h2,
+.wrapper h3,
+.wrapper h4,
+.wrapper h5,
+.wrapper h6 {
+  margin-bottom: 5px;
+}
+
+.shadow input:active,
+.shadow input:focus {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}
+
+.shadow input:hover {
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+}

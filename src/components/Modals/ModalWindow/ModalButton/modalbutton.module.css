@@ -1,0 +1,11 @@
+.wrapper {
+  width: max-content;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  user-select: none;
+} 
+
+.wrapper:hover {
+  opacity: 0.85;
+}

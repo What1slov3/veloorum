@@ -1,0 +1,51 @@
+.wrapper {
+  display: flex;
+  padding: 5px 20px;
+  transition: 0.1s;
+  position: relative;
+}
+
+.wrapper:not(:last-child) {
+  margin-bottom: 20px;
+}
+
+.time {
+  width: 40px;
+  height: 17px;
+  margin-right: 10px;
+}
+
+.username {
+  width: 150px;
+  height: 17px;
+  margin-bottom: 10px;
+}
+
+.content > div:first-child {
+  width: 300px;
+  height: 18px;
+  margin-bottom: 5px;
+}
+
+.content > div:last-child {
+  width: 150px;
+  height: 18px;
+}
+
+.time,
+.username,
+.content > div {
+  background: linear-gradient(0.65turn, transparent, var(--dark-grey), transparent),
+    linear-gradient(var(--charcoal), var(--charcoal));
+  border-radius: 5px;
+  background-repeat: no-repeat;
+  background-size: 315px 250px, 315px 180px, 100px 100px, 225px 30px;
+  background-position: -315px 0, 0 0, 0px 190px, 50px 195px;
+  animation: loading 2s infinite;
+}
+
+@keyframes loading {
+  to {
+    background-position: 315px 0, 0 0, 0 190px, 50px 195px;
+  }
+}

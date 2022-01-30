@@ -1,0 +1,20 @@
+.wrapper {
+  background: linear-gradient(-45deg, #e16070, #c38fff, #2b96de, #23d5ab);
+  background-size: 600% 600%;
+  animation: gradient 15s linear infinite;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  user-select: none;
+  border-radius: 10px 10px 0 0;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

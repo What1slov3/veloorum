@@ -1,0 +1,17 @@
+.emoji_icon {
+  cursor: pointer;
+  font-size: 27px;
+  width: 41px;
+  height: 41px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  overflow: hidden;
+  border-radius: 3px;
+  user-select: none;
+}
+
+.emoji_icon:hover {
+  background: var(--dark-grey);
+}

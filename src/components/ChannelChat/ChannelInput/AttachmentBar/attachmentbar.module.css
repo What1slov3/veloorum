@@ -1,0 +1,47 @@
+.wrapper {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.attachment {
+  width: 105px;
+  height: 105px;
+  position: relative;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--charcoal);
+  cursor: pointer;
+}
+
+.attachment img {
+  max-width: 95px;
+  max-height: 95px;
+  border-radius: 5px;
+}
+
+.attachment:not(:last-of-type) {
+  margin-right: 5px;
+}
+
+.control {
+  position: absolute;
+  border-radius: 5px;
+  background: var(--tooltip);
+  top: -5px;
+  right: -5px;
+}
+
+.control i {
+  cursor: pointer;
+  padding: 7px 8px;
+}
+
+.control i:hover {
+  opacity: 0.75;
+}
+
+.delete {
+  color: var(--red);
+}

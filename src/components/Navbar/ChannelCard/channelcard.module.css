@@ -1,0 +1,45 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 10px;
+  min-width: 220px;
+  max-width: 220px;
+  transition: .2s;
+}
+
+.wrapper:hover,
+.active_channel {
+  background: var(--hover-grey-light);
+}
+
+.active_channel {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 1px;
+}
+
+.online_wrapper {
+  display: flex;
+}
+
+.channel_name {
+  font-size: 13px;
+  font-weight: 600;
+  max-width: 145px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.online_wrapper > div {
+  font-size: 13px;
+}
+
+.count {
+  font-weight: 500;
+  color: var(--light-grey);
+}
+
+.count span {
+  font-weight: 600;
+}

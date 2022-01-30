@@ -1,0 +1,9 @@
+.emoji_category_list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.emoji_category_name {
+  margin: 10px 0 2px 0;
+  font-size: 16px;
+}

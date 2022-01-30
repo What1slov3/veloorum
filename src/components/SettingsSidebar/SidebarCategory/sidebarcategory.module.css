@@ -1,0 +1,7 @@
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--light-grey);
+  text-transform: uppercase;
+  user-select: none;
+}

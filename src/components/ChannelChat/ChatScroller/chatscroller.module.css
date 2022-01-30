@@ -1,0 +1,34 @@
+.wrapper {
+  min-height: calc(100% - 1px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  position: relative;
+}
+
+.scroller_inner {
+  overflow-y: auto;
+  overflow-x: hidden;
+  max-height: 100%;
+}
+
+.is_bottom.scroller_inner * {
+  overflow-anchor: none;
+}
+
+.overflow_anchor {
+  height: 1px;
+}
+
+.is_bottom .overflow_anchor {
+  overflow-anchor: auto;
+}
+
+.greetings {
+  text-align: center;
+  color: var(--base-grey);
+  font-weight: 500;
+  font-size: 20px;
+  margin: 20px 0;
+  user-select: none;
+}

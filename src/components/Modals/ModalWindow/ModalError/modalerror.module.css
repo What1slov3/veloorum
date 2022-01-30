@@ -1,0 +1,15 @@
+.wrapper {
+  margin-top: 10px;
+  color: var(--notification);
+  overflow: hidden;
+  animation: start .2s forwards;
+}
+
+@keyframes start {
+  0% {
+    max-height: 0;
+  }
+  100% {
+    max-height: 20px;
+  }
+}

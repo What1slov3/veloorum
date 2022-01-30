@@ -1,0 +1,17 @@
+.wrapper {
+  min-width: 100%;
+  user-select: none;
+  cursor: pointer;
+  padding: 6px 10px;
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.wrapper {
+  color: var(--med-grey);
+}
+
+.wrapper:hover, #active {
+  background: var(--hover-grey-light);
+  color: var(--base-grey);
+}

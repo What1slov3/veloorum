@@ -1,0 +1,68 @@
+.modal_content {
+  padding: 20px;
+}
+
+.message_wrapper {
+  display: flex;
+  padding: 20px 20px 10px 20px;
+  background: var(--dark-grey);
+  border-radius: 5px;
+  max-height: 70vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.time {
+  font-size: 13px;
+  color: var(--med-grey);
+  margin-top: 1px;
+  width: 40px;
+}
+
+.time_wrapper {
+  margin-right: 10px;
+}
+
+.time_wrapper > div {
+  height: max-content;
+}
+
+.username {
+  font-weight: 500;
+  cursor: pointer;
+  width: max-content;
+  margin-bottom: 2px;
+}
+
+.username:hover {
+  text-decoration: underline;
+}
+
+.content {
+  user-select: text;
+  color: var(--light-grey);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-width: 500px;
+  line-height: 20px;
+}
+
+.content > div {
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.control {
+  display: flex;
+  width: max-content;
+  margin-left: auto;
+  margin-top: 15px;
+}
+
+.attachment_image {
+  display: block;
+  min-width: 100px;
+  max-width: 360px;
+  cursor: pointer;
+}

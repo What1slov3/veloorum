@@ -1,0 +1,36 @@
+.wrapper {
+  background: #00000080;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: start 0.2s forwards;
+}
+
+.content {
+  padding: 10px;
+  text-align: center;
+  max-width: 300px;
+}
+
+.content span {
+  font-size: 18px;
+}
+
+.tagline {
+  margin-top: 5px;
+}
+
+@keyframes start {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

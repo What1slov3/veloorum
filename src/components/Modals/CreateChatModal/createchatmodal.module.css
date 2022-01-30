@@ -1,0 +1,44 @@
+.btn_wrapper {
+  display: flex;
+  width: max-content;
+  margin-left: auto;
+}
+
+.content {
+  padding: 20px;
+}
+
+.chat_title_wrapper {
+  position: relative;
+}
+
+.hashtag {
+  position: absolute;
+  font-size: 20px;
+  font-weight: 300;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+  color: var(--light-grey);
+}
+
+.chat_title {
+  padding-left: 30px !important;
+}
+
+.error {
+  color: var(--red);
+  font-weight: 500;
+  font-size: 16px;
+  overflow: hidden;
+  animation: error 0.3s forwards;
+}
+
+@keyframes error {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}

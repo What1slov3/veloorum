@@ -1,0 +1,7 @@
+.wrapper {
+  width: 100%;
+  text-align: center;
+  padding: 10px 0;
+  user-select: none;
+  color: var(--light-grey);
+}

@@ -1,0 +1,76 @@
+.container {
+  background: var(--charcoal);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100vw;
+  height: 100vh;
+}
+
+.channel_card {
+  background: var(--dark-grey);
+  padding: 20px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  width: 400px;
+}
+
+.found {
+  display: none;
+}
+
+.icon {
+  height: 120px;
+  width: 120px;
+  border-radius: 5px;
+  margin-right: 15px;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.members {
+  color: var(--light-grey);
+}
+
+.error {
+  color: var(--notification);
+  margin-top: 10px;
+  display: none;
+}
+
+.btn {
+  font-weight: 500;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  text-align: center;
+  display: none;
+  user-select: none;
+}
+
+.join {
+  background: #38d49363;
+  color: var(--success);
+  transition: 0.2s;
+}
+
+.join:hover {
+  opacity: 0.9;
+}
+
+.already_join {
+  color: var(--astro);
+  background: #c38fff42;
+  cursor: default;
+}
+
+.not_found {
+  font-weight: 500;
+  font-size: 18px;
+  display: none;
+}

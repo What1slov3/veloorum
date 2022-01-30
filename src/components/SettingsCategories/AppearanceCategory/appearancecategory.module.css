@@ -1,0 +1,11 @@
+.wrapper {
+  padding: 25px;
+}
+
+.wrapper * {
+  user-select: none;
+}
+
+.field_wrapper {
+  margin-top: 25px;
+}

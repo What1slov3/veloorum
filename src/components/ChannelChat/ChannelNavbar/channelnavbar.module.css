@@ -1,0 +1,22 @@
+.wrapper {
+  background: var(--dark-grey);
+  display: flex;
+  align-items: center;
+  padding: 0 30px;
+  cursor: default;
+  user-select: none;
+}
+
+.name, .name > span {
+  color: var(--light-grey);
+}
+
+.name {
+  display: flex;
+  align-items: center;
+  font-size: 16px;
+}
+
+.name > span {
+  font-size: 24px;
+}

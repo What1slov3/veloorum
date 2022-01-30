@@ -1,0 +1,4 @@
+.active > div {
+  background: var(--charcoal);
+  color: var(--base-grey);
+}

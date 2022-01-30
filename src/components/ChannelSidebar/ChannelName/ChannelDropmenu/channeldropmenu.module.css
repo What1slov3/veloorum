@@ -1,0 +1,52 @@
+.wrapper {
+  padding: 5px;
+  border-radius: 5px;
+  background: var(--darker-grey);
+  width: 286px;
+  overflow: hidden;
+  animation: open .2s forwards;
+  box-shadow: #171718bb 0px 2px 8px 0px;
+}
+
+.wrapper_item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 7px 10px;
+}
+
+.wrapper_item:hover {
+  background: var(--charcoal);
+}
+
+.wrapper_item span {
+  color: var(--light-grey);
+}
+
+.wrapper_item i {
+  font-size: 17px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  color: var(--light-grey);
+}
+
+.create_invite {
+  color: var(--astro) !important;
+}
+
+.leave_channel {
+  color: var(--red) !important;
+}
+
+@keyframes open {
+  0% {
+    transform: translateY(-25%) scale(0.5);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}

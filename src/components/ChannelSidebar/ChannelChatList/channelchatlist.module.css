@@ -1,0 +1,17 @@
+.wrapper {
+  max-height: calc(100vh - 75px - 50px);
+  overflow: auto;
+}
+
+.scroll_spacer {
+  width: 295px;
+}
+
+.create_chat_btn {
+  color: var(--med-grey);
+  font-size: 16px;
+}
+
+.create_chat_btn:hover {
+  color: var(--light-grey);
+}

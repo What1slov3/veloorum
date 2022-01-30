@@ -1,0 +1,17 @@
+.content {
+  padding: 20px;
+}
+
+.line {
+  width: 90%;
+  height: 1px;
+  background: var(--dark-grey);
+  margin: 15px auto;
+}
+
+.control {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}

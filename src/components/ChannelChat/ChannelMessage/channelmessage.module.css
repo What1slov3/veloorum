@@ -1,0 +1,139 @@
+.wrapper {
+  display: flex;
+  padding: 5px 20px;
+  transition: 0.1s;
+  position: relative;
+}
+
+.wrapper:hover,
+.active {
+  background: rgba(38, 39, 44, 0.767);
+}
+
+.wrapper:hover .context_menu {
+  display: flex;
+}
+
+.active .context_menu {
+  display: none !important;
+}
+
+.time {
+  font-size: 13px;
+  color: var(--med-grey);
+  margin-top: 1px;
+  width: 40px;
+  cursor: default;
+}
+
+.time_wrapper {
+  margin-right: 10px;
+}
+
+.time_wrapper > div {
+  height: max-content;
+}
+
+.username {
+  font-weight: 500;
+  cursor: pointer;
+  width: max-content;
+  margin-bottom: 2px;
+}
+
+.username:hover {
+  text-decoration: underline;
+}
+
+.content {
+  user-select: text;
+  color: var(--light-grey);
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  max-width: max-content;
+  line-height: 21px;
+  max-width: calc(100vw - 320px - 20px - 250px - 100px);
+}
+
+.content > div {
+  cursor: default;
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.context_menu {
+  display: none;
+  position: absolute;
+  right: 100px;
+  background: var(--tooltip);
+  padding: 3px;
+  padding-bottom: 4px;
+  top: 0;
+  transform: translateY(-50%);
+  border-radius: 5px;
+}
+
+.context_btn {
+  width: 18px;
+  height: 18px;
+  margin: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.context_btn:hover > i {
+  opacity: 0.75;
+}
+
+#delete > i {
+  color: var(--notification);
+}
+
+.short .time_wrapper {
+  opacity: 0;
+}
+
+.short:hover .time_wrapper,
+.active .time_wrapper {
+  opacity: 1;
+}
+
+.was_edit_mark {
+  display: inline-block;
+}
+
+.was_edit_mark span {
+  color: var(--med-grey);
+  cursor: default;
+  margin-left: 5px;
+}
+
+.attachments {
+  margin: 10px 0;
+}
+
+.attachment_image {
+  display: block;
+  height: 250px;
+  cursor: pointer;
+  margin-top: 10px;
+  opacity: 0;
+  transition: 0.5s opacity;
+}
+
+.img_loaded {
+  opacity: 1;
+  min-width: 100px;
+  max-width: 400px;
+  min-height: 100px;
+  max-height: 400px;
+  height: auto;
+}
+
+.realtime {
+  max-height: 0;
+  overflow: hidden;
+  transition: 0.3s;
+}

@@ -1,0 +1,14 @@
+.attachment {
+  font-size: 20px;
+  cursor: pointer;
+  color: var(--light-grey);
+  transition: 0.2s;
+}
+
+.attachment:hover {
+  color: #fff;
+}
+
+.file_loader {
+  width: 0px;
+}

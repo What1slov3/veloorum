@@ -1,38 +1,48 @@
-.App {
-  text-align: center;
+.message_content_url {
+  color: var(--action);
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.message_content_url:hover {
+  text-decoration: underline;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.fontSize_12,
+.fontSize_12 * {
+  font-size: 12px;
+}
+.fontSize_14,
+.fontSize_14 * {
+  font-size: 14px;
+}
+.fontSize_15,
+.fontSize_15 * {
+  font-size: 15px;
+}
+.fontSize_16,
+.fontSize_16 * {
+  font-size: 16px;
+}
+.fontSize_18,
+.fontSize_18 * {
+  font-size: 18px;
+}
+.fontSize_20,
+.fontSize_20 * {
+  font-size: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.messageGroupGap_0 {
+  margin-top: 0px;
 }
-
-.App-link {
-  color: #61dafb;
+.messageGroupGap_4 {
+  margin-top: 4px;
 }
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.messageGroupGap_8 {
+  margin-top: 8px;
+}
+.messageGroupGap_12 {
+  margin-top: 12px;
+}
+.messageGroupGap_16 {
+  margin-top: 16px;
 }

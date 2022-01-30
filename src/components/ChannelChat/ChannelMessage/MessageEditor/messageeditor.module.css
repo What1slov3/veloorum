@@ -1,0 +1,33 @@
+.message_wrapper {
+  background: var(--dark-grey);
+  margin-top: 10px;
+  border-radius: 10px;
+  padding: 5px 15px;
+  display: flex;
+  width: calc(100vw - 320px - 20px - 100px - 250px);
+}
+
+.input {
+  min-height: 20px;
+  max-height: 300px;
+  overflow-y: auto;
+  padding: 0 10px;
+  width: 100%;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  cursor: text;
+  transition: .2s;
+}
+
+.control {
+  color: var(--light-grey);
+}
+
+.control > span {
+  color: var(--action);
+  cursor: pointer;
+}
+
+.control > span:hover {
+  text-decoration: underline;
+}

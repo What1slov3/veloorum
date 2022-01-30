@@ -3,10 +3,28 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+import store from './store/index';
+import KEC from './common/utils/KEC/index';
+import { LSA } from './common/utils/LSA';
+
+if (!localStorage.getItem('access_token')) {
+  window.location.pathname = '/login.html';
+}
+
+export const kec = new KEC();
+kec.init();
+export const lsa = new LSA();
+lsa.init();
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <BrowserRouter>
+      <Provider store={store}>
+        <App />
+      </Provider>
+    </BrowserRouter>
   </React.StrictMode>,
   document.getElementById('root')
 );

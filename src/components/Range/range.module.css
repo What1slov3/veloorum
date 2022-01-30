@@ -1,0 +1,63 @@
+.wrapper {
+  width: 100%;
+  position: relative;
+  margin-top: 30px;
+}
+
+.track {
+  width: 500px;
+  height: 7px;
+  background: var(--charcoal);
+  border-radius: 10px;
+}
+
+.grabber {
+  position: absolute;
+  z-index: 150;
+  height: 15px;
+  width: 15px;
+  border-radius: 10px;
+  background: var(--base-grey);
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: w-resize;
+}
+
+.active_range {
+  position: absolute;
+  width: 17px;
+  height: 7px;
+  background: var(--astro);
+  top: 0;
+  left: 0;
+  border-radius: 10px;
+  z-index: 100;
+}
+
+.value_track_point {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-100%);
+}
+
+.point_value {
+  margin-bottom: -6px;
+  transform: translateX(-50%);
+  color: var(--light-grey);
+  font-size: 13px;
+}
+
+.point_mark {
+  height: 15px;
+  width: 2px;
+  background: var(--slate-grey);
+  z-index: 50;
+  top: 50%;
+  transform: translateY(50%) translateX(-25%);
+}
+
+.default * {
+  color: var(--astro);
+  font-weight: 600;
+}
