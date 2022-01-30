@@ -1,11 +1,11 @@
-import { TChannel } from './../../../../bff_types/common';
+import { TChat } from './../chats/types';
 import { TDefaultAction } from './../../types/reducers';
 import { fetchCreateChat } from './../chats/thunk';
 import { fetchLeaveChannel } from './../user/thunk';
 import { fetchCreateChannel, fetchUpdateChannel, fetchUpdateChannelIcon } from './thunk';
 import { createSlice } from '@reduxjs/toolkit';
 import { fetchUserInit } from '../user/thunk';
-import { TChat } from '../../../../bff_types/common';
+import { TChannel } from './types';
 
 const initialState: Record<string, TChannel> = {};
 

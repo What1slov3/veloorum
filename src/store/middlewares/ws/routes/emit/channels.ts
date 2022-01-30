@@ -1,4 +1,4 @@
-import { TChannel } from './../../../../../../../bff_types/common';
+import { TChannel } from './../../../../channels/types';
 import { TStore } from '../../../../../types/common';
 import { Socket } from 'socket.io-client';
 

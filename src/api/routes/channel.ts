@@ -1,9 +1,8 @@
 import { TAxiosUpdateChannel, TAxiosUpdateChannelIcon } from './../types';
-import { TReqChannelsCreate } from '../../../../bff_types/req/index';
 import { axiosInstance } from '../index';
 
 class ChannelAPI {
-  public async createChannel({ title, icon }: TReqChannelsCreate) {
+  public async createChannel({ title, icon }: {title: string, icon: File}) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('icon', icon);

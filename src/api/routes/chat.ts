@@ -1,5 +1,4 @@
 import { TUpdatableFieldsChat } from './../../store/chats/types';
-import { TChat } from '../../../../bff_types/common';
 import { axiosInstance } from '../index';
 
 class ChatAPI {

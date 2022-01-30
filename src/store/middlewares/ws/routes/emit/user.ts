@@ -1,4 +1,4 @@
-import { TUser } from './../../../../../../../bff_types/common';
+import { TUser } from './../../../../user/types';
 import { TStore } from '../../../../../types/common';
 import { Socket } from 'socket.io-client';
 
