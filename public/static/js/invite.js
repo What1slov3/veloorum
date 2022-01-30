@@ -8,7 +8,7 @@ const alreadyJoin = document.querySelector('.already_join');
 const error = document.querySelector('.error');
 
 window.onload = () => {
-  fetch(`http://localhost:3001/invites/get/${window.location.href.match(/([^\/]+$)/)[0]}`, {
+  fetch(`http://localhost:3001/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}` || '',
     },

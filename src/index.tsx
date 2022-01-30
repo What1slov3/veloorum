@@ -9,6 +9,10 @@ import store from './store/index';
 import KEC from './common/utils/KEC/index';
 import { LSA } from './common/utils/LSA';
 
+if (window.location.pathname === '/app') {
+  window.history.replaceState(null, '', '/');
+}
+
 if (!localStorage.getItem('access_token')) {
   window.location.pathname = '/login.html';
 }

@@ -52,6 +52,10 @@ _**Создать env/env.js**_
   }
 ```
 Вручную изменить пути к серверу в статике **_public/static_**
+Отдачу статики необходимо настроить по вашему усмотрению:  
+- :domain:/invite/:inviteId -> invite.html
+- :domain:/login -> login.html
+- :domain:/app -> index.html
 
 _Для запуска dev-версии требуется ручная установка Font Awesome 5 по пути assets/font/fontawesome_
 _Необходимо обязательное соединение с сервером [Veloorum REST|WS](https://github.com/What1slov3/veloorum-rest 'Veloorum REST|WS')_
