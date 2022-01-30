@@ -5,7 +5,7 @@
 ❗️❗️ **Приложение находится на раннем этапе разработки** ❗️❗️  
 ❗️❗️ **Обновления будут выходить по мере возможности** ❗️❗️
 
-Исходный код сервера [Veloorum REST|WS](http://example.com/link 'Veloorum REST|WS')
+Исходный код сервера [Veloorum REST|WS](https://github.com/What1slov3/veloorum-rest 'Veloorum REST|WS')
 
 ---
 
@@ -54,7 +54,7 @@ _**Создать env/env.js**_
 Вручную изменить пути к серверу в статике **_public/static_**
 
 _Для запуска dev-версии требуется ручная установка Font Awesome 5 по пути assets/font/fontawesome_
-_Необходимо обязательное соединение с сервером [Veloorum REST|WS](http://example.com/link 'Veloorum REST|WS')_
+_Необходимо обязательное соединение с сервером [Veloorum REST|WS](https://github.com/What1slov3/veloorum-rest 'Veloorum REST|WS')_
 
 ---
 
