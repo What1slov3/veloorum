@@ -8,7 +8,7 @@ type TProps = {
 const BottomScroller: React.FC<TProps> = ({scroll}): JSX.Element => {
   return (
     <div className={s.wrapper} onClick={scroll}>
-      <i className="far fa-chevron-down"></i>
+      <i className="fas fa-chevron-down"></i>
     </div>
   );
 };

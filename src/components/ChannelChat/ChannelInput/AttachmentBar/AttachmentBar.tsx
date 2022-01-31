@@ -31,7 +31,7 @@ const AttachmentBar: React.FC<TProps> = ({ urls, context }): JSX.Element => {
     return urls.map((url: string, index: number) => (
       <div key={url} className={s.attachment}>
         <div className={s.control}>
-          <i className={`far fa-trash-alt ${s.delete}`} onClick={() => deleteAttachment(index)}></i>
+          <i className={`fas fa-trash-alt ${s.delete}`} onClick={() => deleteAttachment(index)}></i>
         </div>
         <img src={url} alt="img" onClick={() => openAttachment(url)} />
       </div>

@@ -1,3 +1,4 @@
+import { isDev } from './../../../common/utils/isDev';
 import { emitChannels } from './routes/emit/channels';
 import { receiveChannels } from './routes/receive/channels';
 import { receiveUsers } from './routes/receive/users';
@@ -7,13 +8,13 @@ import { receiveAppdata } from './routes/receive/appdata';
 import { receiveCommon } from './routes/receive/common';
 import { receiveChats } from './routes/receive/chats';
 import { emitChats } from './routes/emit/chats';
-import { Dispatch } from 'redux';
 import { io } from 'socket.io-client';
 import { TStore } from './../../../types/common';
 import store from '../..';
 import { setWsConnected, setWsConnectionError } from '../../appdata';
+import { PROCESS_ENV } from '../../../env/env';
 
-const socket = io('ws://localhost:3001', { transports: ['websocket'] });
+const socket = io(isDev() ? PROCESS_ENV.localWebsocketURL : PROCESS_ENV.websocketURL, { transports: ['websocket'] });
 
 const registerUser = () => {
   const state = store.getState() as TStore;

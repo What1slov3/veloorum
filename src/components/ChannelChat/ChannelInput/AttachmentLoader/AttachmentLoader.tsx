@@ -9,7 +9,7 @@ const AttachmentLoader: React.FC<TProps> = ({onChange}): JSX.Element => {
   return (
     <div>
       <label htmlFor="attachment_loader">
-        <i className={`fal fa-paperclip ${s.attachment}`}></i>
+        <i className={`fas fa-paperclip ${s.attachment}`}></i>
       </label>
       <input
         id="attachment_loader"

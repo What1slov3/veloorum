@@ -47,7 +47,7 @@ const ChannelChatList: React.FC<TProps> = ({ chats, connection, openChatCreator,
           title="Текстовые чаты"
           extraButton={
             <TooltipWrapper position="right" tooltipContent={<Tooltip>Добавить чат</Tooltip>}>
-              <i className={`fal fa-plus ${s.create_chat_btn}`} onClick={openChatCreator}></i>
+              <i className={`fas fa-plus ${s.create_chat_btn}`} onClick={openChatCreator}></i>
             </TooltipWrapper>
           }
           activeBlock={activeChatBlock}

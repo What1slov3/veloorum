@@ -87,7 +87,7 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
               title=""
             />
             <label htmlFor="icon">
-              <i className="fal fa-camera" id={s.channel_icon}></i>
+              <i className="fas fa-camera" id={s.channel_icon}></i>
             </label>
             <Avatar url={newIconURL || channel.iconUrl} style={{ height: '100px', width: '100px' }} />
           </div>

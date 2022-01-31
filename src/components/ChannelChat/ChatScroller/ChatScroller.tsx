@@ -173,7 +173,7 @@ const ChatScroller: React.FC<TProps> = ({
         </React.Fragment>
       );
     });
-    if (!isRendered && history.length) setIsRendered(true);
+    if (!isRendered && (history.length || (!history.length && !loadingStatus.hasMore))) setIsRendered(true);
     return renderedHistory;
   }, [history, loadedUsers, editingMessage, isRendered]);
 

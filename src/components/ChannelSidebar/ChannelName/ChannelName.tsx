@@ -40,7 +40,7 @@ const ChannelName: React.FC<TProps> = ({ channelName, channelId, openInvite, ope
     <div className={s.wrapper}>
       <div className={s.wrapper_data} onClick={openMenu}>
         <div className={s.name}>{channelName}</div>
-        <i className={`far fa-chevron-down ${s.arrow}`}></i>
+        <i className={`fas fa-chevron-down ${s.arrow}`}></i>
       </div>
       {dropmenuIsOpen && (
         <div className={s.dropmenu_wrapper} data-dropmenu="true">

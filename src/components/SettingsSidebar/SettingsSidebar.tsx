@@ -26,7 +26,7 @@ const SettingsSidebar: React.FC = ({}): JSX.Element => {
         <div>
           <div className={s.line}></div>
           <div className={s.exit} onClick={onExit}>
-            Выйти <i className="fal fa-sign-out"></i>
+            Выйти <i className="fas fa-sign-out"></i>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ const alreadyJoin = document.querySelector('.already_join');
 const error = document.querySelector('.error');
 
 window.onload = () => {
-  fetch(`http://localhost:3001/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
+  fetch(`http://localhost:5000/api/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem('access_token')}` || '',
     },
@@ -37,7 +37,7 @@ window.onload = () => {
         join.addEventListener('click', (e) => {
           if (error.style.display === 'block') error.style.display = 'none';
           if (localStorage.getItem('access_token')) {
-            fetch('http://localhost:3001/users/join_channel', {
+            fetch('http://localhost:5000/api/users/join_channel', {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${localStorage.getItem('access_token')}`,
@@ -55,7 +55,7 @@ window.onload = () => {
                 error.style.display = 'block';
               });
           } else {
-            location.pathname = '/login.html';
+            location.pathname = '/login';
           }
         });
       }

@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
@@ -8,13 +7,14 @@ import { Provider } from 'react-redux';
 import store from './store/index';
 import KEC from './common/utils/KEC/index';
 import { LSA } from './common/utils/LSA';
+import './index.css';
 
 if (window.location.pathname === '/app') {
   window.history.replaceState(null, '', '/');
 }
 
 if (!localStorage.getItem('access_token')) {
-  window.location.pathname = '/login.html';
+  window.location.pathname = '/login';
 }
 
 export const kec = new KEC();

@@ -40,17 +40,17 @@ const ChannelDropMenu: React.FC<TProps> = ({ close, openInvite, channelId, openC
         {channel?.ownerId === uid && (
           <Item onClick={handleOpenChannelSettings}>
             <span className={s.channel_settings}>Настройки канала</span>
-            <i className="fal fa-cog"></i>
+            <i className="fas fa-cog"></i>
           </Item>
         )}
         <Item onClick={createInvite}>
           <span className={s.create_invite}>Создать приглашение</span>
-          <i className={`fal fa-user-plus ${s.create_invite}`}></i>
+          <i className={`fas fa-user-plus ${s.create_invite}`}></i>
         </Item>
         {channel?.ownerId !== uid && (
           <Item onClick={leaveChannel}>
             <span className={s.leave_channel}>Покинуть канал</span>
-            <i className={`fal fa-sign-out ${s.leave_channel}`}></i>
+            <i className={`fas fa-sign-out ${s.leave_channel}`}></i>
           </Item>
         )}
       </div>

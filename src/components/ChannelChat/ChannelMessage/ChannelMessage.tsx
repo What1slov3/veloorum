@@ -7,12 +7,12 @@ import { TDeleteMessageModalPayload } from '../../../types/modalsPayload';
 import { TMessageContent, TMessageContext } from '../../../store/chats/types';
 import MessageEditor from './MessageEditor/MessageEditor';
 import ReactDOMServer from 'react-dom/server';
-import s from './channelmessage.module.css';
 import { lsa } from '../../..';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
 import { resetRealtimeStatus } from '../../../store/chats';
 import { wrapAllFormatting } from '../../../common/utils/contentMessageWrapper';
+import s from './channelmessage.module.css';
 
 type TProps = {
   uuid: string;
@@ -137,15 +137,15 @@ const ChannelMessage: React.FC<TProps> = ({
           {isOwner && (
             <>
               <div className={s.context_btn} id={s.delete} onClick={handleDeleteMessage}>
-                <i className="far fa-trash-alt"></i>
+                <i className="fas fa-trash-alt"></i>
               </div>
               <div className={s.context_btn} onClick={handleEditingMode}>
-                <i className="far fa-pencil"></i>
+                <i className="fas fa-pencil"></i>
               </div>
             </>
           )}
           <div className={s.context_btn}>
-            <i className="far fa-ellipsis-h"></i>
+            <i className="fas fa-ellipsis-h"></i>
           </div>
         </div>
       </div>

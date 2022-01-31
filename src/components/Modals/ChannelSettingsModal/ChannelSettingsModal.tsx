@@ -17,6 +17,7 @@ const ChannelSettingsModal: React.FC<TProps> = ({ isFading, close, channelId }):
     <ModalWindow close={close} isFading={isFading}>
       <div className={s.wrapper}>
         <div className={s.page_wrapper}>
+          {/* ? Вероятно, позже будет разделение на страницы категорий */}
           <MainPage channel={channel} close={close} />
         </div>
       </div>

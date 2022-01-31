@@ -84,7 +84,7 @@ const Navbar: React.FC = (): JSX.Element => {
           <div className={s.userData_control}>
             <TooltipWrapper position="bottom" tooltipContent={<Tooltip>Настройки</Tooltip>}>
               <Link to="/settings/profile">
-                <i className={`far fa-cog ${s.settings}`}></i>
+                <i className={`fas fa-cog ${s.settings}`}></i>
               </Link>
             </TooltipWrapper>
             <Spacer width={10} />
@@ -95,7 +95,7 @@ const Navbar: React.FC = (): JSX.Element => {
           <div className={s.serversList_control}>
             <Spacer width={20} />
             <TooltipWrapper position="bottom" tooltipContent={<Tooltip>Создать канал</Tooltip>}>
-              <i className="far fa-plus-circle" onClick={channelModal.open}></i>
+              <i className="fas fa-plus-circle" onClick={channelModal.open}></i>
             </TooltipWrapper>
             <Spacer width={20} />
           </div>

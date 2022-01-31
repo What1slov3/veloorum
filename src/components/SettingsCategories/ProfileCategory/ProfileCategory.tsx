@@ -55,7 +55,7 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
                 title=""
               />
               <label htmlFor="avatar">
-                <i className="fal fa-camera" id={s.avatar_icon}></i>
+                <i className="fas fa-camera" id={s.avatar_icon}></i>
               </label>
               <Avatar
                 url={newAvatarURL || user.avatarUrl}

@@ -7,6 +7,8 @@
 
 Исходный код сервера [Veloorum REST|WS](https://github.com/What1slov3/veloorum-rest 'Veloorum REST|WS')
 
+Данная информация предназначена для ознакомления, но не использования сторонними людьми  
+
 ---
 
 ## Стек
@@ -46,12 +48,16 @@ _**Создать env/env.js**_
 
 ```js
   export const PROCESS_ENV = {
-    apiURL: '' // ссылка на домен сервера
-    localhost: 'localhost:port' // порт на котором запущен локальный сервер
+    apiURL: '' // URL сервера бекенда
+    localhost: '' // URL сервера бекенда на dev сборке
+    websocketURL: '', // URL websocket сервера
+    localWebsocketURL: '', // URL websocket сервера на dev сборке
     env: 'dev' | 'prod' // текущая среда
   }
 ```
-Вручную изменить пути к серверу в статике **_public/static_**
+**Важно:** не забыть сменить PROCCESS_ENV.env перед сборкой
+
+Вручную изменить пути к серверу в статике **_public/static_**  
 Отдачу статики необходимо настроить по вашему усмотрению:  
 - :domain:/invite/:inviteId -> invite.html
 - :domain:/login -> login.html

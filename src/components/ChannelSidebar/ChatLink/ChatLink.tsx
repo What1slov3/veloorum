@@ -33,7 +33,7 @@ const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings }): 
       </div>
       <div className={s.context_menu}>
         <TooltipWrapper position="top" tooltipContent={<Tooltip>Настройки</Tooltip>}>
-          <i className={`far fa-ellipsis-h ${s.chat_settings}`} onClick={openChatSettingsHandle}></i>
+          <i className={`fas fa-ellipsis-h ${s.chat_settings}`} onClick={openChatSettingsHandle}></i>
         </TooltipWrapper>
       </div>
     </div>

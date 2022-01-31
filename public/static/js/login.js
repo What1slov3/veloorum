@@ -81,7 +81,7 @@ const handleLogIn = () => {
     return;
   }
 
-  fetch('http://localhost:3001/auth/login', {
+  fetch('http://localhost:5000/api/auth/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ const handleSignIn = () => {
     return;
   }
 
-  fetch('http://localhost:3001/users/create', {
+  fetch('http://localhost:5000/api/users/create', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
