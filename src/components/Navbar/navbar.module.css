@@ -2,16 +2,35 @@
   padding: 5px 0;
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-columns: 320px 1fr;
+  grid-template-columns: 400px 1fr;
   background: var(--charcoal);
   user-select: none;
+}
+
+.logo_wrapper {
+  margin-right: 20px;
+  padding: 10px;
+  border-radius: 0;
+  transition: 0.2s;
+}
+
+.logo_wrapper:hover,
+.active_logo {
+  background: #00000015;
+  border-radius: 10px;
+}
+
+.logo {
+  height: 40px;
+  width: 40px;
+  background: url('../../assets/logo.svg') no-repeat center / contain;
 }
 
 .userData {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 30px;
+  padding-left: 15px;
 }
 
 .userData > div {
@@ -35,9 +54,6 @@
 .tag {
   font-size: 13px;
   color: var(--light-grey);
-}
-
-.userData_control {
 }
 
 .userData_control i {

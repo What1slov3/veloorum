@@ -13,6 +13,7 @@ import { TStore } from '../../../types/common';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import { setStatus } from '../../../store/errors/index';
 import s from './changeuserdatamodal.module.css';
+import ModalLine from '../ModalWindow/ModalLine/ModalLine';
 
 type TProps = {
   username: string;
@@ -74,7 +75,7 @@ const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, emai
             <input {...newData} autoFocus />
           </InputTemplate>
         </div>
-        <div className={s.line}></div>
+        <ModalLine />
         <div className={s.field_wrapper}>
           <InputTitle>Текущий пароль</InputTitle>
           <InputTemplate>

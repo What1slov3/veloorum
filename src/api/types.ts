@@ -14,6 +14,7 @@ export type TAxiosUpdateChannelIcon = {
 export type TAxiosUpdateChannel = {
   cid: string;
   title?: string;
+  description?: string;
 };
 
 export type TAxiosChangeUserData = {

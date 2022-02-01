@@ -20,10 +20,14 @@ const Accordion: React.FC<TProps> = ({
 }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(openByDefault);
 
+  const onClick = () => {
+    setIsOpen(!isOpen);
+  };
+
   return (
     <div className={s.wrapper}>
       <div className={s.control}>
-        <div className={s.control_title_wrapper} onClick={() => setIsOpen(!isOpen)}>
+        <div className={s.control_title_wrapper} onClick={onClick}>
           <i className={`fas fa-chevron-down ${s.arrow}`} id={isOpen ? s.open : undefined}></i>
           <Spacer width={10} />
           <div className={s.title} style={titleStyle}>

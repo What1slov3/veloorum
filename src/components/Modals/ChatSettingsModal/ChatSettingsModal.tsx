@@ -42,7 +42,7 @@ const ChatSettingsModal: React.FC<TProps> = ({ isFading, close, chat }): JSX.Ele
 
   const saveChat = () => {
     if (!titleInput.value.trim()) return setError('Все поля должны быть заполнены');
-    dispatch(fetchUpdateChat({ cid: chat.uuid, chat: { title: chat.title } }));
+    dispatch(fetchUpdateChat({ cid: chat.uuid, chat: { title: titleInput.value } }));
     close();
   };
 

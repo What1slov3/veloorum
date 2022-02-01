@@ -10,6 +10,7 @@ import { TStore } from './types/common';
 import { fetchUserInit } from './store/user/thunk';
 import { setWsConnectionError } from './store/appdata';
 import DropAreaWrapper from './components/DropAreaWrapper/DropAreaWrapper';
+import MainPage from './pages/MainPage/MainPage';
 import './App.css';
 
 // TODO глобальный рефакторинг
@@ -84,7 +85,7 @@ function App() {
                 </>
               )}
             />
-            <Route path="/" render={() => <Navbar />} />
+            <Route path="/" render={() => <><Navbar /><MainPage /></>} />
           </Switch>
         )}
       </GridMain>

@@ -3,4 +3,5 @@
   font-size: 13px;
   text-transform: uppercase;
   font-weight: 300;
+  user-select: none;
 }

@@ -9,7 +9,7 @@ import s from './navbar.module.css';
 import Spacer from '../../templates/Spacer';
 import useModal from '../../common/hooks/useModal';
 import CreateChannelModal from '../Modals/CreateChannelModal/CreateChannelModal';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 
 const Navbar: React.FC = (): JSX.Element => {
   const user = useSelector((state: TStore) => state.user);
@@ -68,6 +68,11 @@ const Navbar: React.FC = (): JSX.Element => {
       <div className={s.wrapper}>
         <div className={s.userData}>
           <div>
+            <NavLink exact to="/" className={s.logo_wrapper} activeClassName={s.active_logo}>
+              <div className={s.logo}></div>
+            </NavLink>
+            <div className={s.line}></div>
+            <Spacer width={15} />
             <Avatar url={user.avatarUrl} style={{ height: '45px', width: '45px' }} username={user.username} />
             <Spacer width={10} />
             <TooltipWrapper

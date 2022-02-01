@@ -10,9 +10,11 @@ type TProps = {
 
 const ModalButton: React.FC<TProps> = ({ children, style, onClick, onEnterPress }): JSX.Element => {
   useEffect(() => {
-    kec.add('onkeydown', 'pressEnter', (e: any) => {
-      if (e.key === 'Enter') onClick();
-    });
+    if (onEnterPress) {
+      kec.add('onkeydown', 'pressEnter', (e: any) => {
+        if (e.key === 'Enter') onClick();
+      });
+    }
 
     return () => {
       kec.remove('onkeydown', 'pressEnter');

@@ -2,7 +2,8 @@
   width: 100%;
 }
 
-.wrapper input {
+.wrapper input,
+.wrapper textarea {
   border: 1px solid var(--darker-grey);
   transition: 0.2s;
   border-radius: 5px;
@@ -12,11 +13,14 @@
 }
 
 .wrapper input:active,
-.wrapper input:focus {
+.wrapper input:focus,
+.wrapper textarea:active,
+.wrapper textarea:focus {
   border: 1px solid var(--astro);
 }
 
-.wrapper input::placeholder {
+.wrapper input::placeholder,
+.wrapper textarea::placeholder {
   color: var(--med-grey);
 }
 
@@ -30,10 +34,13 @@
 }
 
 .shadow input:active,
-.shadow input:focus {
+.shadow input:focus,
+.shadow textarea:active,
+.shadow textarea:focus {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
 }
 
-.shadow input:hover {
+.shadow input:hover,
+.shadow textarea:hover {
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
 }

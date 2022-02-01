@@ -9,6 +9,7 @@ import ModalButton from '../ModalWindow/ModalButton/ModalButton';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import ModalError from '../ModalWindow/ModalError/ModalError';
 import ModalHeader from '../ModalWindow/ModalHeader/ModalHeader';
+import ModalLine from '../ModalWindow/ModalLine/ModalLine';
 import ModalWindow from '../ModalWindow/ModalWindow';
 import s from './changepasswordmodal.module.css';
 
@@ -61,7 +62,7 @@ const ChangePasswordModal: React.FC<TProps> = ({ isFading, close }): JSX.Element
             <input {...currentPassword} autoFocus type="password" />
           </InputTemplate>
         </div>
-        <div className={s.line}></div>
+        <ModalLine />
         <div className={s.field_wrapper}>
           <InputTitle>Новый пароль</InputTitle>
           <InputTemplate>
