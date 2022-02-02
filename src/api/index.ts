@@ -7,9 +7,7 @@ import InviteAPI from './routes/invite';
 import MessagesAPI from './routes/messages';
 import UsersAPI from './routes/users';
 import FilesAPI from './routes/files';
-import {PROCESS_ENV} from '../env/env';
-
-// TODO Провести декомпозицию
+import { PROCESS_ENV } from '../env/env';
 
 export const axiosInstance = axios.create({
   baseURL: isDev() ? PROCESS_ENV.localhost : PROCESS_ENV.apiURL,
@@ -28,8 +26,7 @@ const API = {
   chats: ChatAPI,
   messages: MessagesAPI,
   users: UsersAPI,
-  files: FilesAPI
+  files: FilesAPI,
 };
 
 export default API;
-

@@ -33,7 +33,7 @@ export type TMessageContext = {
 };
 
 export type TMessageType = 'user' | 'system';
-export type TMessageSystemType = 'new_user';
+export type TMessageSystemType = 'userJoin' | 'userLeft';
 
 export type TChat = {
   uuid: string;

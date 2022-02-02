@@ -1,7 +1,7 @@
 import { TChat } from './../../../../chats/types';
 import { TStore } from '../../../../../types/common';
 import { Socket } from 'socket.io-client';
-import { chatDeleteMessage, chatEditMessage, chatSendMessage, createChat } from '../../../../chats';
+import { chatDeleteMessage, chatEditMessage, chatSendMessage, addChat } from '../../../../chats';
 import { pullTypingUsers } from '../../../../appdata';
 import { pushNewChat } from '../../../../channels';
 
@@ -22,7 +22,7 @@ export const receiveChats = (socket: Socket, eventName: string, payload: any, st
     },
     pushNewChat: () => {
       socket.emit('joinChat', { cid: (payload as TChat).uuid });
-      store.dispatch(createChat(payload));
+      store.dispatch(addChat(payload));
       store.dispatch(pushNewChat(payload));
     },
   };

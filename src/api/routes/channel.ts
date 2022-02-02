@@ -2,7 +2,7 @@ import { TAxiosUpdateChannel, TAxiosUpdateChannelIcon } from './../types';
 import { axiosInstance } from '../index';
 
 class ChannelAPI {
-  public async createChannel({ title, icon }: {title: string, icon: File}) {
+  public async createChannel({ title, icon }: { title: string; icon: File }) {
     const formData = new FormData();
     formData.append('title', title);
     formData.append('icon', icon);

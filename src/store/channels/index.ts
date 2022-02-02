@@ -19,6 +19,10 @@ const channelsSlice = createSlice({
     addChannelMember: (state, action: TDefaultAction<{ cid: string; uid: string }>) => {
       state[action.payload.cid].members.push(action.payload.uid);
     },
+    pullChannelMember: (state, action: TDefaultAction<{ cid: string; uid: string }>) => {
+      const deletingIndex = state[action.payload.cid].members.findIndex((uid) => uid === action.payload.uid)!;
+      state[action.payload.cid].members.splice(deletingIndex, 1);
+    },
     updateChannel: (state, action: TDefaultAction<TChannel>) => {
       state[action.payload.uuid] = action.payload;
     },
@@ -41,14 +45,14 @@ const channelsSlice = createSlice({
     builder.addCase(fetchCreateChat.fulfilled, (state, action: TDefaultAction<TChat>) => {
       state[action.payload.owningChannelId].chats.push(action.payload.uuid);
     });
-    builder.addCase(fetchUpdateChannel.fulfilled, (state, action: TDefaultAction<TChannel>) => {
+    builder.addCase(fetchUpdateChannelIcon.fulfilled, (state, action: TDefaultAction<TChannel>) => {
       state[action.payload.uuid] = action.payload;
     });
-    builder.addCase(fetchUpdateChannelIcon.fulfilled, (state, action: TDefaultAction<TChannel>) => {
-      state[action.payload.uuid].iconUrl = action.payload.iconUrl;
+    builder.addCase(fetchUpdateChannel.fulfilled, (state, action: TDefaultAction<TChannel>) => {
+      state[action.payload.uuid] = action.payload;
     });
   },
 });
 
-export const { addChannel, addChannelMember, updateChannel, pushNewChat } = channelsSlice.actions;
+export const { addChannel, addChannelMember, updateChannel, pushNewChat, pullChannelMember } = channelsSlice.actions;
 export default channelsSlice.reducer;

@@ -15,9 +15,10 @@ type TProps = {
   chats: TChat[] | null;
   connection: TActiveConnection;
   channelId: string;
+  isAdmin: boolean;
 };
 
-const ChannelSidebar: React.FC<TProps> = ({ channelName, chats, connection, channelId }): JSX.Element => {
+const ChannelSidebar: React.FC<TProps> = ({ channelName, chats, connection, channelId, isAdmin }): JSX.Element => {
   const inviteModal = useModal<string>(channelId);
   const chatCreatorModal = useModal();
   const chatSettingsModal = useModal<string>();
@@ -37,6 +38,7 @@ const ChannelSidebar: React.FC<TProps> = ({ channelName, chats, connection, chan
           connection={connection}
           openChatCreator={chatCreatorModal.open}
           openChatSettings={chatSettingsModal.open}
+          isAdmin={isAdmin}
         />
       </div>
       {inviteModal.isOpen && inviteModal.payload && (

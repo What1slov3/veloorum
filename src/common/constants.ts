@@ -1,0 +1,1 @@
+export const MAX_SYMBOLS_LIMIT_DEFAULT = 2000;

@@ -2,6 +2,7 @@ import DOMPurify from 'dompurify';
 import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { kec } from '../../../..';
+import { MAX_SYMBOLS_LIMIT_DEFAULT } from '../../../../common/constants';
 import { unwrapAllFormatting } from '../../../../common/utils/contentMessageWrapper';
 import { setDisableMessageAutofocus } from '../../../../store/appdata';
 import { fetchEditMessage } from '../../../../store/chats/thunk';
@@ -17,6 +18,7 @@ type TProps = {
   messageContent: string;
   mid: string;
   setEditingMode: (uuid: string | null) => void;
+  openSymbolLimitModal: (payload: [number, number]) => void;
 };
 
 const focusInEnd = (ref: MutableRefObject<any>) => {
@@ -32,6 +34,7 @@ const ChannelInput: React.FC<TProps> = ({
   messageContent,
   setEditingMode,
   mid,
+  openSymbolLimitModal,
 }): JSX.Element => {
   const dispatch = useDispatch();
 
@@ -53,16 +56,20 @@ const ChannelInput: React.FC<TProps> = ({
 
   const onMessageEdit = () => {
     const it = inputRef.current.innerText;
-    if (it && it.trim() && it.trim() !== DOMPurify.sanitize(messageContent, { USE_PROFILES: { html: false } })) {
-      dispatch(
-        fetchEditMessage({
-          chatId: context.chatId,
-          messageId: mid,
-          content: { text: it.trim() },
-        })
-      );
+    if (it.length > MAX_SYMBOLS_LIMIT_DEFAULT) {
+      openSymbolLimitModal([it.length, MAX_SYMBOLS_LIMIT_DEFAULT]);
+    } else {
+      if (it && it.trim() && it.trim() !== DOMPurify.sanitize(messageContent, { USE_PROFILES: { html: false } })) {
+        dispatch(
+          fetchEditMessage({
+            chatId: context.chatId,
+            messageId: mid,
+            content: { text: it.trim() },
+          })
+        );
+      }
+      setEditingMode(null);
     }
-    setEditingMode(null);
   };
 
   const keyPressedController = (e: React.KeyboardEvent) => {

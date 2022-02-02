@@ -18,12 +18,16 @@ type TProps = {
   chat: TChat;
 } & TModalWindowArgs;
 
+const titleSetter = (value: string) => {
+  return value.slice(0, 32).toLowerCase().replace(/\s+/g, '-');
+};
+
 const ChatSettingsModal: React.FC<TProps> = ({ isFading, close, chat }): JSX.Element => {
   const dispatch = useDispatch();
 
   const updateChatStatus = useSelector((state: TStore) => state.errors.updateChatStatus);
 
-  const titleInput = useInput({ initial: chat.title });
+  const titleInput = useInput({ initial: chat.title, setter: titleSetter });
 
   const titleRef = useRef<HTMLInputElement>(null!);
   const [error, setError] = useState('');

@@ -18,9 +18,6 @@ const InviteLinkModal: React.FC<TProps> = ({ isFading, close, cid }): JSX.Elemen
   const channels = useSelector((state: TStore) => state.channels);
   const uid = useSelector((state: TStore) => state.user.uuid);
 
-  // ! ВНИМАНИЕ
-  // TODO Переделать тут все
-
   const [link, setLink] = useState('');
   const [isOwner, setIsOwner] = useState<boolean>(false);
 
@@ -37,13 +34,9 @@ const InviteLinkModal: React.FC<TProps> = ({ isFading, close, cid }): JSX.Elemen
     }
   }, [cid, channels]);
 
-  // ! ПОКА СЕРВЕР И ФРОНТ НАХОДЯТСЯ НА РАЗНЫХ ДОМЕНАХ
-  const setLinkHandle = (string: string) => {
-    setLink(string.replace(/3001/gm, '3000'));
-  };
-
   const copyLink = () => {
     navigator.clipboard.writeText(link);
+    close();
   };
 
   const generateNewLink = async () => {

@@ -13,9 +13,16 @@ type TProps = {
   connection: TActiveConnection;
   openChatCreator: TModalOpenFunc<unknown>;
   openChatSettings: TModalOpenFunc<string>;
+  isAdmin: boolean;
 };
 
-const ChannelChatList: React.FC<TProps> = ({ chats, connection, openChatCreator, openChatSettings }): JSX.Element => {
+const ChannelChatList: React.FC<TProps> = ({
+  chats,
+  connection,
+  openChatCreator,
+  openChatSettings,
+  isAdmin,
+}): JSX.Element => {
   const renderChats = useMemo(() => {
     if (chats) {
       return chats.map((chat) => {
@@ -27,6 +34,7 @@ const ChannelChatList: React.FC<TProps> = ({ chats, connection, openChatCreator,
             uuid={uuid}
             active={connection.chatId === uuid}
             openChatSettings={openChatSettings}
+            isAdmin={isAdmin}
           />
         );
       });
@@ -36,7 +44,16 @@ const ChannelChatList: React.FC<TProps> = ({ chats, connection, openChatCreator,
   const activeChatBlock = useMemo(() => {
     if (chats && connection.chatId) {
       const { uuid, title } = chats.find((chat) => chat.uuid === connection.chatId)!;
-      return <ChatLink key={uuid} title={title} uuid={uuid} openChatSettings={openChatSettings} active={true} />;
+      return (
+        <ChatLink
+          key={uuid}
+          title={title}
+          uuid={uuid}
+          openChatSettings={openChatSettings}
+          active={true}
+          isAdmin={isAdmin}
+        />
+      );
     }
   }, [chats, connection]);
 
@@ -46,9 +63,11 @@ const ChannelChatList: React.FC<TProps> = ({ chats, connection, openChatCreator,
         <Accordion
           title="Текстовые чаты"
           extraButton={
-            <TooltipWrapper position="right" tooltipContent={<Tooltip>Добавить чат</Tooltip>}>
-              <i className={`fas fa-plus ${s.create_chat_btn}`} onClick={openChatCreator}></i>
-            </TooltipWrapper>
+            isAdmin ? (
+              <TooltipWrapper position="right" tooltipContent={<Tooltip>Добавить чат</Tooltip>}>
+                <i className={`fas fa-plus ${s.create_chat_btn}`} onClick={openChatCreator}></i>
+              </TooltipWrapper>
+            ) : undefined
           }
           activeBlock={activeChatBlock}
         >

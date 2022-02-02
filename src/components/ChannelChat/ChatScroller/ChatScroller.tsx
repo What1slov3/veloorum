@@ -26,6 +26,7 @@ type TProps = {
   loadedUsers: TUsersStore;
   openDeleteModal: TModalOpenFunc<TDeleteMessageModalPayload>;
   setAnchorRef: (ref: MutableRefObject<HTMLDivElement>) => void;
+  openSymbolLimitModal: (payload: [number, number]) => void;
 };
 
 const ChatScroller: React.FC<TProps> = ({
@@ -35,6 +36,7 @@ const ChatScroller: React.FC<TProps> = ({
   loadedUsers,
   openDeleteModal,
   setAnchorRef,
+  openSymbolLimitModal,
 }): JSX.Element => {
   const dispatch = useDispatch();
 
@@ -168,6 +170,7 @@ const ChatScroller: React.FC<TProps> = ({
               short={isShort}
               openAttachment={openAttachment}
               realtime={!!realtime}
+              openSymbolLimitModal={openSymbolLimitModal}
             />
           )}
         </React.Fragment>

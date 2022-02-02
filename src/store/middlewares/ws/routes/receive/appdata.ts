@@ -13,7 +13,7 @@ export const receiveAppdata = (socket: Socket, eventName: string, payload: any, 
       store.dispatch(addTypingUsers(payload));
       if (typingTimeout) clearTimeout(typingTimeout);
       typingTimeout = setTimeout(() => store.dispatch(pullTypingUsers(payload)), 1500);
-    }
+    },
   };
 
   if (routes[actionSplittedType[2]]) routes[actionSplittedType[2]]();

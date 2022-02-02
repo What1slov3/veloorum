@@ -3,7 +3,7 @@
 }
 
 .content {
-  height: calc(95vh - 150px);
+  height: calc(80vh - 150px);
   overflow: auto;
 }
 
@@ -100,8 +100,9 @@
   right: 10px;
 }
 
-.chat_selector {
-  padding: 10px;
+.chat_selector,
+.current_chat_selector {
+  padding: 7px 10px;
   display: flex;
   align-items: center;
   color: var(--light-grey);
@@ -111,8 +112,13 @@
   background: var(--darker-grey);
 }
 
-.chat_selector span {
+.chat_selector span,
+.current_chat_selector span {
   color: var(--med-grey);
   font-size: 18px;
   margin-right: 5px;
+}
+
+.current_chat_selector {
+  padding: 0;
 }

@@ -11,7 +11,6 @@ type TArgs = {
   setter?: (value: string) => string;
 };
 
-// TODO dispatch можно передавать из родителя, чтобы не выделять память ???
 const useInput = ({
   initial = '',
   required = false,

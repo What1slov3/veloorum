@@ -7,13 +7,8 @@ import EmojiIcon from './EmojiIcon/EmojiIcon';
 import { emojiListPreview } from '../../assets/emojiListPreview';
 import { kec } from '../..';
 import useInput from '../../common/hooks/useInput';
+import { findDatasetInParents } from '../../common/utils/findDataInParents';
 import s from './emojimenu.module.css';
-
-const findDatasetInParents = (elem: HTMLElement, data: string): boolean => {
-  if (elem.dataset.emoji) return true;
-  if (elem.parentElement) return findDatasetInParents(elem.parentElement, data);
-  return false;
-};
 
 const precalculatedDefaultEmojiHeight = [723, 1953, 969, 600, 395, 641, 1092, 1010];
 
@@ -34,9 +29,7 @@ const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
 
   useEffect(() => {
     kec.add('onmousedown', 'emoji_close', (e: any) => {
-      if (isOpen) {
-        if (!findDatasetInParents(e.target, 'emoji')) setIsOpen(false);
-      }
+      if (isOpen && !findDatasetInParents(e.target, 'emoji')) setIsOpen(false);
     });
   }, [isOpen]);
 

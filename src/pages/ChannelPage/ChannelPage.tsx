@@ -138,6 +138,7 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
             chats={chatList || []}
             connection={activeConnection}
             channelId={currentChannel.uuid}
+            isAdmin={currentChannel.ownerId === user.uuid}
           />
           {activeConnection.channelId && activeConnection.chatId && chats[activeConnection.chatId] ? (
             <ChannelChat
@@ -145,6 +146,7 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
               user={user}
               loadedUsers={loadedUsers}
               context={{ channelId: activeConnection.channelId, chatId: activeConnection.chatId }}
+              systemChatId={currentChannel.systemChat}
             />
           ) : (
             <div></div>

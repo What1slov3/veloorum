@@ -11,6 +11,6 @@ export const receiveChannels = (socket: Socket, eventName: string, payload: any,
       store.dispatch(updateChannel(payload));
     },
   };
-  
+
   if (routes[actionSplittedType[2]]) routes[actionSplittedType[2]]();
 };

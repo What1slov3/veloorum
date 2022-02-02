@@ -3,4 +3,4 @@ export const undefinedUser = {
   avatarUrl: '',
   username: 'Undefined',
   tag: '0000',
-}
+};

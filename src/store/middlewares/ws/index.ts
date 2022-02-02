@@ -14,12 +14,15 @@ import store from '../..';
 import { setWsConnected, setWsConnectionError } from '../../appdata';
 import { PROCESS_ENV } from '../../../env/env';
 
-const socket = io(isDev() ? PROCESS_ENV.localWebsocketURL : PROCESS_ENV.websocketURL, { transports: ['websocket'] });
+const socket = io(isDev() ? PROCESS_ENV.localWebsocketURL : PROCESS_ENV.websocketURL, {
+  transports: ['websocket'],
+});
 
 const registerUser = () => {
   const state = store.getState() as TStore;
 
   if (state.appdata.init.fulfilled) {
+    // ? Подключаем пользователя к чатам и каналам
     socket.emit('registerUser', {
       chats: Object.keys(state.chats),
       channels: Object.keys(state.channels),
@@ -27,10 +30,6 @@ const registerUser = () => {
   } else {
     setTimeout(() => registerUser(), 500);
   }
-};
-
-const setConnectionStatus = () => {
-  store.dispatch(setWsConnected(socket.connected));
 };
 
 socket.on('connect', () => {
@@ -41,13 +40,16 @@ socket.on('connect', () => {
 });
 
 socket.on('disconnect', () => {
-  setConnectionStatus();
+  store.dispatch(setWsConnected(socket.connected));
   store.dispatch(setWsConnectionError(true));
 });
 
+// ? Если пользователь подключился к каналам и чатам, считаем что инициализированно
 socket.on('userRegistered', (data) => {
-  if (data.success) setConnectionStatus();
+  if (data.success) store.dispatch(setWsConnected(socket.connected));
 });
+
+// MAIN HANDLER
 
 socket.onAny((eventName: string, payload: any) => {
   payload = { ...payload, received: true };
@@ -65,6 +67,8 @@ socket.onAny((eventName: string, payload: any) => {
     routes[splittedEventName[1]](socket, eventName, payload, store);
   }
 });
+
+// MIDDLEWARE
 
 export const wsMiddleware = (store: any) => (next: any) => (action: any) => {
   if (!action) return;

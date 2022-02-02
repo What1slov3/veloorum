@@ -1,6 +1,7 @@
 .wrapper {
   margin: 0px 20px;
   max-width: calc(100vw - 320px - 20px - 250px);
+  position: relative;
 }
 
 .control {
@@ -25,4 +26,11 @@
   content: attr(data-text);
   color: var(--med-grey);
   cursor: text;
+}
+
+.disable {
+  padding: 5px 10px;
+  color: var(--med-grey);
+  cursor: default;
+  user-select: none;
 }

@@ -9,26 +9,30 @@ import { TUsersStore } from '../../store/users/types';
 import { TChat, TMessageContext } from '../../store/chats/types';
 import { TUser } from '../../store/user/types';
 import TypingIndicator from './TypingIndicator/TypingIndicator';
-import s from './channelchat.module.css';
 import AttachmentModal from '../Modals/AttachmentModal/AttachmentModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { TStore } from '../../types/common';
 import { setOpenedAttachment } from '../../store/appdata';
+import SymbolLimitModal from '../Modals/SymbolLimitModal/SymbolLimitModal';
+import s from './channelchat.module.css';
 
 type TProps = {
   context: TMessageContext;
   chat: TChat;
   user: TUser;
   loadedUsers: TUsersStore;
+  systemChatId: string;
 };
 
-const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers }): JSX.Element => {
+const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers, systemChatId }): JSX.Element => {
   const dispatch = useDispatch();
 
   const openedAttachment = useSelector((state: TStore) => state.appdata.openedAttachment);
 
   const deleteModal = useModal<TDeleteMessageModalPayload>();
   const attachmentModal = useModal<string>('');
+  // ? [length, limit]
+  const symbolLimitModal = useModal<[number, number]>([0, 0]);
 
   const scrollToBottomRef = useRef<HTMLDivElement>(null!);
 
@@ -40,12 +44,12 @@ const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers }): JS
     if (scrollToBottomRef.current) scrollToBottomRef.current.scrollIntoView();
   }, [scrollToBottomRef]);
 
-  const closeAttachmentModal = () => {
-    attachmentModal.close();
-  };
-
   const openDeleteModal = useCallback((payload: TDeleteMessageModalPayload) => {
     deleteModal.open(payload);
+  }, []);
+
+  const openSymbolLimitModal = useCallback((payload: [number, number]) => {
+    symbolLimitModal.open(payload);
   }, []);
 
   return (
@@ -62,6 +66,7 @@ const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers }): JS
           setAnchorRef={(ref: MutableRefObject<HTMLDivElement>) => {
             scrollToBottomRef.current = ref.current;
           }}
+          openSymbolLimitModal={openSymbolLimitModal}
         />
         <ChannelInput
           placeholder={`Написать в #${chat.title}`}
@@ -69,6 +74,8 @@ const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers }): JS
           context={context}
           scrollToBottom={scrollToBottom}
           chatTitle={chat.title}
+          openSymbolLimitModal={openSymbolLimitModal}
+          disable={context.chatId === systemChatId}
         />
         <TypingIndicator uid={user.uuid} context={context} loadedUsers={loadedUsers} />
       </div>
@@ -76,7 +83,15 @@ const ChannelChat: React.FC<TProps> = ({ chat, user, context, loadedUsers }): JS
         <DeleteMessageModal isFading={deleteModal.isFading} close={deleteModal.close} message={deleteModal.payload} />
       )}
       {openedAttachment && (
-        <AttachmentModal url={openedAttachment} isFading={attachmentModal.isFading} close={closeAttachmentModal} />
+        <AttachmentModal url={openedAttachment} isFading={attachmentModal.isFading} close={attachmentModal.close} />
+      )}
+      {symbolLimitModal.isOpen && symbolLimitModal.payload && (
+        <SymbolLimitModal
+          close={symbolLimitModal.close}
+          isFading={symbolLimitModal.isFading}
+          length={symbolLimitModal.payload[0]}
+          limit={symbolLimitModal.payload[1]}
+        />
       )}
     </>
   );

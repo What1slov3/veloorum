@@ -31,11 +31,11 @@
 
 .content {
   user-select: text;
-  color: var(--light-grey);
   white-space: pre-wrap;
   overflow-wrap: break-word;
   max-width: max-content;
   line-height: 20px;
+  color: var(--light-grey);
 }
 
 .content > div {
@@ -44,33 +44,13 @@
   line-height: 20px;
 }
 
-.username {
+.highlight {
   font-weight: 500;
   cursor: pointer;
   width: max-content;
   margin-bottom: 2px;
 }
 
-.username:hover {
+.highlight:hover {
   text-decoration: underline;
-}
-
-.new_user {
-  background: #38d49331;
-}
-
-.new_user:hover {
-  background: #38d4937a;
-}
-
-.new_user .content {
-  color: var(--base-grey);
-}
-
-.new_user .username {
-  color: var(--white);
-}
-
-.new_user .time {
-  color: var(--light-grey);
 }

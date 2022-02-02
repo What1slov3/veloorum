@@ -12,9 +12,10 @@ type TProps = {
   uuid: string;
   active?: boolean;
   openChatSettings: TModalOpenFunc<string>;
+  isAdmin: boolean;
 };
 
-const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings }): JSX.Element => {
+const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings, isAdmin }): JSX.Element => {
   const dispatch = useDispatch();
 
   const selectChat = () => {
@@ -31,11 +32,13 @@ const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings }): 
         <span>#</span>
         <span>{title}</span>
       </div>
-      <div className={s.context_menu}>
-        <TooltipWrapper position="top" tooltipContent={<Tooltip>Настройки</Tooltip>}>
-          <i className={`fas fa-ellipsis-h ${s.chat_settings}`} onClick={openChatSettingsHandle}></i>
-        </TooltipWrapper>
-      </div>
+      {isAdmin && (
+        <div className={s.context_menu}>
+          <TooltipWrapper position="top" tooltipContent={<Tooltip>Настройки</Tooltip>}>
+            <i className={`fas fa-ellipsis-h ${s.chat_settings}`} onClick={openChatSettingsHandle}></i>
+          </TooltipWrapper>
+        </div>
+      )}
     </div>
   );
 };

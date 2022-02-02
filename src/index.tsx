@@ -14,7 +14,7 @@ if (window.location.pathname === '/app') {
 }
 
 if (!localStorage.getItem('access_token')) {
-  window.location.pathname = '/login';
+  window.location.pathname = '/login.html';
 }
 
 export const kec = new KEC();

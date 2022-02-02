@@ -17,7 +17,7 @@ export const emitChats = (socket: Socket, action: any, store: any) => {
       socket.emit('editUserMessage', action.payload);
     },
     createChat: () => {
-      socket.emit('createChat', action.payload as TChat);
+      socket.emit('createChat', action.payload);
       socket.emit('joinChat', { cid: (action.payload as TChat).uuid });
     },
   };

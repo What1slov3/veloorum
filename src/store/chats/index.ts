@@ -38,7 +38,7 @@ const chatsSlice: any = createSlice({
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid)
       ].realtime = false;
     },
-    createChat: (state, action: TDefaultAction<TChat>) => {
+    addChat: (state, action: TDefaultAction<TChat>) => {
       state[action.payload.uuid] = action.payload;
     },
   },
@@ -96,6 +96,6 @@ const chatsSlice: any = createSlice({
   },
 });
 
-export const { chatSendMessage, chatDeleteMessage, chatEditMessage, resetRealtimeStatus, createChat } =
+export const { chatSendMessage, chatDeleteMessage, chatEditMessage, resetRealtimeStatus, addChat } =
   chatsSlice.actions;
 export default chatsSlice.reducer;

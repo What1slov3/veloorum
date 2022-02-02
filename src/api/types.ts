@@ -15,6 +15,7 @@ export type TAxiosUpdateChannel = {
   cid: string;
   title?: string;
   description?: string;
+  systemChat?: string;
 };
 
 export type TAxiosChangeUserData = {

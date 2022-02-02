@@ -12,8 +12,8 @@ import ModalError from '../ModalWindow/ModalError/ModalError';
 import { TStore } from '../../../types/common';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import { setStatus } from '../../../store/errors/index';
-import s from './changeuserdatamodal.module.css';
 import ModalLine from '../ModalWindow/ModalLine/ModalLine';
+import s from './changeuserdatamodal.module.css';
 
 type TProps = {
   username: string;
@@ -45,7 +45,6 @@ const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, emai
   }, [changeUserDataStatus]);
 
   const saveData = () => {
-    console.log(!newData.value.trim() || !password.value.trim());
     if (!newData.value.trim() || !password.value.trim()) {
       setError('Все поля должны быть заполнены');
     } else {

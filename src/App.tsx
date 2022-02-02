@@ -8,12 +8,9 @@ import ChannelPage from './pages/ChannelPage/ChannelPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
 import { TStore } from './types/common';
 import { fetchUserInit } from './store/user/thunk';
-import { setWsConnectionError } from './store/appdata';
 import DropAreaWrapper from './components/DropAreaWrapper/DropAreaWrapper';
 import MainPage from './pages/MainPage/MainPage';
 import './App.css';
-
-// TODO глобальный рефакторинг
 
 function App() {
   const dispatch = useDispatch();
@@ -46,9 +43,7 @@ function App() {
     if (wsConnectionError) {
       setInited(false);
       setShowPreloader(true);
-      dispatch(setWsConnectionError(true));
     }
-    if (wsConnectionError && wsConnected) dispatch(setWsConnectionError(false));
     if (init.rejectedWithError) {
       reInitRef.current = setInterval(() => dispatch(fetchUserInit()), 1000 * 5);
     }
@@ -85,7 +80,15 @@ function App() {
                 </>
               )}
             />
-            <Route path="/" render={() => <><Navbar /><MainPage /></>} />
+            <Route
+              path="/"
+              render={() => (
+                <>
+                  <Navbar />
+                  <MainPage />
+                </>
+              )}
+            />
           </Switch>
         )}
       </GridMain>

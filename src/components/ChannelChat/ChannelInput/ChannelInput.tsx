@@ -11,7 +11,9 @@ import { addTypingUsers, resetAttachments, setUploadedAttachments } from '../../
 import AttachmentBar from './AttachmentBar/AttachmentBar';
 import API from '../../../api';
 import AttachmentLoader from './AttachmentLoader/AttachmentLoader';
+import MessageSymbolLimit from './MessageSymbolLimit/MessageSymbolLimit';
 import s from './channelinput.module.css';
+import { MAX_SYMBOLS_LIMIT_DEFAULT } from '../../../common/constants';
 
 type TProps = {
   placeholder?: string;
@@ -19,6 +21,8 @@ type TProps = {
   uid: string;
   context: TMessageContext;
   scrollToBottom: Function | MutableRefObject<() => void>;
+  openSymbolLimitModal: (payload: [number, number]) => void;
+  disable?: boolean;
 };
 
 const keyException = [
@@ -51,16 +55,24 @@ const keyException = [
   'F12',
 ];
 
-const ChannelInput: React.FC<TProps> = ({ placeholder, uid, context, scrollToBottom }): JSX.Element => {
+const ChannelInput: React.FC<TProps> = ({
+  placeholder,
+  uid,
+  context,
+  scrollToBottom,
+  openSymbolLimitModal,
+  disable,
+}): JSX.Element => {
   const dispatch = useDispatch();
 
   const disableMessageAutofocus = useSelector((state: TStore) => state.appdata.disableMessageAutofocus);
   const modalIsActive = useSelector((state: TStore) => state.appdata.modalIsActive);
   const uploadedAttachments = useSelector((state: TStore) => state.appdata.uploadedAttachments);
 
-  const [inFocus, setIsFocus] = useState<boolean>(false);
-  const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [inFocus, setIsFocus] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const [attachments, setAttachments] = useState<string[]>([]);
+  const [symbolLimit, setSymbolLimit] = useState(0);
 
   const pressedKeysRef = useRef<string[]>([]);
   const inputRef = useRef<HTMLDivElement>(null!);
@@ -90,6 +102,7 @@ const ChannelInput: React.FC<TProps> = ({ placeholder, uid, context, scrollToBot
   useEffect(() => {
     if (inputRef.current) {
       inputRef.current.innerText = lsa.getUnsentMessage(context.chatId)?.text || '';
+      handlerSymbolLimit(inputRef.current.innerText.length);
     }
   }, [inputRef, context]);
 
@@ -185,12 +198,18 @@ const ChannelInput: React.FC<TProps> = ({ placeholder, uid, context, scrollToBot
     if (clipboardData.files.length) handleLoadAttachment({ target: { files: clipboardData.files } });
   };
 
+  const handlerSymbolLimit = (length: number) => {
+    if (length > MAX_SYMBOLS_LIMIT_DEFAULT) setSymbolLimit(length);
+    if (length <= MAX_SYMBOLS_LIMIT_DEFAULT && symbolLimit) setSymbolLimit(0);
+  };
+
   // ? Обработка ввода текста на поле ввода
   const handleInput = (e: FormEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
     if (target.innerHTML === '<br>') target.innerText = '';
     lsa.saveUnsentMessage({ content: { text: target.innerText }, context });
     handleTyping();
+    handlerSymbolLimit(target.innerText.length);
   };
 
   // ? Сеттер эмоджи, прокидываем в emoji menu
@@ -222,18 +241,22 @@ const ChannelInput: React.FC<TProps> = ({ placeholder, uid, context, scrollToBot
   // ? Отправка сообщения и сброс всех полей
   const onMessageSend = () => {
     const it = inputRef.current.innerText;
-    if ((it && it.trim()) || attachments.length) {
-      dispatch(
-        fetchSendMessage({
-          context,
-          content: { text: it.trim(), attachments },
-        })
-      );
-      resetText();
-      dispatch(resetAttachments(context.chatId));
-      setAttachments([]);
-      lsa.resetUnsentMessage(context.chatId);
-      typeof scrollToBottom === 'object' ? scrollToBottom.current() : scrollToBottom();
+    if (symbolLimit) {
+      openSymbolLimitModal([symbolLimit, MAX_SYMBOLS_LIMIT_DEFAULT]);
+    } else {
+      if ((it && it.trim()) || attachments.length) {
+        dispatch(
+          fetchSendMessage({
+            context,
+            content: { text: it.trim(), attachments },
+          })
+        );
+        typeof scrollToBottom === 'object' ? scrollToBottom.current() : scrollToBottom();
+        dispatch(resetAttachments(context.chatId));
+        lsa.resetUnsentMessage(context.chatId);
+        setAttachments([]);
+        resetText();
+      }
     }
   };
 
@@ -245,24 +268,33 @@ const ChannelInput: React.FC<TProps> = ({ placeholder, uid, context, scrollToBot
     <div className={s.wrapper}>
       {attachments && <AttachmentBar urls={attachments} context={context} />}
       <div className={s.control}>
-        <AttachmentLoader onChange={handleLoadAttachment} />
-        <Spacer width={10} />
-        <div
-          className={s.input}
-          ref={inputRef}
-          contentEditable
-          data-text={placeholder || 'Напишите что-то...'}
-          data-message-input="true"
-          onPaste={handlePaste}
-          onInput={handleInput}
-          onKeyDown={keyPressedController}
-          onKeyUp={keyUnpressedController}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => setIsFocus(false)}
-        ></div>
-        <Spacer width={10} />
-        <EmojiMenu emojiSetter={writeEmoji} />
+        {disable ? (
+          <div className={s.disable}>Вы не можете писать в этот чат</div>
+        ) : (
+          <>
+            <AttachmentLoader onChange={handleLoadAttachment} />
+            <Spacer width={10} />
+            <div
+              className={s.input}
+              ref={inputRef}
+              contentEditable
+              data-text={placeholder || 'Напишите что-то...'}
+              data-message-input="true"
+              onPaste={handlePaste}
+              onInput={handleInput}
+              onKeyDown={keyPressedController}
+              onKeyUp={keyUnpressedController}
+              onFocus={() => setIsFocus(true)}
+              onBlur={() => setIsFocus(false)}
+            ></div>
+            <Spacer width={10} />
+            <EmojiMenu emojiSetter={writeEmoji} />
+          </>
+        )}
       </div>
+      {symbolLimit > 0 && (
+        <MessageSymbolLimit length={inputRef.current?.textContent?.length || 0} limit={MAX_SYMBOLS_LIMIT_DEFAULT} />
+      )}
     </div>
   );
 };

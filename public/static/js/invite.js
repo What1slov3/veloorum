@@ -10,7 +10,7 @@ const error = document.querySelector('.error');
 window.onload = () => {
   fetch(`http://localhost:5000/api/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
     headers: {
-      Authorization: `Bearer ${localStorage.getItem('access_token')}` || '',
+      Authorization: localStorage.getItem('access_token') ? `Bearer ${localStorage.getItem('access_token')}` : '',
     },
   })
     .then((res) => {

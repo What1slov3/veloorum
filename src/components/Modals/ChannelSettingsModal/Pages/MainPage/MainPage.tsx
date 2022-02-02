@@ -37,6 +37,7 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
 
   const titleRef = useRef<HTMLInputElement>(null!);
 
+  // TODO переделать все под один объект вместо тысячи стейтов
   const title = useInput({ initial: channel.title, setter: titleSetter });
   const channelDescription = useInput({ initial: channel.description, setter: descriptionSetter });
 
@@ -63,6 +64,17 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
     }
   }, [updateChannelStatus]);
 
+  const renderChats = () => {
+    return [...channel.chats]
+      .filter((chat) => chat !== currentSystemChat)
+      .map((cid) => (
+        <div key={cid} className={s.chat_selector} onClick={() => setCurrentSystemChat(cid)}>
+          <span>#</span>
+          {chats[cid].title}
+        </div>
+      ));
+  };
+
   const updateChannel = () => {
     if (!title.value.trim()) return setError('Все поля должны быть заполнены');
 
@@ -70,21 +82,13 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
       cid: channel.uuid,
       title: title.value,
       description: channelDescription.value,
+      systemChat: currentSystemChat,
     };
 
     if (newIcon) dispatch(fetchUpdateChannelIcon({ cid: channel.uuid, icon: newIcon }));
     if (Object.values(data).reduce((prev, curr) => prev + curr.trim()) !== channel.uuid) {
       dispatch(fetchUpdateChannel(data));
     }
-  };
-
-  const renderChats = () => {
-    return channel.chats.map((cid) => (
-      <div className={s.chat_selector} onClick={() => setCurrentSystemChat(cid)}>
-        <span>#</span>
-        {chats[cid].title}
-      </div>
-    ));
   };
 
   return (
@@ -129,7 +133,18 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
           </InputTemplate>
           <ModalLine />
           <ModalInputTitle style={{ marginBottom: '5px' }}>Канал системных сообщений</ModalInputTitle>
-          <DropMenu current={chats[currentSystemChat]?.title || 'Нет активного канала'}>{renderChats()}</DropMenu>
+          <DropMenu
+            current={
+              (
+                <div className={s.current_chat_selector}>
+                  <span>#</span>
+                  {chats[currentSystemChat].title}
+                </div>
+              ) || 'Нет активного канала'
+            }
+          >
+            {renderChats()}
+          </DropMenu>
         </div>
       </div>
       {error && <ModalError>{error}</ModalError>}

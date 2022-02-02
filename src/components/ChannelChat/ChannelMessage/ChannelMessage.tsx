@@ -29,6 +29,7 @@ type TProps = {
   short?: boolean;
   openAttachment: (url: string) => void;
   realtime?: boolean;
+  openSymbolLimitModal: (payload: [number, number]) => void;
 };
 
 const ChannelMessage: React.FC<TProps> = ({
@@ -46,6 +47,7 @@ const ChannelMessage: React.FC<TProps> = ({
   short,
   openAttachment,
   realtime,
+  openSymbolLimitModal,
 }): JSX.Element => {
   const dispatch = useDispatch();
 
@@ -111,6 +113,7 @@ const ChannelMessage: React.FC<TProps> = ({
                 mid={uuid}
                 messageContent={ReactDOMServer.renderToString(content.text as any)}
                 setEditingMode={setEditingMode}
+                openSymbolLimitModal={openSymbolLimitModal}
               />
             ) : (
               <>
