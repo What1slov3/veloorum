@@ -53,8 +53,8 @@ _**Создать env/env.js**_
 
 ```js
   export const PROCESS_ENV = {
-    apiURL: '' // URL сервера бекенда
-    localhost: '' // URL сервера бекенда на dev сборке
+    apiURL: '', // URL сервера бекенда
+    localhost: '', // URL сервера бекенда на dev сборке
     websocketURL: '', // URL websocket сервера
     localWebsocketURL: '', // URL websocket сервера на dev сборке
     env: 'dev' | 'prod' // текущая среда
