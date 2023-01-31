@@ -1,4 +1,4 @@
-import { TAxiosChangeUserData, TAxiosChangePassword } from './../types';
+import { AxiosChangePassword, AxiosChangeUserData } from '../../types/api.types';
 import { axiosInstance } from '../index';
 
 class UserAPI {
@@ -41,7 +41,7 @@ class UserAPI {
       });
   }
 
-  public async changeUserData(userData: TAxiosChangeUserData) {
+  public async changeUserData(userData: AxiosChangeUserData) {
     return axiosInstance
       .post('/users/change_user_data', userData)
       .then((res) => {
@@ -53,7 +53,7 @@ class UserAPI {
       });
   }
 
-  public async changePassword(passwords: TAxiosChangePassword) {
+  public async changePassword(passwords: AxiosChangePassword) {
     return axiosInstance
       .post('/users/change_password', passwords)
       .then((res) => {

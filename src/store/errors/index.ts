@@ -1,11 +1,10 @@
-import { fetchCreateChat, fetchDeleteMessage, fetchUpdateChat } from './../chats/thunk';
-import { fetchCreateChannel, fetchUpdateChannel } from './../channels/thunk';
-import { fetchChangeUserData } from './../user/thunk';
-import { TDefaultAction } from './../../types/reducers';
-import { createSlice } from '@reduxjs/toolkit';
-import { TErrorsStore } from './types';
+import { fetchCreateChat, fetchDeleteMessage, fetchUpdateChat } from '@store/chats/thunk';
+import { fetchCreateChannel, fetchUpdateChannel } from '@store/channels/thunk';
+import { fetchChangeUserData } from '@store/user/thunk';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { ErrorsStore } from '@customTypes/redux/errors.types';
 
-const initialState: TErrorsStore = {
+const initialState: ErrorsStore = {
   changeUserDataStatus: null,
   createChannelStatus: null,
   createChatStatus: null,
@@ -18,7 +17,7 @@ const errorSlice = createSlice({
   name: 'error',
   initialState,
   reducers: {
-    setStatus: (state, action: TDefaultAction<{ type: keyof TErrorsStore; value: 'error' | 'success' | null }>) => {
+    setStatus: (state, action: PayloadAction<{ type: keyof ErrorsStore; value: 'error' | 'success' | null }>) => {
       state[action.payload.type] = action.payload.value;
     },
   },

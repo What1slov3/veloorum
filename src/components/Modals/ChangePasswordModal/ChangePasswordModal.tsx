@@ -1,21 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import API from '../../../api';
-import useInput from '../../../common/hooks/useInput';
+import React, { useState } from 'react';
+import API from '@api/index';
+import useInput from '@common/hooks/useInput';
 import InputTemplate from '../../../templates/Inputs/InputTemplate/InputTemplate';
 import InputTitle from '../../../templates/Inputs/InputTitle/InputTitle';
-import { TModalWindowArgs } from '../../../types/hooks';
 import ModalButton from '../ModalWindow/ModalButton/ModalButton';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import ModalError from '../ModalWindow/ModalError/ModalError';
 import ModalHeader from '../ModalWindow/ModalHeader/ModalHeader';
 import ModalLine from '../ModalWindow/ModalLine/ModalLine';
-import ModalWindow from '../ModalWindow/ModalWindow';
 import s from './changepasswordmodal.module.css';
 
-type TProps = {} & TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
-const ChangePasswordModal: React.FC<TProps> = ({ isFading, close }): JSX.Element => {
+const ChangePasswordModal: React.FC<Props> = ({ onClose }): JSX.Element => {
   const currentPassword = useInput({});
   const newPassword = useInput({});
   const repeatNewPassword = useInput({});
@@ -50,7 +49,7 @@ const ChangePasswordModal: React.FC<TProps> = ({ isFading, close }): JSX.Element
   };
 
   return (
-    <ModalWindow close={close} isFading={isFading}>
+    <>
       <ModalHeader style={{ padding: '20px' }}>
         <h5>Введите новый пароль</h5>
         <div>Если не забыли старый, конечно...</div>
@@ -77,13 +76,13 @@ const ChangePasswordModal: React.FC<TProps> = ({ isFading, close }): JSX.Element
         </div>
         {error && <ModalError>{error}</ModalError>}
         <ModalControl>
-          <ModalButton onClick={close}>Отмена</ModalButton>
-          <ModalButton style={{ background: 'var(--astro)' }} onClick={saveData} onEnterPress>
+          <ModalButton onClick={onClose}>Отмена</ModalButton>
+          <ModalButton style={{ background: 'var(--astro)' }} onClick={saveData}>
             Сохранить
           </ModalButton>
         </ModalControl>
       </div>
-    </ModalWindow>
+    </>
   );
 };
 

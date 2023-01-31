@@ -1,7 +1,9 @@
 .wrapper {
   display: flex;
   align-items: center;
+  gap: 10px;
   padding: 5px;
+  padding-right: 10px;
   border-radius: 5px;
   user-select: none;
   cursor: pointer;
@@ -18,12 +20,13 @@
 .username {
   font-weight: 500;
   color: var(--light-grey);
-  display: flex;
-  align-items: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .icon {
-  margin-left: 5px;
+  margin-bottom: 3px;
 }
 
 .icon > i {

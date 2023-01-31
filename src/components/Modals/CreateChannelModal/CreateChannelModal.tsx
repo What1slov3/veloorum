@@ -1,19 +1,15 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ModalButton from '../ModalWindow/ModalButton/ModalButton';
-import ModalWindow from '../ModalWindow/ModalWindow';
-import { TModalWindowArgs } from '../../../types/hooks';
-import Spacer from '../../../templates/Spacer';
-import { fetchCreateChannel } from '../../../store/channels/thunk';
+import { fetchCreateChannel } from '@store/channels/thunk';
 import { useDispatch, useSelector } from 'react-redux';
-import { TStore } from '../../../types/common';
-import { focusInEnd } from '../../../common/utils/focusInEnd';
+import { Store } from '@customTypes/common.types';
 import ModalHeader from '../ModalWindow/ModalHeader/ModalHeader';
 import ModalInputTitle from '../ModalWindow/ModalInputTitle/ModalInputTitle';
-import s from './createchannelmodal.module.css';
-import useInput from '../../../common/hooks/useInput';
+import useInput from '@common/hooks/useInput';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import ModalError from '../ModalWindow/ModalError/ModalError';
-import { setStatus } from '../../../store/errors';
+import { setStatus } from '@store/errors';
+import s from './createchannelmodal.module.css';
 
 const preparedPhrases = [
   'Какой-то',
@@ -30,13 +26,16 @@ const preparedPhrases = [
   'Хайповый',
 ];
 
-type TProps = TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
-const CreateChannelModal: React.FC<TProps> = ({ isFading, close }): JSX.Element => {
-  const dispatch = useDispatch();
+const CreateChannelModal: React.FC<Props> = ({ onClose }): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-  const user = useSelector((state: TStore) => state.user);
-  const createChannelStatus = useSelector((state: TStore) => state.errors.createChannelStatus);
+  const user = useSelector((state: Store) => state.user);
+  const createChannelStatus = useSelector((state: Store) => state.errors.createChannelStatus);
+
   const createRandomName = () => {
     return `${preparedPhrases[(Math.random() * preparedPhrases.length) >> 0]} сервер ${user.username}`;
   };
@@ -50,7 +49,7 @@ const CreateChannelModal: React.FC<TProps> = ({ isFading, close }): JSX.Element 
   const titleRef = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
-    focusInEnd(titleRef);
+    titleRef.current.focus();
   }, []);
 
   useEffect(() => {
@@ -70,7 +69,7 @@ const CreateChannelModal: React.FC<TProps> = ({ isFading, close }): JSX.Element 
         break;
       case 'success':
         dispatch(setStatus({ type: 'createChannelStatus', value: null }));
-        close();
+        onClose();
     }
   }, [createChannelStatus]);
 
@@ -104,53 +103,50 @@ const CreateChannelModal: React.FC<TProps> = ({ isFading, close }): JSX.Element 
   };
 
   return (
-    <ModalWindow isFading={isFading} close={close}>
-      <div className={s.wrapper}>
-        <ModalHeader style={{ padding: '20px' }}>
-          <h4>Создаете сервер?</h4>
-          <div className={s.tagline}>Персонализируйте его!</div>
-        </ModalHeader>
-        <div className={s.content}>
-          <div className={s.circle} style={{ backgroundImage: iconURL ? `url(${iconURL})` : '' }}>
-            <input
-              className={s.file_loader}
-              multiple={false}
-              type="file"
-              accept="image/*"
-              onChange={uploadIcon}
-              onDrop={onDrop}
-              title=""
-            />
-            {!channelIcon && (
-              <div className={s.circle_icon}>
-                <i className="fas fa-camera-alt"></i>
-              </div>
-            )}
-          </div>
-          <div>
-            <ModalInputTitle style={{ marginTop: '25px', marginBottom: '5px' }}>Название канала</ModalInputTitle>
-            <input
-              {...channelTitle}
-              className={s.server_title}
-              autoComplete="off"
-              type="text"
-              placeholder="Введите его тут"
-              ref={titleRef}
-              value={channelTitle.value}
-              spellCheck="false"
-            />
-          </div>
-          {error && <ModalError>{error}</ModalError>}
-          <ModalControl>
-            <ModalButton onClick={close}>Закрыть</ModalButton>
-            <Spacer width={10} />
-            <ModalButton onClick={onCreate} style={{ background: 'var(--astro)' }}>
-              Создать
-            </ModalButton>
-          </ModalControl>
+    <div className={s.wrapper}>
+      <ModalHeader style={{ padding: '20px' }}>
+        <h4>Создаете сервер?</h4>
+        <div className={s.tagline}>Персонализируйте его!</div>
+      </ModalHeader>
+      <div className={s.content}>
+        <div className={s.circle} style={{ backgroundImage: iconURL ? `url(${iconURL})` : '' }}>
+          <input
+            className={s.file_loader}
+            multiple={false}
+            type="file"
+            accept="image/*"
+            onChange={uploadIcon}
+            onDrop={onDrop}
+            title=""
+          />
+          {!channelIcon && (
+            <div className={s.circle_icon}>
+              <i className="fas fa-camera-alt"></i>
+            </div>
+          )}
         </div>
+        <div>
+          <ModalInputTitle style={{ marginTop: '25px', marginBottom: '5px' }}>Название канала</ModalInputTitle>
+          <input
+            {...channelTitle}
+            className={s.server_title}
+            autoComplete="off"
+            type="text"
+            placeholder="Введите его тут"
+            ref={titleRef}
+            value={channelTitle.value}
+            spellCheck="false"
+          />
+        </div>
+        {error && <ModalError>{error}</ModalError>}
+        <ModalControl>
+          <ModalButton onClick={onClose}>Закрыть</ModalButton>
+          <ModalButton onClick={onCreate} style={{ background: 'var(--astro)' }}>
+            Создать
+          </ModalButton>
+        </ModalControl>
       </div>
-    </ModalWindow>
+    </div>
   );
 };
 

@@ -1,6 +1,6 @@
-import { TMessageContent, TMessageContext, TUpdatableFieldsChat } from './types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../../api';
+import API from '@api/index';
+import { MessageContent, MessageContext, UpdatableFieldsChat } from '@customTypes/redux/chats.types';
 
 export const fetchFindChatsForChannel = createAsyncThunk(
   'chats/findChatsForChannel',
@@ -15,7 +15,7 @@ export const fetchFindChatsForChannel = createAsyncThunk(
 
 export const fetchSendMessage = createAsyncThunk(
   'chats/sendMessage',
-  async ({ content, context }: { content: TMessageContent; context: TMessageContext }, { rejectWithValue }) => {
+  async ({ content, context }: { content: MessageContent; context: MessageContext }, { rejectWithValue }) => {
     const response = await API.messages.sendMessage({ content, context });
     if (response.response && response.response.status >= 300) {
       return rejectWithValue('Something broke');
@@ -49,7 +49,7 @@ export const fetchDeleteMessage = createAsyncThunk(
 export const fetchEditMessage = createAsyncThunk(
   'chats/editMessage',
   async (
-    { chatId, messageId, content }: { chatId: string; messageId: string; content: TMessageContent },
+    { chatId, messageId, content }: { chatId: string; messageId: string; content: MessageContent },
     { rejectWithValue }
   ) => {
     const response = await API.messages.editMessage({ cid: chatId, mid: messageId, content });
@@ -92,7 +92,7 @@ export const fetchDeleteChat = createAsyncThunk('chats/deleteChat', async (cid: 
 
 export const fetchUpdateChat = createAsyncThunk(
   'chats/updateChat',
-  async (data: { cid: string; chat: TUpdatableFieldsChat }, { rejectWithValue }) => {
+  async (data: { cid: string; chat: UpdatableFieldsChat }, { rejectWithValue }) => {
     const response = await API.chats.updateChat(data);
     if ((response.response && response.response.status >= 300) || response.name === 'Error') {
       return rejectWithValue('Something broke');

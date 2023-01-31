@@ -1,23 +1,23 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TAxiosUpdateChannel } from '../../../../../api/types';
-import useInput from '../../../../../common/hooks/useInput';
-import { fetchUpdateChannel, fetchUpdateChannelIcon } from '../../../../../store/channels/thunk';
-import { TChannel } from '../../../../../store/channels/types';
-import { setStatus } from '../../../../../store/errors';
+import useInput from '@common/hooks/useInput';
+import { fetchUpdateChannel, fetchUpdateChannelIcon } from '@store/channels/thunk';
+import { setStatus } from '@store/errors';
 import InputTemplate from '../../../../../templates/Inputs/InputTemplate/InputTemplate';
-import { TStore } from '../../../../../types/common';
-import Avatar from '../../../../Avatar/Avatar';
-import DropMenu from '../../../../DropMenu/DropMenu';
-import ModalButton from '../../../ModalWindow/ModalButton/ModalButton';
-import ModalError from '../../../ModalWindow/ModalError/ModalError';
-import ModalHeader from '../../../ModalWindow/ModalHeader/ModalHeader';
-import ModalInputTitle from '../../../ModalWindow/ModalInputTitle/ModalInputTitle';
-import ModalLine from '../../../ModalWindow/ModalLine/ModalLine';
+import { AxiosUpdateChannel } from '@customTypes/api.types';
+import { Store } from '@customTypes/common.types';
+import { Channel } from '@customTypes/redux/channels.types';
+import Avatar from '@components/Avatar/Avatar';
+import DropMenu from '@components/DropMenu/DropMenu';
+import ModalButton from '@components/Modals/ModalWindow/ModalButton/ModalButton';
+import ModalError from '@components/Modals/ModalWindow/ModalError/ModalError';
+import ModalHeader from '@components/Modals/ModalWindow/ModalHeader/ModalHeader';
+import ModalInputTitle from '@components/Modals/ModalWindow/ModalInputTitle/ModalInputTitle';
+import ModalLine from '@components/Modals/ModalWindow/ModalLine/ModalLine';
 import s from './mainpage.module.css';
 
-type TProps = {
-  channel: TChannel;
+type Props = {
+  channel: Channel;
   close: () => void;
 };
 
@@ -29,15 +29,15 @@ const descriptionSetter = (value: string) => {
   return value.replace(/\s\s+/g, ' ').replace(/\n/g, '').slice(0, 200);
 };
 
-const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
-  const dispatch = useDispatch();
+const MainPage: React.FC<Props> = ({ channel, close }): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-  const updateChannelStatus = useSelector((state: TStore) => state.errors.updateChannelStatus);
-  const chats = useSelector((state: TStore) => state.chats);
+  const updateChannelStatus = useSelector((state: Store) => state.errors.updateChannelStatus);
+  const chats = useSelector((state: Store) => state.chats);
 
   const titleRef = useRef<HTMLInputElement>(null!);
 
-  // TODO переделать все под один объект вместо тысячи стейтов
+  // ODO переделать все под один объект вместо тысячи стейтов
   const title = useInput({ initial: channel.title, setter: titleSetter });
   const channelDescription = useInput({ initial: channel.description, setter: descriptionSetter });
 
@@ -78,7 +78,7 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
   const updateChannel = () => {
     if (!title.value.trim()) return setError('Все поля должны быть заполнены');
 
-    const data: TAxiosUpdateChannel = {
+    const data: AxiosUpdateChannel = {
       cid: channel.uuid,
       title: title.value,
       description: channelDescription.value,
@@ -86,7 +86,7 @@ const MainPage: React.FC<TProps> = ({ channel, close }): JSX.Element => {
     };
 
     if (newIcon) dispatch(fetchUpdateChannelIcon({ cid: channel.uuid, icon: newIcon }));
-    if (Object.values(data).reduce((prev, curr) => prev + curr.trim()) !== channel.uuid) {
+    if (Object.values(data).reduce((prev: any, curr: any) => prev + curr.trim()) !== channel.uuid) {
       dispatch(fetchUpdateChannel(data));
     }
   };

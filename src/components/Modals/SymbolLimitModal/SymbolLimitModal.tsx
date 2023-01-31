@@ -1,34 +1,31 @@
 import React from 'react';
-import { TModalWindowArgs } from '../../../types/hooks';
+import { useSelector } from 'react-redux';
+import { MAX_SYMBOLS_LIMIT_DEFAULT } from '@common/constants';
+import { Store } from '@customTypes/common.types';
+import { SymbolLimitPayload } from '@customTypes/modals.types';
 import ModalButton from '../ModalWindow/ModalButton/ModalButton';
-import ModalWindow from '../ModalWindow/ModalWindow';
 import s from './symbollimitmodal.module.css';
 
-type TProps = {
-  length: number;
-  limit: number;
-} & TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
-const SymbolLimitModal: React.FC<TProps> = ({ close, isFading, length, limit }): JSX.Element => {
+const SymbolLimitModal: React.FC<Props> = ({ onClose }): JSX.Element => {
+  const { length } = useSelector((state: Store) => state.appdata.activeModal.payload as SymbolLimitPayload);
+
   return (
-    <ModalWindow close={close} isFading={isFading}>
-      <div className={s.wrapper}>
-        <h5>IT'S TIME TO STOP</h5>
-        <div className={s.content}>
-          Вы ввели слишком длинное сообщение.
-          <div>
-            Символов {length} из {limit}
-          </div>
+    <div className={s.wrapper}>
+      <h5>IT'S TIME TO STOP</h5>
+      <div className={s.content}>
+        Вы ввели слишком длинное сообщение.
+        <div>
+          Символов {length} из {MAX_SYMBOLS_LIMIT_DEFAULT}
         </div>
-        <ModalButton
-          style={{ background: 'var(--astro)', marginTop: '10px', marginLeft: 'auto' }}
-          onClick={() => close()}
-          onEnterPress
-        >
-          Понял
-        </ModalButton>
       </div>
-    </ModalWindow>
+      <ModalButton style={{ background: 'var(--astro)', marginTop: '10px', marginLeft: 'auto' }} onClick={onClose}>
+        Понял
+      </ModalButton>
+    </div>
   );
 };
 

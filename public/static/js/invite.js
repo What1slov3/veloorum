@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:3001';
+
 const found = document.querySelector('.found');
 const notFound = document.querySelector('.not_found');
 const title = document.querySelector('.title');
@@ -8,9 +10,9 @@ const alreadyJoin = document.querySelector('.already_join');
 const error = document.querySelector('.error');
 
 window.onload = () => {
-  fetch(`http://localhost:5000/api/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
+  fetch(`${BASE_URL}/api/invites/channel/${window.location.href.match(/([^\/]+$)/)[0]}`, {
     headers: {
-      Authorization: localStorage.getItem('access_token') ? `Bearer ${localStorage.getItem('access_token')}` : '',
+      Authorization: `Bearer ${localStorage.getItem('access_token')}`,
     },
   })
     .then((res) => {
@@ -37,7 +39,7 @@ window.onload = () => {
         join.addEventListener('click', (e) => {
           if (error.style.display === 'block') error.style.display = 'none';
           if (localStorage.getItem('access_token')) {
-            fetch('http://localhost:5000/api/users/join_channel', {
+            fetch(`${BASE_URL}/api/users/join_channel`, {
               method: 'POST',
               headers: {
                 Authorization: `Bearer ${localStorage.getItem('access_token')}`,

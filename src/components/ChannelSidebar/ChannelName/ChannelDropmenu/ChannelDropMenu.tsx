@@ -1,24 +1,23 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useHistory } from 'react-router-dom';
-import { fetchLeaveChannel } from '../../../../store/user/thunk';
-import { TStore } from '../../../../types/common';
-import { TModalOpenFunc } from '../../../../types/hooks';
+import { useNavigate } from 'react-router-dom';
+import { fetchLeaveChannel } from '@store/user/thunk';
+import { FCChildren, Store } from '@customTypes/common.types';
 import s from './channeldropmenu.module.css';
 
-type TProps = {
+type Props = {
   close: () => void;
-  openInvite: TModalOpenFunc<string>;
-  openChannelSettings: TModalOpenFunc<string>;
+  openInvite: () => void;
+  openChannelSettings: (channelId: string) => void;
   channelId: string;
 };
 
-const ChannelDropMenu: React.FC<TProps> = ({ close, openInvite, channelId, openChannelSettings }): JSX.Element => {
-  const dispatch = useDispatch();
-  const history = useHistory();
+const ChannelDropMenu: React.FC<Props> = ({ close, openInvite, channelId, openChannelSettings }): JSX.Element => {
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
 
-  const uid = useSelector((state: TStore) => state.user.uuid);
-  const channel = useSelector((state: TStore) => state.channels[channelId]);
+  const uid = useSelector((state: Store) => state.user.uuid);
+  const channel = useSelector((state: Store) => state.channels[channelId]);
 
   const createInvite = () => {
     openInvite();
@@ -27,7 +26,7 @@ const ChannelDropMenu: React.FC<TProps> = ({ close, openInvite, channelId, openC
 
   const leaveChannel = () => {
     dispatch(fetchLeaveChannel(channel!.uuid));
-    history.push('/');
+    navigate('/');
   };
 
   const handleOpenChannelSettings = () => {
@@ -36,7 +35,7 @@ const ChannelDropMenu: React.FC<TProps> = ({ close, openInvite, channelId, openC
 
   return (
     <>
-      <div className={s.wrapper} data-dropmenu="true">
+      <div className={s.wrapper}>
         {channel?.ownerId === uid && (
           <Item onClick={handleOpenChannelSettings}>
             <span className={s.channel_settings}>Настройки канала</span>
@@ -58,11 +57,11 @@ const ChannelDropMenu: React.FC<TProps> = ({ close, openInvite, channelId, openC
   );
 };
 
-type TItemProps = {
+type ItemProps = {
   onClick?: () => void;
 };
 
-const Item: React.FC<TItemProps> = ({ children, onClick }): JSX.Element => {
+const Item: React.FC<ItemProps & FCChildren> = ({ children, onClick }): JSX.Element => {
   return (
     <div className={s.wrapper_item} onClick={onClick}>
       {children}

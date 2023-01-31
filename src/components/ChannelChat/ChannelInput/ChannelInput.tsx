@@ -1,141 +1,91 @@
-import React, { FormEvent, MutableRefObject, useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { kec, lsa } from '../../..';
-import { fetchSendMessage } from '../../../store/chats/thunk';
-import Spacer from '../../../templates/Spacer';
-import { TStore } from '../../../types/common';
-import EmojiMenu from '../../EmojiMenu/EmojiMenu';
-import { focusInEnd } from '../../../common/utils/focusInEnd';
-import { TMessageContext } from '../../../store/chats/types';
-import { addTypingUsers, resetAttachments, setUploadedAttachments } from '../../../store/appdata';
+import { lsa, shortcut } from '../../..';
+import { fetchSendMessage } from '@store/chats/thunk';
+import { Store } from '@customTypes/common.types';
+import EmojiMenu from '@components/EmojiMenu/EmojiMenu';
+import { addTypingUsers, resetAttachments, setModal, setUploadedAttachments } from '@store/appdata';
 import AttachmentBar from './AttachmentBar/AttachmentBar';
-import API from '../../../api';
+import API from '@api/index';
 import AttachmentLoader from './AttachmentLoader/AttachmentLoader';
 import MessageSymbolLimit from './MessageSymbolLimit/MessageSymbolLimit';
+import { MAX_SYMBOLS_LIMIT_DEFAULT, MODAL_NAMES } from '@common/constants';
+import { MessageContext } from '@customTypes/redux/chats.types';
+import 'react-quill/dist/quill.bubble.css';
+import ReactQuill from 'react-quill';
+import { getQuillText, setQuillText } from '@common/QuillModules/utils';
+import { quillModules } from '@common/QuillModules';
+import Delta from 'quill-delta';
 import s from './channelinput.module.css';
-import { MAX_SYMBOLS_LIMIT_DEFAULT } from '../../../common/constants';
+import { DeltaStatic } from 'quill';
 
-type TProps = {
+const loadAttachmentHandler = async (data: FileList, callback: (urls: string[]) => void) => {
+  const files: File[] = [...data].slice(0, 3).filter((file: File) => file.type.startsWith('image/'));
+  if (!files.length) return;
+  const urls = (await API.files.UploadFiles(files)) as string[];
+  if (urls) callback(urls);
+};
+
+type Props = {
   placeholder?: string;
   chatTitle: string;
   uid: string;
-  context: TMessageContext;
-  scrollToBottom: Function | MutableRefObject<() => void>;
-  openSymbolLimitModal: (payload: [number, number]) => void;
+  context: MessageContext;
+  scrollToBottom: Function;
   disable?: boolean;
 };
 
-const keyException = [
-  'Esc',
-  'Tab',
-  'CapsLock',
-  'Shift',
-  'Control',
-  'Alt',
-  'Insert',
-  'Delete',
-  'Home',
-  'End',
-  'PageUp',
-  'PageDown',
-  'PrintScreen',
-  'ScrollLock',
-  'Pause',
-  'F1',
-  'F2',
-  'F3',
-  'F4',
-  'F5',
-  'F6',
-  'F7',
-  'F8',
-  'F9',
-  'F10',
-  'F11',
-  'F12',
-];
+const ChannelInput: React.FC<Props> = ({ placeholder, uid, context, scrollToBottom, disable }): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-const ChannelInput: React.FC<TProps> = ({
-  placeholder,
-  uid,
-  context,
-  scrollToBottom,
-  openSymbolLimitModal,
-  disable,
-}): JSX.Element => {
-  const dispatch = useDispatch();
-
-  const disableMessageAutofocus = useSelector((state: TStore) => state.appdata.disableMessageAutofocus);
-  const modalIsActive = useSelector((state: TStore) => state.appdata.modalIsActive);
-  const uploadedAttachments = useSelector((state: TStore) => state.appdata.uploadedAttachments);
+  const disableMessageAutofocus = useSelector((state: Store) => state.appdata.disableMessageAutofocus);
+  const modalIsActive = useSelector((state: Store) => state.appdata.activeModal.name);
+  const attachments = useSelector((state: Store) => state.appdata.uploadedAttachments);
 
   const [inFocus, setIsFocus] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
-  const [attachments, setAttachments] = useState<string[]>([]);
-  const [symbolLimit, setSymbolLimit] = useState(0);
+  const [value, setValue] = useState('');
 
-  const pressedKeysRef = useRef<string[]>([]);
-  const inputRef = useRef<HTMLDivElement>(null!);
+  const inputRef = useRef<ReactQuill>(null!);
   const typingSenderRef = useRef<any>();
   const typingCheckerRef = useRef<any>();
 
   // ? Обработчики нажатия для автофокуса
   useEffect(() => {
-    kec.add('onkeydown', 'chatInput', (e: KeyboardEvent) => {
+    function onChatInputDown(e: KeyboardEvent) {
       if (!inFocus && !disableMessageAutofocus && !modalIsActive) {
-        addPressedKey(e.key);
         if (
-          (!keyException.includes(e.key) || (e.key === 'Enter' && pressedKeysRef.current.includes('Shift'))) &&
-          !(e.code === 'KeyC' && pressedKeysRef.current.includes('Control')) &&
+          (!shortcut.isException(e.code) || (e.code === 'Enter' && shortcut.includes('Shift'))) &&
+          !(e.code === 'KeyC' && shortcut.includes('Control')) &&
           inputRef.current
         ) {
-          focusInEnd(inputRef);
+          inputRef.current.focus();
         }
       }
-    });
-    kec.add('onkeyup', 'chatInput', (e: KeyboardEvent) => {
-      deletePressedKey(e.key);
-    });
-  }, [inputRef, pressedKeysRef, inFocus, disableMessageAutofocus, modalIsActive]);
-
-  // ? Проверка на набранное когда-то сообщение в данном чате
-  useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.innerText = lsa.getUnsentMessage(context.chatId)?.text || '';
-      handlerSymbolLimit(inputRef.current.innerText.length);
     }
-  }, [inputRef, context]);
+    window.addEventListener('keydown', onChatInputDown);
 
-  // ? Сброс вложений при смене чата
+    return () => {
+      window.removeEventListener('keydown', onChatInputDown);
+    };
+  }, [inFocus, disableMessageAutofocus, modalIsActive]);
+
   useEffect(() => {
-    setAttachments([]);
+    const unsentMessage = lsa.getUnsentMessage(context.chatId);
+    if (unsentMessage) {
+      dispatch(setUploadedAttachments({ cid: context.chatId, urls: unsentMessage.attachments }));
+      setValue(unsentMessage.text);
+    }
   }, [context.chatId]);
 
   // ? Проверка на сохраненное неотправленное сообщение с вложением
   // ? Сохранение вложения в local storage
   useEffect(() => {
-    if (uploadedAttachments) {
-      const attachments = uploadedAttachments[context.chatId];
-
-      if (attachments) {
-        setAttachments(attachments);
-        lsa.saveUnsentMessage({
-          content: { attachments: attachments, text: inputRef.current.innerText },
-          context,
-        });
-      }
-    }
-
-    const unsentMessage = lsa.getUnsentMessage(context.chatId)?.attachments;
-    if (unsentMessage) setAttachments(unsentMessage!);
-  }, [uploadedAttachments, inputRef, context]);
-
-  // ? Если было загруженно вложение -> скроллим вниз
-  useEffect(() => {
-    if (uploadedAttachments[context?.chatId]) {
-      typeof scrollToBottom === 'object' ? scrollToBottom.current() : scrollToBottom();
-    }
-  }, [uploadedAttachments[context?.chatId], scrollToBottom, uploadedAttachments]);
+    lsa.saveUnsentMessage({
+      content: { attachments: attachments[context.chatId], text: value },
+      context,
+    });
+  }, [attachments, context.chatId]);
 
   // ? Контроль за набором текста
   useEffect(() => {
@@ -149,29 +99,34 @@ const ChannelInput: React.FC<TProps> = ({
       clearInterval(typingSenderRef.current);
       typingSenderRef.current = null;
     }
-  }, [isTyping, typingSenderRef.current, context.chatId, uid]);
+  }, [isTyping, context.chatId, uid]);
+
+  useEffect(() => {
+    function pasteHandler(e: ClipboardEvent) {
+      if (e.clipboardData?.files.length) onLoadAttachmentHandler(e);
+    }
+
+    if (!disable) document.addEventListener('paste', pasteHandler);
+
+    return () => {
+      document.removeEventListener('paste', pasteHandler);
+    };
+  }, [disable]);
+
+  const memoModules = useMemo(() => {
+    return quillModules;
+  }, []);
 
   // ? Обработчик нажатия на поле ввода
-  const keyPressedController = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    addPressedKey(e.key);
-
+  const keyPressed = (e: React.KeyboardEvent<HTMLDivElement>) => {
     switch (e.key) {
       case 'Enter':
-        if (!pressedKeysRef.current.includes('Shift')) {
+        if (!shortcut.includes('Shift')) {
           e.preventDefault();
           onMessageSend();
         }
         break;
     }
-  };
-  const keyUnpressedController = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    deletePressedKey(e.key);
-  };
-  const addPressedKey = (key: string) => {
-    pressedKeysRef.current.push(key);
-  };
-  const deletePressedKey = (key: string) => {
-    pressedKeysRef.current = pressedKeysRef.current.filter((item) => item !== key);
   };
 
   // ? Контроль за переменной индикации набора текста
@@ -188,112 +143,94 @@ const ChannelInput: React.FC<TProps> = ({
     }
   };
 
-  // ? Чистим текст от стилей при вставке
-  const handlePaste = (e: any) => {
-    e.preventDefault();
-    let clipboardData = e.clipboardData;
-    let pastedData: string = clipboardData.getData('text/plain');
-    window.document.execCommand('insertText', false, pastedData);
-
-    if (clipboardData.files.length) handleLoadAttachment({ target: { files: clipboardData.files } });
-  };
-
-  const handlerSymbolLimit = (length: number) => {
-    if (length > MAX_SYMBOLS_LIMIT_DEFAULT) setSymbolLimit(length);
-    if (length <= MAX_SYMBOLS_LIMIT_DEFAULT && symbolLimit) setSymbolLimit(0);
-  };
-
   // ? Обработка ввода текста на поле ввода
-  const handleInput = (e: FormEvent<HTMLDivElement>) => {
-    const target = e.target as HTMLDivElement;
-    if (target.innerHTML === '<br>') target.innerText = '';
-    lsa.saveUnsentMessage({ content: { text: target.innerText }, context });
+  const handleChange = (value: string) => {
+    lsa.saveUnsentMessage({ content: { text: value }, context });
     handleTyping();
-    handlerSymbolLimit(target.innerText.length);
+    setValue(value);
   };
 
   // ? Сеттер эмоджи, прокидываем в emoji menu
   const writeEmoji = useCallback((shortname: string, emoji: string) => {
-    inputRef.current.innerText += emoji;
-
-    const len = inputRef.current.innerHTML.length;
-    const html = inputRef.current.innerHTML;
-    if (html.slice(len - 1 - 5, len - 2) === '<br>') {
-      inputRef.current.innerHTML = html.substring(0, len - 1 - 5) + html.substring(len - 2);
-    }
+    const editor = inputRef.current.getEditor();
+    const selection = editor.getSelection()?.index;
+    editor.updateContents(
+      new Delta().retain(selection || editor.getLength() - 1).insert(emoji) as unknown as DeltaStatic,
+      'user'
+    );
+    if (selection) editor.setSelection(selection + 2, 0);
   }, []);
-
-  // ? Загрузка файлов из FileList
-  const handleLoadAttachment = async (e: any) => {
-    const files: File[] = [];
-    [...e.target.files].slice(0, 3).forEach((file: File) => {
-      if (file.type.startsWith('image/')) files.push(file);
-    });
-    if (!files) return;
-
-    const urls = await API.files.UploadFiles(files);
-    if (urls) {
-      setAttachments(urls);
-      dispatch(setUploadedAttachments({ cid: context.chatId, urls }));
-    }
-  };
 
   // ? Отправка сообщения и сброс всех полей
   const onMessageSend = () => {
-    const it = inputRef.current.innerText;
-    if (symbolLimit) {
-      openSymbolLimitModal([symbolLimit, MAX_SYMBOLS_LIMIT_DEFAULT]);
-    } else {
-      if ((it && it.trim()) || attachments.length) {
-        dispatch(
-          fetchSendMessage({
-            context,
-            content: { text: it.trim(), attachments },
-          })
-        );
-        typeof scrollToBottom === 'object' ? scrollToBottom.current() : scrollToBottom();
-        dispatch(resetAttachments(context.chatId));
-        lsa.resetUnsentMessage(context.chatId);
-        setAttachments([]);
-        resetText();
-      }
+    if (value.length > MAX_SYMBOLS_LIMIT_DEFAULT) {
+      dispatch(
+        setModal({
+          name: MODAL_NAMES.SYMBOL_LIMIT,
+          payload: { length: value.length },
+        })
+      );
+      dispatch();
+      return;
+    }
+    const text = getQuillText(inputRef.current).trim();
+    if (text || attachments[context.chatId].length) {
+      dispatch(
+        fetchSendMessage({
+          context,
+          content: { text, attachments: attachments[context.chatId] },
+        })
+      );
+      dispatch(resetAttachments(context.chatId));
+      lsa.resetUnsentMessage(context.chatId);
+      setQuillText(inputRef.current, '');
+      scrollToBottom();
     }
   };
 
-  const resetText = () => {
-    inputRef.current.innerText = '';
+  const onLoadAttachmentHandler = (e: ClipboardEvent) => {
+    loadAttachmentHandler(e.clipboardData!.files, (urls: string[]) => {
+      dispatch(setUploadedAttachments({ cid: context.chatId, urls }));
+    });
+  };
+  const onFocus = () => {
+    setIsFocus(true);
+  };
+
+  const onBlur = () => {
+    setIsFocus(false);
   };
 
   return (
     <div className={s.wrapper}>
-      {attachments && <AttachmentBar urls={attachments} context={context} />}
+      {attachments[context.chatId] && <AttachmentBar urls={attachments[context.chatId]} context={context} />}
       <div className={s.control}>
         {disable ? (
-          <div className={s.disable}>Вы не можете писать в этот чат</div>
+          <div className={s.disable}>
+            <i className="fas fa-ban"></i> Вы не можете писать в этот чат
+          </div>
         ) : (
           <>
-            <AttachmentLoader onChange={handleLoadAttachment} />
-            <Spacer width={10} />
-            <div
+            <AttachmentLoader onChange={onLoadAttachmentHandler} />
+            <ReactQuill
               className={s.input}
               ref={inputRef}
-              contentEditable
-              data-text={placeholder || 'Напишите что-то...'}
+              placeholder={placeholder || 'Напишите что-то...'}
+              theme="bubble"
               data-message-input="true"
-              onPaste={handlePaste}
-              onInput={handleInput}
-              onKeyDown={keyPressedController}
-              onKeyUp={keyUnpressedController}
-              onFocus={() => setIsFocus(true)}
-              onBlur={() => setIsFocus(false)}
-            ></div>
-            <Spacer width={10} />
+              onChange={handleChange}
+              onKeyDown={keyPressed}
+              onFocus={onFocus}
+              onBlur={onBlur}
+              value={value}
+              modules={memoModules}
+            />
             <EmojiMenu emojiSetter={writeEmoji} />
           </>
         )}
       </div>
-      {symbolLimit > 0 && (
-        <MessageSymbolLimit length={inputRef.current?.textContent?.length || 0} limit={MAX_SYMBOLS_LIMIT_DEFAULT} />
+      {value.length > MAX_SYMBOLS_LIMIT_DEFAULT && (
+        <MessageSymbolLimit length={value.length} limit={MAX_SYMBOLS_LIMIT_DEFAULT} />
       )}
     </div>
   );

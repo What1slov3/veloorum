@@ -1,11 +1,10 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
+import { FCChildren, FCStyle } from '@customTypes/common.types';
 import s from './modalcontrol.module.css';
 
-type TProps = {
-  style?: CSSProperties;
-};
+type Props = FCChildren & FCStyle;
 
-const ModalControl: React.FC<TProps> = ({ style, children }): JSX.Element => {
+const ModalControl: React.FC<Props> = ({ style, children }): JSX.Element => {
   return (
     <div className={s.wrapper} style={style}>
       {children}

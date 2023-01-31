@@ -1,42 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import GridChannelPage from '../../templates/Grids/GridChannelPage';
-import ChannelSidebar from '../../components/ChannelSidebar/ChannelSidebar';
-import ChannelChat from '../../components/ChannelChat/ChannelChat';
+import ChannelSidebar from '@components/ChannelSidebar/ChannelSidebar';
+import ChannelChat from '@components/ChannelChat/ChannelChat';
 import { useDispatch, useSelector } from 'react-redux';
-import { TStore } from '../../types/common';
-import { getChannelIdFromURL } from '../../common/utils/getChannelIdFromURL';
+import { Store } from '@customTypes/common.types';
+import getChannelFromURL from '@common/utils/getChannelFromURL';
 import { setActiveChannelId, setActiveChatId } from '../../store/appdata/index';
 import { fetchFindChatsForChannel, fetchGetHistory } from '../../store/chats/thunk';
 import { fetchLoadedUsers } from '../../store/users/thunk';
-import { TChat } from '../../store/chats/types';
-import ChannelMembersList from '../../components/ChannelMembersList/ChannelMembersList';
-import { TChannel } from '../../store/channels/types';
+import ChannelMembersList from '@components/ChannelMembersList/ChannelMembersList';
+import { Channel } from '@customTypes/redux/channels.types';
+import { Chat } from '@customTypes/redux/chats.types';
 import s from './channelpage.module.css';
 
-type TProps = {};
+const ChannelPage: React.FC = ({}): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
-  const dispatch = useDispatch();
+  const activeConnection = useSelector((state: Store) => state.appdata.activeConnection);
+  const channels = useSelector((state: Store) => state.channels);
+  const user = useSelector((state: Store) => state.user);
+  const chats = useSelector((state: Store) => state.chats);
+  const preloadedChannels = useSelector((state: Store) => state.appdata.preloadedChannels);
+  const loadedUsers = useSelector((state: Store) => state.users);
+  const fullLoadedChats = useSelector((state: Store) => state.appdata.fullLoadedChats);
 
-  const activeConnection = useSelector((state: TStore) => state.appdata.activeConnection);
-  const channels = useSelector((state: TStore) => state.channels);
-  const user = useSelector((state: TStore) => state.user);
-  const chats = useSelector((state: TStore) => state.chats);
-  const preloadedChannels = useSelector((state: TStore) => state.appdata.preloadedChannels);
-  const loadedUsers = useSelector((state: TStore) => state.users);
-  const fullLoadedChats = useSelector((state: TStore) => state.appdata.fullLoadedChats);
+  const [currentChannel, setCurrentChannel] = useState<Channel | null | undefined>(null); // Объект открытого канала
 
-  const [currentChannel, setCurrentChannel] = useState<TChannel | null | undefined>(null); // Объект открытого канала
-
-  const [chatList, setChatList] = useState<TChat[]>([]); // Список объектов его чатов
+  const [chatList, setChatList] = useState<Chat[]>([]); // Список объектов его чатов
 
   // ? При маунте чекаем, перешел ли пользователь по url'у канала
   // ? Если да, то сразу ставим в активный канал
   // ? Обнуляем стейт при анмаунте
   useEffect(() => {
-    const idFromURl = getChannelIdFromURL();
-    if (!activeConnection.channelId && idFromURl) {
-      dispatch(setActiveChannelId(idFromURl));
+    const channelFromURL = getChannelFromURL();
+    if (!activeConnection.channelId && channelFromURL) {
+      dispatch(setActiveChannelId(channelFromURL[0]));
+      dispatch(setActiveChatId(channelFromURL[1]));
     }
 
     return () => {
@@ -53,16 +52,8 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
 
   // ? При смене текущего канала
   useEffect(() => {
-    if (currentChannel) {
-      dispatch(setActiveChatId(null));
-    }
+    if (currentChannel) dispatch(setActiveChatId(getChannelFromURL()![1]));
   }, [currentChannel?.uuid]);
-
-  useEffect(() => {
-    if (currentChannel?.uuid && activeConnection.channelId) {
-      // dispatch(setActiveChatId(currentChannel.))
-    }
-  }, [currentChannel?.uuid, chats, activeConnection.channelId, activeConnection.chatId]);
 
   // ? В канале поменялись чаты или поменялись чаты в целом
   useEffect(() => {
@@ -76,9 +67,10 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
       const needToLoadUsers: string[] = currentChannel.members.filter(
         (member) => !loadedUsers[member] && member !== user.uuid
       );
-      if (needToLoadUsers.length) {
-        dispatch(fetchLoadedUsers(needToLoadUsers));
-      }
+      // TODO пределать после бекенда
+      // if (needToLoadUsers.length) {
+      //   dispatch(fetchLoadedUsers(needToLoadUsers));
+      // }
     }
   }, [currentChannel?.members, loadedUsers]);
 
@@ -95,7 +87,7 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
         dispatch(fetchLoadedUsers(needToLoadUsers));
       }
 
-      const loadedChats: TChat[] = [];
+      const loadedChats: Chat[] = [];
       currentChannel.chats.forEach((uuid) => {
         if (chats[uuid]) loadedChats.push(chats[uuid]);
         return;
@@ -140,17 +132,17 @@ const ChannelPage: React.FC<TProps> = ({}): JSX.Element => {
             channelId={currentChannel.uuid}
             isAdmin={currentChannel.ownerId === user.uuid}
           />
-          {activeConnection.channelId && activeConnection.chatId && chats[activeConnection.chatId] ? (
-            <ChannelChat
-              chat={chats[activeConnection.chatId]}
-              user={user}
-              loadedUsers={loadedUsers}
-              context={{ channelId: activeConnection.channelId, chatId: activeConnection.chatId }}
-              systemChatId={currentChannel.systemChat}
-            />
-          ) : (
-            <div></div>
-          )}
+          <div>
+            {activeConnection.channelId && activeConnection.chatId && chats[activeConnection.chatId] && (
+              <ChannelChat
+                chat={chats[activeConnection.chatId]}
+                user={user}
+                loadedUsers={loadedUsers}
+                context={{ channelId: activeConnection.channelId, chatId: activeConnection.chatId }}
+                systemChatId={currentChannel.systemChat}
+              />
+            )}
+          </div>
           <ChannelMembersList channel={currentChannel} />
         </GridChannelPage>
       )}

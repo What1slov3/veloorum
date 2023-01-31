@@ -2,18 +2,16 @@ import classNames from 'classnames';
 import React, { useEffect, useRef, useState } from 'react';
 import s from './range.module.css';
 
-type TProps = {
-  start: number;
-  end: number;
-  values: number[];
-  curValue: number;
-  setCurValue: (value: number) => void;
-  defaultValue: number;
+type Props = {
+  start: number; // Начальное значение range
+  end: number; // Крайнее значение range
+  values: number[]; // Список всех значений range
+  value: number; // Текущее значение range
+  setValue: (value: number) => void; // Сеттер текущего значения
+  defaultValue: number; // Значение по умолчанию для его подсветки
 };
 
-// TODO рефакторить
-
-const Range: React.FC<TProps> = ({ start, end, values, setCurValue, curValue, defaultValue }): JSX.Element => {
+const Range: React.FC<Props> = ({ start, end, values, setValue, value, defaultValue }): JSX.Element => {
   const [renderedValues, setRenderedValues] = useState<JSX.Element[]>([]);
 
   const grabberRef = useRef<HTMLDivElement>(null!);
@@ -21,9 +19,14 @@ const Range: React.FC<TProps> = ({ start, end, values, setCurValue, curValue, de
   const activeRangeRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
-    const offset = (rangeRef.current.getBoundingClientRect().width / (end - start)) * (curValue - values[0]);
+    if (value > end) setValue(end);
+    if (value < start) setValue(start);
+  }, []);
+
+  useEffect(() => {
+    const offset = (rangeRef.current.getBoundingClientRect().width / (end - start)) * (value - values[0]);
     if (grabberRef.current) {
-      if (curValue !== values[values.length - 1]) {
+      if (value !== values[values.length - 1]) {
         if (offset > 7.5) {
           grabberRef.current.style.left = offset - 7.5 + 'px';
           activeRangeRef.current.style.width = offset + 7 + 'px';
@@ -36,7 +39,7 @@ const Range: React.FC<TProps> = ({ start, end, values, setCurValue, curValue, de
         activeRangeRef.current.style.width = offset + 'px';
       }
     }
-  }, [rangeRef, grabberRef, activeRangeRef, curValue]);
+  }, [value]);
 
   useEffect(() => {
     if (rangeRef.current) {
@@ -63,52 +66,46 @@ const Range: React.FC<TProps> = ({ start, end, values, setCurValue, curValue, de
         })
       );
     }
-  }, [rangeRef, curValue]);
+  }, [value]);
+
+  const handleMouseDown = (event: any) => {
+    event.preventDefault();
+
+    let shiftX = event.clientX - grabberRef.current.getBoundingClientRect().left;
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    function onMouseMove(event: any) {
+      let newLeft = event.clientX - shiftX - rangeRef.current.getBoundingClientRect().left;
+      if (newLeft < 0) newLeft = 0;
+      let rightEdge = rangeRef.current.offsetWidth - grabberRef.current.offsetWidth;
+      if (newLeft > rightEdge) newLeft = rightEdge;
+
+      let smallest: number;
+      let index: number = 0;
+      let offsetOneSize = rangeRef.current.getBoundingClientRect().width / (end - start);
+      values.map((value, i) => {
+        let offsetValue = offsetOneSize * (value - values[0]);
+        if (!newLeft) index = 0;
+        if (!smallest) smallest = Math.abs(offsetValue - newLeft);
+        if (Math.abs(offsetValue - newLeft) < smallest) {
+          smallest = Math.abs(offsetValue - newLeft);
+          index = i;
+        }
+      });
+      setValue(values[index]);
+    }
+
+    function onMouseUp() {
+      document.removeEventListener('mouseup', onMouseUp);
+      document.removeEventListener('mousemove', onMouseMove);
+    }
+  };
 
   return (
     <div className={s.wrapper}>
-      <div
-        className={s.grabber}
-        ref={grabberRef}
-        onMouseDown={(event: any) => {
-          event.preventDefault();
-
-          let shiftX = event.clientX - grabberRef.current.getBoundingClientRect().left;
-
-          document.addEventListener('mousemove', onMouseMove);
-          document.addEventListener('mouseup', onMouseUp);
-
-          function onMouseMove(event: any) {
-            let newLeft = event.clientX - shiftX - rangeRef.current.getBoundingClientRect().left;
-            if (newLeft < 0) {
-              newLeft = 0;
-            }
-            let rightEdge = rangeRef.current.offsetWidth - grabberRef.current.offsetWidth;
-            if (newLeft > rightEdge) {
-              newLeft = rightEdge;
-            }
-
-            let smallest: number;
-            let index: number = 0;
-            let offsetOneSize = rangeRef.current.getBoundingClientRect().width / (end - start);
-            values.map((curValue, i) => {
-              let offsetValue = offsetOneSize * (curValue - values[0]);
-              if (!newLeft) index = 0;
-              if (!smallest) smallest = Math.abs(offsetValue - newLeft);
-              if (Math.abs(offsetValue - newLeft) < smallest) {
-                smallest = Math.abs(offsetValue - newLeft);
-                index = i;
-              }
-            });
-            setCurValue(values[index]);
-          }
-
-          function onMouseUp() {
-            document.removeEventListener('mouseup', onMouseUp);
-            document.removeEventListener('mousemove', onMouseMove);
-          }
-        }}
-      ></div>
+      <div className={s.grabber} ref={grabberRef} onMouseDown={handleMouseDown}></div>
       <div className={s.track} ref={rangeRef}></div>
       <div className={s.active_range} ref={activeRangeRef}></div>
       {renderedValues}

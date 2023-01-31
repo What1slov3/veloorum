@@ -1,12 +1,12 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import store from './store/index';
-import KEC from './common/utils/KEC/index';
-import { LSA } from './common/utils/LSA';
+import store from '@store/index';
+import { LSA } from '@common/utils/LSA';
+import { Shortcut } from '@common/utils/Shortcut/shortcut';
 import './index.css';
 
 if (window.location.pathname === '/app') {
@@ -17,20 +17,17 @@ if (!localStorage.getItem('access_token')) {
   window.location.pathname = '/login.html';
 }
 
-export const kec = new KEC();
-kec.init();
 export const lsa = new LSA();
-lsa.init();
+export const shortcut = new Shortcut();
 
-ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-      </Provider>
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root')
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(
+  <BrowserRouter>
+    <Provider store={store}>
+      <App />
+    </Provider>
+  </BrowserRouter>
 );
 
 // If you want to start measuring performance in your app, pass a function

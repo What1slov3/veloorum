@@ -1,45 +1,18 @@
-import { TMessageContent } from './../../../store/chats/types';
-import { TAppSettings, TLSStructure, TUnsentMessage, TUnsentMessages } from './types';
+import { LSStructure as LSStructure } from '@customTypes/LSA.types';
+import { LSSettings, LSUnsentMessage, LSUnsentMessages } from '@customTypes/LSA.types';
+import { MessageContent } from '@customTypes/redux/chats.types';
+import LSSDefault from './defaultStructure';
 
 // LSA - Local Storage Access
-// Для упрощенного доступа к ls и более эффективной работы с ним в рамках Astro
 
-// Сверочный образец структуры ls
-const LSStructure: TLSStructure = {
-  unsentMessages: {},
-  sendingErrorMessages: {},
-  appSettings: {
-    fontSize: 14,
-    messageGroupGap: 4,
-  },
-};
-
-const deepObjectStructComparison = (example: Record<string, any>, comparing: Record<string, any>) => {
-  for (let key in example) {
+export const deepObjectStructRestore = (reference: Record<string, any>, comparing: Record<string, any>) => {
+  for (let key in reference) {
     if (comparing.hasOwnProperty(key)) {
-      if (typeof example[key] === 'object') {
-        const isEqual = deepObjectStructComparison(example[key], comparing[key]);
-        if (isEqual) {
-          continue;
-        } else {
-          return false;
-        }
+      if (typeof reference[key] === 'object') {
+        deepObjectStructRestore(reference[key], comparing[key]);
       }
     } else {
-      return false;
-    }
-  }
-  return true;
-};
-
-const deepObjectStructRestore = (example: Record<string, any>, comparing: Record<string, any>) => {
-  for (let key in example) {
-    if (comparing.hasOwnProperty(key)) {
-      if (typeof example[key] === 'object') {
-        deepObjectStructComparison(example[key], comparing[key]);
-      }
-    } else {
-      comparing[key] = example[key];
+      comparing[key] = reference[key];
     }
   }
   return comparing;
@@ -50,22 +23,21 @@ const deepObjectStructRestore = (example: Record<string, any>, comparing: Record
 export class LSA {
   private _ls = localStorage;
 
-  public init() {
+  constructor() {
     this.checkAndRestoreLSS();
   }
 
   private checkAndRestoreLSS() {
-    for (let key in LSStructure) {
-      //@ts-ignore
-      if (!this._ls.getItem(key)) this._ls.setItem(key, JSON.stringify(LSStructure[key]));
+    for (let key in LSSDefault) {
+      if (!this._ls.getItem(key)) this._ls.setItem(key, JSON.stringify(LSSDefault[key as keyof LSStructure]));
       const lsField = JSON.parse(this._ls.getItem(key)!);
-      const restored = deepObjectStructRestore(LSStructure[key as keyof typeof LSStructure], lsField);
+      const restored = deepObjectStructRestore(LSSDefault[key as keyof typeof LSSDefault], lsField);
       if (Object.keys(restored).length !== 0) this._ls.setItem(key, JSON.stringify(restored));
     }
   }
 
-  public saveUnsentMessage(message: TUnsentMessage) {
-    let unsentMessages: TUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
+  public saveUnsentMessage(message: LSUnsentMessage) {
+    let unsentMessages: LSUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
     this._ls.setItem(
       'unsentMessages',
       JSON.stringify({
@@ -78,26 +50,26 @@ export class LSA {
     );
   }
 
-  public getUnsentMessage(cid: string): TMessageContent | null {
-    let unsentMessages: TUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
+  public getUnsentMessage(cid: string): MessageContent | null {
+    let unsentMessages: LSUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
     return unsentMessages[cid] || null;
   }
 
   public resetUnsentMessage(cid: string) {
-    let unsentMessages: TUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
+    let unsentMessages: LSUnsentMessages = JSON.parse(this._ls.getItem('unsentMessages')!);
     if (unsentMessages[cid]) delete unsentMessages[cid];
     this._ls.setItem('unsentMessages', JSON.stringify(unsentMessages));
   }
 
-  public setAppSetting(field: string, value: string | number | null) {
-    if (LSStructure.appSettings[field as keyof TAppSettings]) {
-      const appSettings: TAppSettings = JSON.parse(this._ls.getItem('appSettings')!);
-      this._ls.setItem('appSettings', JSON.stringify({ ...appSettings, [field]: value }));
+  public setSetting(field: string, value: string | number | null) {
+    if (LSSDefault.settings[field as keyof LSSettings]) {
+      const appSettings: LSSettings = JSON.parse(this._ls.getItem('appSettings')!);
+      this._ls.setItem('settings', JSON.stringify({ ...appSettings, [field]: value }));
     }
   }
 
-  public getAppSettings(field: string): any {
-    const appSettings: TAppSettings = JSON.parse(this._ls.getItem('appSettings')!);
-    return appSettings[field as keyof TAppSettings];
+  public getSettings(field: string): any {
+    const settings: LSSettings = JSON.parse(this._ls.getItem('settings')!);
+    return settings[field as keyof LSSettings];
   }
 }

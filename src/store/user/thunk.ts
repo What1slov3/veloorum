@@ -1,6 +1,6 @@
-import { TAxiosChangeUserData, TAxiosChangePassword } from './../../api/types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../../api';
+import API from '@api/index';
+import { AxiosChangeUserData } from '@customTypes/api.types';
 
 export const fetchUserInit = createAsyncThunk('user/userInit', async (undefined, { rejectWithValue }) => {
   const response = await API.user.init();
@@ -33,7 +33,7 @@ export const fetchUploadAvatar = createAsyncThunk('user/uploadAvatar', async (av
 
 export const fetchChangeUserData = createAsyncThunk(
   'user/changeUserData',
-  async (userData: TAxiosChangeUserData, { rejectWithValue }) => {
+  async (userData: AxiosChangeUserData, { rejectWithValue }) => {
     const response = await API.user.changeUserData(userData);
     if ((response.response && response.response.status >= 300) || response.name === 'Error') {
       return rejectWithValue('Something broke');

@@ -1,6 +1,6 @@
 .emoji_icon {
   cursor: pointer;
-  font-size: 27px;
+  font-size: 27px !important;
   width: 41px;
   height: 41px;
   display: flex;

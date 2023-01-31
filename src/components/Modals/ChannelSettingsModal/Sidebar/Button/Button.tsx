@@ -2,13 +2,13 @@ import React from 'react';
 import SidebarButtonTemplate from '../../../../../templates/Buttons/SidebarButton/SidebarButtonTemplate';
 import s from './button.module.css';
 
-type TProps = {
+type Props = {
   title: string;
   isActive: boolean;
   onClick: () => void;
 };
 
-const Button: React.FC<TProps> = ({ title, isActive, onClick }): JSX.Element => {
+const Button: React.FC<Props> = ({ title, isActive, onClick }): JSX.Element => {
   return (
     <div className={s.wrapper} onClick={onClick}>
       <SidebarButtonTemplate isActive={isActive}>{title}</SidebarButtonTemplate>

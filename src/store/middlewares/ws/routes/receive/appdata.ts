@@ -1,12 +1,12 @@
-import { TStore } from '../../../../../types/common';
+import { addTypingUsers, pullTypingUsers } from '@store/appdata';
+import { Store } from '@customTypes/common.types';
 import { Socket } from 'socket.io-client';
-import { addTypingUsers, pullTypingUsers } from '../../../../appdata';
 
 let typingTimeout: any;
 
 export const receiveAppdata = (socket: Socket, eventName: string, payload: any, store: any) => {
   const actionSplittedType = eventName.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     addTypingUser: () => {

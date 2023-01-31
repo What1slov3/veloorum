@@ -1,115 +1,119 @@
-import React, { useCallback, useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import { TStore } from '../../types/common';
-import Avatar from '../Avatar/Avatar';
-import Tooltip from '../TooltipWrapper/Tooltip/Tooltip';
-import TooltipWrapper from '../TooltipWrapper/TooltipWrapper';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Store } from '@customTypes/common.types';
+import Avatar from '@components/Avatar/Avatar';
 import ChannelCard from './ChannelCard/ChannelCard';
-import s from './navbar.module.css';
-import Spacer from '../../templates/Spacer';
-import useModal from '../../common/hooks/useModal';
-import CreateChannelModal from '../Modals/CreateChannelModal/CreateChannelModal';
 import { Link, NavLink } from 'react-router-dom';
+import classNames from 'classnames';
+import { setActiveChannelId, setModal } from '@store/appdata';
+import { MODAL_NAMES } from '@common/constants';
+import Tooltip from '@components/Tooltip/Tooltip';
+import s from './navbar.module.css';
 
 const Navbar: React.FC = (): JSX.Element => {
-  const user = useSelector((state: TStore) => state.user);
-  const channels = useSelector((state: TStore) => state.channels);
+  const dispatch = useDispatch<any>();
 
-  const channelModal = useModal();
+  const user = useSelector((state: Store) => state.user);
+  const channels = useSelector((state: Store) => state.channels);
+  const activeChannelId = useSelector((state: Store) => state.appdata.activeConnection.channelId);
 
   const serversListRef = useRef<HTMLDivElement>(null!);
-  const handleMouseWheel = useCallback(
-    (e) => {
-      //@ts-ignore
-      serversListRef.current.scrollLeft += e.deltaY / 3;
-    },
-    [serversListRef]
-  );
 
   useEffect(() => {
-    if (serversListRef.current) {
-      serversListRef.current.addEventListener('mousewheel', handleMouseWheel);
+    function mouseWheelHandler(e: WheelEvent) {
+      serversListRef.current.scrollLeft += e.deltaY / 3;
     }
+
+    serversListRef.current?.addEventListener('wheel', mouseWheelHandler);
 
     const serverListCurrent = serversListRef.current;
 
     return () => {
-      if (serverListCurrent) {
-        serverListCurrent.removeEventListener('mousewheel', handleMouseWheel);
-      }
+      serverListCurrent?.removeEventListener('wheel', mouseWheelHandler);
     };
   }, [serversListRef]);
 
   const renderChannels = () => {
-    const ck = Object.keys(channels); // Channel keys
-    const cl = ck.length; // Channel length
-    return ck.map((cid, index) => {
+    return Object.keys(channels).map((cid) => {
       const channel = channels[cid];
+
+      function selectChannel() {
+        dispatch(setActiveChannelId(channel.uuid));
+      }
+
       return (
-        <div key={channel.uuid} style={{ display: 'flex' }}>
-          <TooltipWrapper position="bottom" tooltipContent={<Tooltip>{channel.title}</Tooltip>}>
-            <ChannelCard
-              uuid={channel.uuid}
-              channelName={channel.title || ''}
-              type={channel.type}
-              iconUrl={channel.iconUrl}
-              onlineCount={1}
-              usersCount={channel.members.length}
-            />
-          </TooltipWrapper>
-          {index !== cl - 1 && <Spacer width={10} />}
-        </div>
+        <Tooltip key={channel.uuid} position="bottom" text={channel.title}>
+          <ChannelCard
+            uuid={channel.uuid}
+            channelName={channel.title || ''}
+            type={channel.type}
+            iconUrl={channel.iconUrl}
+            onlineCount={1}
+            usersCount={channel.members.length}
+            mainChatId={channel.chats[0]}
+            isActive={activeChannelId === channel.uuid}
+            onClick={selectChannel}
+          />
+        </Tooltip>
       );
     });
+  };
+
+  const openCreateChannelModal = () => {
+    dispatch(setModal({ name: MODAL_NAMES.CREATE_CHANNEL, payload: {} }));
   };
 
   return (
     <>
       <div className={s.wrapper}>
-        <div className={s.userData}>
-          <div>
-            <NavLink exact to="/" className={s.logo_wrapper} activeClassName={s.active_logo}>
-              <div className={s.logo}></div>
-            </NavLink>
-            <div className={s.line}></div>
-            <Spacer width={15} />
-            <Avatar url={user.avatarUrl} style={{ height: '45px', width: '45px' }} username={user.username} />
-            <Spacer width={10} />
-            <TooltipWrapper
-              position="bottom"
-              tooltipContent={<Tooltip>Нажмите, чтобы скопировать</Tooltip>}
-              showingDelay={0.5}
-            >
-              <div className={s.userData_info}>
-                <div className={s.username}>{user.username}</div>
-                <div className={s.tag}>#{user.tag}</div>
-              </div>
-            </TooltipWrapper>
+        <div className={s.left_side}>
+          <NavLink
+            to="/"
+            className={({ isActive }) => classNames({ [s.logo_wrapper]: true, [s.active_logo]: isActive })}
+          >
+            <div className={s.logo}></div>
+          </NavLink>
+          <div className={s.line}></div>
+          <div className={s.userData}>
+            <div>
+              <Avatar
+                url={user.avatarUrl}
+                style={{ height: '45px', width: '45px' }}
+                username={user.username}
+                avatarColor={user.avatarColor}
+              />
+              <Tooltip
+                position="bottom"
+                text="Нажмите, чтобы скопировать Нажмите, чтобы скопировать Нажмите, чтобы скопировать "
+                delay={500}
+              >
+                <div className={s.userData_info}>
+                  <div className={s.username}>{user.username}</div>
+                  <div className={s.tag}>#{user.tag}</div>
+                </div>
+              </Tooltip>
+            </div>
+            <div className={s.userData_control}>
+              <Tooltip position="bottom" text="Настройки">
+                <Link to="/settings/profile">
+                  <i className={`fas fa-cog ${s.settings}`}></i>
+                </Link>
+              </Tooltip>
+            </div>
           </div>
-          <div className={s.userData_control}>
-            <TooltipWrapper position="bottom" tooltipContent={<Tooltip>Настройки</Tooltip>}>
-              <Link to="/settings/profile">
-                <i className={`fas fa-cog ${s.settings}`}></i>
-              </Link>
-            </TooltipWrapper>
-            <Spacer width={10} />
-            <div className={s.line}></div>
-          </div>
+          <div className={s.line}></div>
         </div>
         <div className={s.serversList_wrapper}>
           <div className={s.serversList_control}>
-            <Spacer width={20} />
-            <TooltipWrapper position="bottom" tooltipContent={<Tooltip>Создать канал</Tooltip>}>
-              <i className="fas fa-plus-circle" onClick={channelModal.open}></i>
-            </TooltipWrapper>
-            <Spacer width={20} />
+            <Tooltip position="bottom" text="Создать канал">
+              <i className="fas fa-plus-circle" onClick={openCreateChannelModal}></i>
+            </Tooltip>
           </div>
           <div className={s.serversList_list} ref={serversListRef}>
             {renderChannels()}
           </div>
         </div>
       </div>
-      {channelModal.isOpen && <CreateChannelModal close={channelModal.close} isFading={channelModal.isFading} />}
     </>
   );
 };

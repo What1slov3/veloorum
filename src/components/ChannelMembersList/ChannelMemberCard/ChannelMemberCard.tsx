@@ -1,23 +1,19 @@
 import React from 'react';
-import Spacer from '../../../templates/Spacer';
-import Avatar from '../../Avatar/Avatar';
+import { User } from '@customTypes/redux/user.types';
+import Avatar from '@components/Avatar/Avatar';
 import s from './channelmembercard.module.css';
 
-type TProps = {
-  username: string;
-  avatar: string;
+type Props = {
   icon?: JSX.Element;
   isAdmin?: boolean;
-};
+} & Pick<User, 'avatarColor' | 'avatarUrl' | 'username'>;
 
-const ChannelMemberCard: React.FC<TProps> = ({ username, avatar, icon }): JSX.Element => {
+const ChannelMemberCard: React.FC<Props> = ({ username, avatarUrl, icon, avatarColor }): JSX.Element => {
   return (
     <div className={s.wrapper}>
-      <Avatar url={avatar} username={username} />
-      <Spacer width={10} />
-      <div className={s.username}>
-        {username} <span className={s.icon}>{icon}</span>
-      </div>
+      <Avatar url={avatarUrl} username={username} avatarColor={avatarColor} />
+      <div className={s.username}>{username}</div>
+      <div className={s.icon}>{icon}</div>
     </div>
   );
 };

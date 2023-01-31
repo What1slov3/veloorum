@@ -1,11 +1,11 @@
 import React from 'react';
 import s from './bottomscroller.module.css';
 
-type TProps = {
+type Props = {
   scroll: () => void;
 };
 
-const BottomScroller: React.FC<TProps> = ({scroll}): JSX.Element => {
+const BottomScroller: React.FC<Props> = ({ scroll }): JSX.Element => {
   return (
     <div className={s.wrapper} onClick={scroll}>
       <i className="fas fa-chevron-down"></i>

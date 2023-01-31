@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setDisableMessageAutofocus } from '../../store/appdata';
 
-type TArgs = {
+type UseInputArgs = {
   initial?: string;
   required?: boolean;
   validationType?: '';
   validation?: Function;
-  disableAstrofocus?: boolean;
+  disableAutofocus?: boolean;
   setter?: (value: string) => string;
 };
 
@@ -16,9 +16,9 @@ const useInput = ({
   required = false,
   validationType = '',
   validation = Function,
-  disableAstrofocus = false,
+  disableAutofocus = false,
   setter,
-}: TArgs) => {
+}: UseInputArgs) => {
   const dispatch = useDispatch();
 
   const [value, setValue] = useState<string>(initial);
@@ -37,10 +37,10 @@ const useInput = ({
     },
     onBlur: (e: any) => {
       if (!value && required) setError('Поле должно быть заполнено');
-      if (disableAstrofocus) dispatch(setDisableMessageAutofocus(false));
+      if (disableAutofocus) dispatch(setDisableMessageAutofocus(false));
     },
     onFocus: (e: any) => {
-      if (disableAstrofocus) dispatch(setDisableMessageAutofocus(true));
+      if (disableAutofocus) dispatch(setDisableMessageAutofocus(true));
     },
   };
 };

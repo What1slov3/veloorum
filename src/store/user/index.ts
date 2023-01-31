@@ -1,15 +1,15 @@
-import { TDefaultAction } from './../../types/reducers';
-import { TUser } from './types';
 import { fetchUserInit, fetchUploadAvatar, fetchLeaveChannel, fetchChangeUserData } from './thunk';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '@customTypes/redux/user.types';
 
-const initialState: TUser = {
+const initialState: User = {
   uuid: '',
   email: '',
   tag: '',
   avatarUrl: '',
   channels: [],
   username: '',
+  avatarColor: '',
 };
 
 const userSlice = createSlice({
@@ -22,15 +22,15 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserInit.fulfilled, (state, action) => {
-      return action.payload.user
+      return action.payload.user;
     });
-    builder.addCase(fetchUploadAvatar.fulfilled, (state, action: TDefaultAction<TUser>) => {
+    builder.addCase(fetchUploadAvatar.fulfilled, (state, action: PayloadAction<User>) => {
       state.avatarUrl = action.payload.avatarUrl;
     });
     builder.addCase(fetchLeaveChannel.fulfilled, (state, action) => {
       state.channels = action.payload.channels;
     });
-    builder.addCase(fetchChangeUserData.fulfilled, (state, action: TDefaultAction<TUser>) => {
+    builder.addCase(fetchChangeUserData.fulfilled, (state, action: PayloadAction<User>) => {
       return action.payload;
     });
   },

@@ -1,27 +1,25 @@
 import React from 'react';
-import { TModalWindowArgs } from '../../../types/hooks';
-import ModalWindow from '../ModalWindow/ModalWindow';
 import MainPage from './Pages/MainPage/MainPage';
-import s from './channelsettingsmodal.module.css';
 import { useSelector } from 'react-redux';
-import { TStore } from '../../../types/common';
+import { Store } from '@customTypes/common.types';
+import { ChannelSettingsPayload } from '@customTypes/modals.types';
+import s from './channelsettingsmodal.module.css';
 
-type TProps = {
-  channelId: string;
-} & TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
-const ChannelSettingsModal: React.FC<TProps> = ({ isFading, close, channelId }): JSX.Element => {
-  const channel = useSelector((state: TStore) => state.channels[channelId]);
+const ChannelSettingsModal: React.FC<Props> = ({ onClose }): JSX.Element => {
+  const { channelId } = useSelector((state: Store) => state.appdata.activeModal.payload as ChannelSettingsPayload);
+  const channel = useSelector((state: Store) => state.channels[channelId]);
 
   return (
-    <ModalWindow close={close} isFading={isFading}>
-      <div className={s.wrapper}>
-        <div className={s.page_wrapper}>
-          {/* ? Вероятно, позже будет разделение на страницы категорий */}
-          <MainPage channel={channel} close={close} />
-        </div>
+    <div className={s.wrapper}>
+      <div className={s.page_wrapper}>
+        {/* ? Вероятно, позже будет разделение на страницы категорий */}
+        <MainPage channel={channel} close={onClose} />
       </div>
-    </ModalWindow>
+    </div>
   );
 };
 

@@ -2,12 +2,12 @@ import React, { Dispatch, SetStateAction } from 'react';
 import Button from './Button/Button';
 import s from './sidebar.module.css';
 
-type TProps = {
+type Props = {
   activeCategory: string;
   setActiveCategory: Dispatch<SetStateAction<string>>;
 };
 
-const Sidebar: React.FC<TProps> = ({ activeCategory, setActiveCategory }): JSX.Element => {
+const Sidebar: React.FC<Props> = ({ activeCategory, setActiveCategory }): JSX.Element => {
   const isActiveCompare = (route: string) => {
     return activeCategory === route;
   };

@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import API from '../../api';
+import API from '@api/index';
 
 export const fetchCreateChannelInvite = createAsyncThunk(
   'channel/createInvite',

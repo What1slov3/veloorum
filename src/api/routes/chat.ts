@@ -1,4 +1,4 @@
-import { TUpdatableFieldsChat } from './../../store/chats/types';
+import { UpdatableFieldsChat } from '../../types/redux/chats.types';
 import { axiosInstance } from '../index';
 
 class ChatAPI {
@@ -50,7 +50,7 @@ class ChatAPI {
       });
   }
 
-  public async updateChat(data: { cid: string; chat: TUpdatableFieldsChat }) {
+  public async updateChat(data: { cid: string; chat: UpdatableFieldsChat }) {
     return axiosInstance
       .patch(`/chats/update`, data)
       .then((res) => {

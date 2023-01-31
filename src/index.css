@@ -37,13 +37,16 @@
   --alert: #efc663;
   --notification: #ec384d;
   --pending: #9677df;
-  --green: #353c45;
+  --green: #38d479;
   --yellow: #d9a322;
   --orange: #e76d3b;
   --red: #cc3e4a;
   --pink: #d96eae;
   --purple: #7049a3;
   --tooltip: #171718;
+
+  --navbar-width: 70px;
+  --members-list-width: 250px;
 }
 
 body {
@@ -102,4 +105,18 @@ h6 {
 
 *::placeholder {
   color: var(--placeholder-color);
+}
+
+/* QUILL PLACEHOLDER */
+.quill > .ql-container > .ql-editor.ql-blank::before {
+  font-style: normal;
+  color: var(--med-grey);
+}
+
+.ql-editor {
+  padding: 0;
+}
+
+.ql-editor::before {
+  margin-left: -15px;
 }

@@ -1,30 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useInput from '../../../common/hooks/useInput';
-import { fetchChangeUserData } from '../../../store/user/thunk';
+import useInput from '@common/hooks/useInput';
+import { fetchChangeUserData } from '@store/user/thunk';
 import InputTemplate from '../../../templates/Inputs/InputTemplate/InputTemplate';
 import InputTitle from '../../../templates/Inputs/InputTitle/InputTitle';
-import { TModalWindowArgs } from '../../../types/hooks';
 import ModalButton from '../ModalWindow/ModalButton/ModalButton';
 import ModalHeader from '../ModalWindow/ModalHeader/ModalHeader';
-import ModalWindow from '../ModalWindow/ModalWindow';
 import ModalError from '../ModalWindow/ModalError/ModalError';
-import { TStore } from '../../../types/common';
+import { Store } from '@customTypes/common.types';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
-import { setStatus } from '../../../store/errors/index';
+import { setStatus } from '@store/errors/index';
 import ModalLine from '../ModalWindow/ModalLine/ModalLine';
+import { ChangeUserDataPayload } from '@customTypes/modals.types';
 import s from './changeuserdatamodal.module.css';
 
-type TProps = {
-  username: string;
-  email: string;
-  type: 'username' | 'email';
-} & TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
-const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, email, type }): JSX.Element => {
-  const dispatch = useDispatch();
+const UserChangeDataModal: React.FC<Props> = ({ onClose }): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-  const changeUserDataStatus = useSelector((state: TStore) => state.errors.changeUserDataStatus);
+  const changeUserDataStatus = useSelector((state: Store) => state.errors.changeUserDataStatus);
+  const { type, email, username } = useSelector(
+    (state: Store) => state.appdata.activeModal.payload as ChangeUserDataPayload
+  );
 
   const newData = useInput({ initial: type === 'email' ? email : username, required: true });
   const password = useInput({ required: true });
@@ -39,7 +39,7 @@ const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, emai
       case 'success':
         dispatch(setStatus({ type: 'changeUserDataStatus', value: null }));
         setError('');
-        close();
+        onClose();
         break;
     }
   }, [changeUserDataStatus]);
@@ -53,7 +53,7 @@ const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, emai
   };
 
   return (
-    <ModalWindow isFading={isFading} close={close}>
+    <>
       <ModalHeader style={{ padding: '20px' }}>
         {type === 'email' ? (
           <>
@@ -83,13 +83,13 @@ const UserChangeDataModal: React.FC<TProps> = ({ isFading, close, username, emai
         </div>
         {error && <ModalError>{error}</ModalError>}
         <ModalControl>
-          <ModalButton onClick={close}>Отмена</ModalButton>
+          <ModalButton onClick={onClose}>Отмена</ModalButton>
           <ModalButton onClick={saveData} style={{ background: 'var(--astro)' }}>
             Сохранить
           </ModalButton>
         </ModalControl>
       </div>
-    </ModalWindow>
+    </>
   );
 };
 

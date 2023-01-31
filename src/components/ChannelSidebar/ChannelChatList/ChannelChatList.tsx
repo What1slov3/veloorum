@@ -1,22 +1,20 @@
 import React, { useMemo } from 'react';
-import { TActiveConnection } from '../../../store/appdata/types';
-import { TChat } from '../../../store/chats/types';
-import { TModalOpenFunc } from '../../../types/hooks';
-import Accordion from '../../Accordion/Accordion';
-import Tooltip from '../../TooltipWrapper/Tooltip/Tooltip';
-import TooltipWrapper from '../../TooltipWrapper/TooltipWrapper';
+import { ActiveConnection } from '@customTypes/redux/appdata.types';
+import { Chat } from '@customTypes/redux/chats.types';
+import Accordion from '@components/Accordion/Accordion';
+import Tooltip from '@components/Tooltip/Tooltip';
 import ChatLink from '../ChatLink/ChatLink';
 import s from './channelchatlist.module.css';
 
-type TProps = {
-  chats: TChat[] | null;
-  connection: TActiveConnection;
-  openChatCreator: TModalOpenFunc<unknown>;
-  openChatSettings: TModalOpenFunc<string>;
+type Props = {
+  chats: Chat[] | null;
+  connection: ActiveConnection;
+  openChatCreator: () => void;
+  openChatSettings: (chatId: string) => void;
   isAdmin: boolean;
 };
 
-const ChannelChatList: React.FC<TProps> = ({
+const ChannelChatList: React.FC<Props> = ({
   chats,
   connection,
   openChatCreator,
@@ -35,6 +33,7 @@ const ChannelChatList: React.FC<TProps> = ({
             active={connection.chatId === uuid}
             openChatSettings={openChatSettings}
             isAdmin={isAdmin}
+            activeChannelId={connection.channelId!}
           />
         );
       });
@@ -43,7 +42,7 @@ const ChannelChatList: React.FC<TProps> = ({
 
   const activeChatBlock = useMemo(() => {
     if (chats && connection.chatId) {
-      const { uuid, title } = chats.find((chat) => chat.uuid === connection.chatId)!;
+      const { uuid, title } = chats.find((chat) => chat.uuid === connection.chatId) || { uuid: '', title: '' };
       return (
         <ChatLink
           key={uuid}
@@ -52,6 +51,7 @@ const ChannelChatList: React.FC<TProps> = ({
           openChatSettings={openChatSettings}
           active={true}
           isAdmin={isAdmin}
+          activeChannelId={connection.channelId!}
         />
       );
     }
@@ -64,9 +64,9 @@ const ChannelChatList: React.FC<TProps> = ({
           title="Текстовые чаты"
           extraButton={
             isAdmin ? (
-              <TooltipWrapper position="right" tooltipContent={<Tooltip>Добавить чат</Tooltip>}>
+              <Tooltip position="right" text="Добавить чат">
                 <i className={`fas fa-plus ${s.create_chat_btn}`} onClick={openChatCreator}></i>
-              </TooltipWrapper>
+              </Tooltip>
             ) : undefined
           }
           activeBlock={activeChatBlock}

@@ -1,4 +1,3 @@
-import { isDev } from './../../../common/utils/isDev';
 import { emitChannels } from './routes/emit/channels';
 import { receiveChannels } from './routes/receive/channels';
 import { receiveUsers } from './routes/receive/users';
@@ -9,17 +8,16 @@ import { receiveCommon } from './routes/receive/common';
 import { receiveChats } from './routes/receive/chats';
 import { emitChats } from './routes/emit/chats';
 import { io } from 'socket.io-client';
-import { TStore } from './../../../types/common';
-import store from '../..';
-import { setWsConnected, setWsConnectionError } from '../../appdata';
-import { PROCESS_ENV } from '../../../env/env';
+import { Store } from '@customTypes/common.types';
+import store from '@store/index';
+import { setWsConnected, setWsConnectionError } from '@store/appdata';
 
-const socket = io(isDev() ? PROCESS_ENV.localWebsocketURL : PROCESS_ENV.websocketURL, {
+const socket = io(process.env.REACT_APP_WEBSOCKET_URL!, {
   transports: ['websocket'],
 });
 
 const registerUser = () => {
-  const state = store.getState() as TStore;
+  const state = store.getState() as Store;
 
   if (state.appdata.init.fulfilled) {
     // ? Подключаем пользователя к чатам и каналам
@@ -34,7 +32,7 @@ const registerUser = () => {
 
 socket.on('connect', () => {
   registerUser();
-  if ((store.getState() as TStore).appdata.wsData.wsConnectionError) {
+  if ((store.getState() as Store).appdata.wsData.wsConnectionError) {
     store.dispatch(setWsConnectionError(false));
   }
 });

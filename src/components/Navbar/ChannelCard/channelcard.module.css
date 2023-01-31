@@ -1,12 +1,13 @@
 .wrapper {
   display: flex;
   align-items: center;
+  gap: 10px;
   cursor: pointer;
   padding: 5px 10px;
   border-radius: 10px;
   min-width: 220px;
   max-width: 220px;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .wrapper:hover,

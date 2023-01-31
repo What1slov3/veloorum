@@ -1,38 +1,38 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
-import TooltipWrapper from '../../TooltipWrapper/TooltipWrapper';
-import Tooltip from '../../TooltipWrapper/Tooltip/Tooltip';
-import TimeFormatter from '../../../common/utils/TimeFormatter';
-import { TModalOpenFunc } from '../../../types/hooks';
-import { TDeleteMessageModalPayload } from '../../../types/modalsPayload';
-import { TMessageContent, TMessageContext } from '../../../store/chats/types';
+import React, { ReactNode, useLayoutEffect, useRef } from 'react';
+import TimeFormatter from '@common/utils/TimeFormatter';
+import { DeleteMessageModalPayload } from '@customTypes/modals.types';
 import MessageEditor from './MessageEditor/MessageEditor';
 import ReactDOMServer from 'react-dom/server';
 import { lsa } from '../../..';
 import classNames from 'classnames';
 import { useDispatch } from 'react-redux';
-import { resetRealtimeStatus } from '../../../store/chats';
-import { wrapAllFormatting } from '../../../common/utils/contentMessageWrapper';
+import { resetRealtimeStatus } from '@store/chats';
+import { wrapAllFormatting } from '@common/utils/contentMessageWrapper';
+import MessageAttachment from './MessageAttachement/MessageAttachment';
+import { MessageContent, MessageContext } from '@customTypes/redux/chats.types';
+import { LimitModal } from '../ChannelChat';
+import Tooltip from '@components/Tooltip/Tooltip';
 import s from './channelmessage.module.css';
 
-type TProps = {
+type Props = {
   uuid: string;
-  content: TMessageContent | { text: React.ReactNodeArray };
-  context: TMessageContext;
+  content: MessageContent | { text: ReactNode[] };
+  context: MessageContext;
   createdAt: number;
   updatedAt: number;
   username: string;
   isOwner: boolean;
   uid: string;
-  openDeleteModal: TModalOpenFunc<TDeleteMessageModalPayload>;
   isEditing: boolean;
   setEditingMode: (mid: string | null) => void;
   short?: boolean;
-  openAttachment: (url: string) => void;
   realtime?: boolean;
-  openSymbolLimitModal: (payload: [number, number]) => void;
+  openDeleteModal: (payload: DeleteMessageModalPayload) => void;
+  openAttachmentModal: (url: string) => void;
+  openSymbolLimitModal: (payload: LimitModal) => void;
 };
 
-const ChannelMessage: React.FC<TProps> = ({
+const ChannelMessage: React.FC<Props> = ({
   uuid,
   content,
   context,
@@ -45,11 +45,11 @@ const ChannelMessage: React.FC<TProps> = ({
   isEditing,
   setEditingMode,
   short,
-  openAttachment,
+  openAttachmentModal,
   realtime,
   openSymbolLimitModal,
 }): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const messageRef = useRef<HTMLDivElement>(null!);
 
@@ -69,20 +69,7 @@ const ChannelMessage: React.FC<TProps> = ({
         dispatch(resetRealtimeStatus({ context, uuid }));
       }, 300);
     }
-  }, [realtime, messageRef]);
-
-  const renderAttachments = useMemo(() => {
-    return (content as TMessageContent).attachments?.map((url) => (
-      <img
-        key={url}
-        src={url}
-        alt="img"
-        className={s.attachment_image}
-        onLoad={(e) => (e.target as HTMLImageElement).classList.add(s.img_loaded)}
-        onClick={() => openAttachment(url)}
-      />
-    ));
-  }, [content]);
+  }, [realtime]);
 
   return (
     <div
@@ -90,22 +77,19 @@ const ChannelMessage: React.FC<TProps> = ({
       className={classNames({
         [s.short]: short,
         [s.active]: isEditing,
-        [`messageGroupGap_${lsa.getAppSettings('messageGroupGap')}`]: !short,
+        [`messageGroupGap_${lsa.getSettings('messageGroupGap')}`]: !short,
         [s.realtime]: realtime,
       })}
     >
       <div className={s.wrapper}>
         <div className={s.time_wrapper}>
-          <TooltipWrapper
-            position="top"
-            tooltipContent={<Tooltip>{new TimeFormatter(createdAt).getFullMessageTime()}</Tooltip>}
-          >
+          <Tooltip position="top" text={new TimeFormatter(createdAt).getFullMessageTime()}>
             <div className={s.time}>{new TimeFormatter(createdAt).getMessageTimeShort()}</div>
-          </TooltipWrapper>
+          </Tooltip>
         </div>
         <div className={s.content_wrapper}>
-          {!short && <div className={`${s.username} fontSize_${lsa.getAppSettings('fontSize')}`}>{username}</div>}
-          <div className={`${s.content} fontSize_${lsa.getAppSettings('fontSize')}`}>
+          {!short && <div className={`${s.username} fontSize_${lsa.getSettings('fontSize')}`}>{username}</div>}
+          <div className={`${s.content} fontSize_${lsa.getSettings('fontSize')}`}>
             {isEditing ? (
               <MessageEditor
                 uid={uid}
@@ -120,19 +104,16 @@ const ChannelMessage: React.FC<TProps> = ({
                 {wrapAllFormatting(content.text)}
                 {new Date(updatedAt).getTime() - new Date(createdAt).getTime() > 500 && (
                   <span className={s.was_edit_mark}>
-                    <TooltipWrapper
-                      position="top"
-                      tooltipContent={<Tooltip>{new TimeFormatter(updatedAt).getFullMessageTime()}</Tooltip>}
-                    >
+                    <Tooltip position="top" text={new TimeFormatter(updatedAt).getFullMessageTime()}>
                       <span>(ред.)</span>
-                    </TooltipWrapper>
+                    </Tooltip>
                   </span>
                 )}
               </>
             )}
             {/* @ts-ignore */}
             {content.attachments && content.attachments!.length > 0 && (
-              <div className={s.attachments}>{renderAttachments}</div>
+              <MessageAttachment content={content} openAttachmentModal={openAttachmentModal} />
             )}
           </div>
         </div>

@@ -1,0 +1,10 @@
+.wrapper {
+  position: relative;
+}
+
+.card {
+  position: fixed;
+  top: -100vh;
+  right: -100vw;
+  width: max-content;
+}

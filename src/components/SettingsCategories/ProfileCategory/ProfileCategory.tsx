@@ -1,22 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import useModal from '../../../common/hooks/useModal';
-import { fetchUploadAvatar } from '../../../store/user/thunk';
+import { fetchUploadAvatar } from '@store/user/thunk';
 import InputTitle from '../../../templates/Inputs/InputTitle/InputTitle';
-import Spacer from '../../../templates/Spacer';
-import { TStore } from '../../../types/common';
-import Avatar from '../../Avatar/Avatar';
-import ChangeUserDataModal from '../../Modals/ChangeUserDataModal/ChangeUserDataModal';
-import ChangePasswordModal from '../../Modals/ChangePasswordModal/ChangePasswordModal';
+import { Store } from '@customTypes/common.types';
+import Avatar from '@components/Avatar/Avatar';
+import { setModal } from '@store/appdata';
+import { MODAL_NAMES } from '@common/constants';
+import { ChangeUserDataPayload } from '@customTypes/modals.types';
 import s from './profilecategory.module.css';
 
 const ProfileCategory: React.FC = ({}): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
-  const user = useSelector((state: TStore) => state.user);
-
-  const changeModal = useModal();
-  const changePasswordModal = useModal();
+  const user = useSelector((state: Store) => state.user);
 
   const [isShowEmail, setShowEmail] = useState(false);
   const [newAvatarURL, setNewAvatarURL] = useState<string>();
@@ -35,6 +31,36 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
   const renderEmail = () => {
     const splitEmail = user.email.split('@');
     return isShowEmail ? user.email : `${splitEmail[0].replace(/./g, '*')}@${splitEmail[1]}`;
+  };
+
+  const openChangePasswordModal = () => {
+    dispatch(
+      setModal({
+        name: MODAL_NAMES.CHANGE_PASSWORD,
+        payload: {},
+      })
+    );
+  };
+
+  const openUserDataModal = (type: ChangeUserDataPayload['type']) => {
+    dispatch(
+      setModal({
+        name: MODAL_NAMES.CHANGE_USER_DATA,
+        payload: { type, username: user.username, email: user.email } as ChangeUserDataPayload,
+      })
+    );
+  };
+
+  const changeUsername = () => {
+    openUserDataModal('username');
+  };
+
+  const changeEmail = () => {
+    openUserDataModal('email');
+  };
+
+  const toggleEmailVisability = () => {
+    setShowEmail(!isShowEmail);
   };
 
   return (
@@ -63,7 +89,6 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
                 style={{ height: '100px', width: '100px' }}
               />
             </div>
-            <Spacer width={20} />
             <div>
               <div className={s.username}>
                 {user.username}
@@ -80,7 +105,7 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
                   <span className={s.tag}>#{user.tag}</span>
                 </div>
               </div>
-              <div className={s.edit_button} onClick={() => changeModal.open('username')}>
+              <div className={s.edit_button} onClick={changeUsername}>
                 Изменить
               </div>
             </div>
@@ -89,12 +114,12 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
                 <InputTitle>Электронная почта</InputTitle>
                 <div className={`${s.email} ${s.field}`}>
                   {renderEmail()}
-                  <span className={s.show_email} onClick={() => setShowEmail(!isShowEmail)}>
+                  <span className={s.show_email} onClick={toggleEmailVisability}>
                     Показать
                   </span>
                 </div>
               </div>
-              <div className={s.edit_button} onClick={() => changeModal.open('email')}>
+              <div className={s.edit_button} onClick={changeEmail}>
                 Изменить
               </div>
             </div>
@@ -103,24 +128,12 @@ const ProfileCategory: React.FC = ({}): JSX.Element => {
         <section className={s.security}>
           <h5>Безопасность</h5>
           <div className={s.field_wrapper}>
-            <div className={s.edit_button} onClick={changePasswordModal.open}>
+            <div className={s.edit_button} onClick={openChangePasswordModal}>
               Изменить пароль
             </div>
           </div>
         </section>
       </div>
-      {changeModal.isOpen && (
-        <ChangeUserDataModal
-          username={user.username}
-          email={user.email}
-          isFading={changeModal.isFading}
-          close={changeModal.close}
-          type={changeModal.payload as 'username' | 'email'}
-        />
-      )}
-      {changePasswordModal.isOpen && (
-        <ChangePasswordModal isFading={changePasswordModal.isFading} close={changePasswordModal.close} />
-      )}
     </>
   );
 };

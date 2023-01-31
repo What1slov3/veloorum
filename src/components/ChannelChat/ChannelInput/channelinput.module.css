@@ -22,15 +22,24 @@
   overflow-wrap: break-word;
 }
 
-.input[contentEditable='true']:empty:before {
-  content: attr(data-text);
+.input::placeholder {
   color: var(--med-grey);
-  cursor: text;
 }
 
 .disable {
-  padding: 5px 10px;
+  padding: 5px 0;
+}
+
+.disable,
+.disable > i {
   color: var(--med-grey);
   cursor: default;
+  display: flex;
+  align-items: center;
   user-select: none;
+}
+
+.disable > i {
+  font-size: 16px;
+  margin-right: 10px;
 }

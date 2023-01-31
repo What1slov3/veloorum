@@ -1,6 +1,6 @@
-import { TAxiosUpdateChannel, TAxiosUpdateChannelIcon } from './../../api/types';
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import API from '../../api';
+import { AxiosUpdateChannel, AxiosUpdateChannelIcon } from '../../types/api.types';
 
 export const fetchCreateChannel = createAsyncThunk(
   'channels/createChannel',
@@ -15,7 +15,7 @@ export const fetchCreateChannel = createAsyncThunk(
 
 export const fetchUpdateChannelIcon = createAsyncThunk(
   'channels/updateChannelIcon',
-  async (data: TAxiosUpdateChannelIcon, { rejectWithValue }) => {
+  async (data: AxiosUpdateChannelIcon, { rejectWithValue }) => {
     const response = await API.channels.updateChannelIcon(data);
     if ((response.response && response.response.status >= 300) || response.name === 'Error') {
       return rejectWithValue('Something broke');
@@ -26,7 +26,7 @@ export const fetchUpdateChannelIcon = createAsyncThunk(
 
 export const fetchUpdateChannel = createAsyncThunk(
   'channels/updateChannel',
-  async (data: TAxiosUpdateChannel, { rejectWithValue }) => {
+  async (data: AxiosUpdateChannel, { rejectWithValue }) => {
     const response = await API.channels.updateChannel(data);
     if ((response.response && response.response.status >= 300) || response.name === 'Error') {
       return rejectWithValue('Something broke');

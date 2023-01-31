@@ -1,42 +1,57 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { undefinedUser } from '../../common/undefinedUser';
-import { TChannel } from '../../store/channels/types';
+import { undefinedUser } from '@common/undefinedUser';
 import InputTitle from '../../templates/Inputs/InputTitle/InputTitle';
-import { TStore } from '../../types/common';
+import { Store } from '@customTypes/common.types';
+import { Channel } from '@customTypes/redux/channels.types';
+import UserCardWrapper from '../UserCardWrapper/UserCardWrapper';
 import ChannelMemberCard from './ChannelMemberCard/ChannelMemberCard';
 import s from './channelmemberslist.module.css';
 
-type TProps = {
-  channel: TChannel;
+type Props = {
+  channel: Channel;
 };
 
-const ChannelMembersList: React.FC<TProps> = ({ channel }): JSX.Element => {
-  const loadedUsers = useSelector((state: TStore) => state.users);
-  const user = useSelector((state: TStore) => state.user);
+const ChannelMembersList: React.FC<Props> = ({ channel }): JSX.Element => {
+  const loadedUsers = useSelector((state: Store) => state.users);
+  const user = useSelector((state: Store) => state.user);
+
+  //TODO вынести данные о карточке сюда
 
   const renderUsersCard = useMemo(() => {
-    const sortedMembers = [...channel.members].sort((a, b) => {
+    const collator = new Intl.Collator('ru-RU');
+
+    const sortedMembers: any = [...channel.members].sort((a, b) => {
       if (a === channel.ownerId || b === channel.ownerId) return 1;
-      return loadedUsers[a]?.username.localeCompare(loadedUsers[b]?.username);
+      return collator.compare(loadedUsers[a]?.username, loadedUsers[b]?.username);
     });
 
-    return sortedMembers.map((uid, index) => {
+    return sortedMembers.map((uid: string) => {
       const isMe = user.uuid === uid;
-      const member = isMe ? user : loadedUsers[uid] || undefinedUser;
-      if (member) {
-        if (index === 0) {
-          return (
+      const member = (isMe ? user : loadedUsers[uid]) || undefinedUser;
+      if (uid === channel.ownerId) {
+        return (
+          <UserCardWrapper user={member} key={uid}>
             <ChannelMemberCard
               key={uid}
               username={member.username}
-              avatar={member.avatarUrl}
+              avatarUrl={member.avatarUrl}
+              avatarColor={member.avatarColor}
               icon={<i className="fas fa-crown" style={{ color: 'var(--yellow)' }}></i>}
             />
-          );
-        }
-        return <ChannelMemberCard key={uid} username={member.username} avatar={member.avatarUrl} />;
+          </UserCardWrapper>
+        );
       }
+      return (
+        <UserCardWrapper user={member} key={uid}>
+          <ChannelMemberCard
+            key={uid}
+            username={member.username}
+            avatarUrl={member.avatarUrl}
+            avatarColor={member.avatarColor}
+          />
+        </UserCardWrapper>
+      );
     });
   }, [channel.members, loadedUsers]);
 

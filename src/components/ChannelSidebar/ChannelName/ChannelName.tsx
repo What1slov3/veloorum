@@ -1,49 +1,48 @@
-import React, { useEffect } from 'react';
-import s from './channelname.module.css';
+import React, { useEffect, useState } from 'react';
 import ChannelDropMenu from './ChannelDropmenu/ChannelDropMenu';
-import { useDispatch, useSelector } from 'react-redux';
-import { setChannelDropmenu } from '../../../store/appdata';
-import { TStore } from '../../../types/common';
-import { TModalOpenFunc } from '../../../types/hooks';
+import { findDatasetInParents } from '@common/utils/findDataInParents';
+import s from './channelname.module.css';
 
-type TProps = {
+type Props = {
   channelName: string;
   channelId: string;
-  openInvite: TModalOpenFunc<string>;
-  openChannelSettings: TModalOpenFunc<string>;
+  openInvite: () => void;
+  openChannelSettings: (channelId: string) => void;
 };
 
-const ChannelName: React.FC<TProps> = ({ channelName, channelId, openInvite, openChannelSettings }): JSX.Element => {
-  const dispatch = useDispatch();
-
-  const dropmenuIsOpen = useSelector((state: TStore) => state.appdata.channelDropmenuIsOpen);
+const ChannelName: React.FC<Props> = ({ channelName, channelId, openInvite, openChannelSettings }): JSX.Element => {
+  const [dropmenuIsOpen, setDropmenuIsOpen] = useState(false);
 
   useEffect(() => {
-    if (dropmenuIsOpen) {
-      document.onclick = (e: MouseEvent) => {
-        if (!(e.target instanceof HTMLElement)) return;
-        if (!e.target.dataset.dropmenu) closeMenu();
-      };
+    function onChannelDropmenu(e: any) {
+      if (dropmenuIsOpen && !findDatasetInParents(e.target, 'dropmenu')) {
+        closeMenu();
+      }
     }
-    if (!dropmenuIsOpen) document.onclick = null;
+
+    document.addEventListener('click', onChannelDropmenu);
+
+    return () => {
+      document.removeEventListener('click', onChannelDropmenu);
+    };
   }, [dropmenuIsOpen]);
 
-  const openMenu = () => {
-    dispatch(setChannelDropmenu(true));
+  const closeMenu = () => {
+    setDropmenuIsOpen(false);
   };
 
-  const closeMenu = () => {
-    dispatch(setChannelDropmenu(false));
+  const toggleMenu = () => {
+    setDropmenuIsOpen(!dropmenuIsOpen);
   };
 
   return (
     <div className={s.wrapper}>
-      <div className={s.wrapper_data} onClick={openMenu}>
+      <div className={s.wrapper_data} onClick={toggleMenu} data-dropmenu="true">
         <div className={s.name}>{channelName}</div>
         <i className={`fas fa-chevron-down ${s.arrow}`}></i>
       </div>
       {dropmenuIsOpen && (
-        <div className={s.dropmenu_wrapper} data-dropmenu="true">
+        <div className={s.dropmenu_wrapper}>
           <ChannelDropMenu
             close={closeMenu}
             openInvite={openInvite}

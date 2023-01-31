@@ -1,32 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
 import FileDropArea from './FileDropArea/FileDropArea';
 import { useDispatch, useSelector } from 'react-redux';
-import { TStore } from '../../types/common';
-import { setUploadedAttachments } from '../../store/appdata';
-import API from '../../api';
+import { FCChildren, Store } from '@customTypes/common.types';
+import { setUploadedAttachments } from '@store/appdata';
+import API from '@api/index';
 
-const DropAreaWrapper: React.FC = ({ children }): JSX.Element => {
+const DropAreaWrapper: React.FC<FCChildren> = ({ children }): JSX.Element => {
   const dispatch = useDispatch();
 
-  const connection = useSelector((state: TStore) => state.appdata.activeConnection);
-  const chats = useSelector((state: TStore) => state.chats);
+  const connection = useSelector((state: Store) => state.appdata.activeConnection);
+  const chats = useSelector((state: Store) => state.chats);
+  const modalIsActive = useSelector((state: Store) => state.appdata.activeModal.name);
 
   const [overlay, setOverlay] = useState<boolean>(false);
 
   const dragCountRef = useRef<number>(0);
 
   useEffect(() => {
-    if (connection.chatId) {
-      window.ondragenter = (e: any) => {
-        dragCountRef.current += 1;
-        if (dragCountRef.current && !overlay && e.dataTransfer.types.includes('Files')) setOverlay(true);
-      };
-      window.ondragleave = () => {
-        dragCountRef.current -= 1;
-        if (!dragCountRef.current && overlay) setOverlay(false);
-      };
+    function onDragEnterHandler(e: DragEvent) {
+      dragCountRef.current += 1;
+      if (dragCountRef.current && !overlay && e.dataTransfer?.types.includes('Files')) setOverlay(true);
     }
-  }, [overlay, connection.chatId]);
+
+    function onDrageLeaveHandler(e: DragEvent) {
+      dragCountRef.current -= 1;
+      if (!dragCountRef.current && overlay) setOverlay(false);
+    }
+
+    if (connection.chatId && !modalIsActive) {
+      window.addEventListener('dragenter', onDragEnterHandler);
+      window.addEventListener('dragleave', onDrageLeaveHandler);
+    }
+
+    return () => {
+      window.removeEventListener('dragenter', onDragEnterHandler);
+      window.removeEventListener('dragleave', onDrageLeaveHandler);
+    };
+  }, [overlay, connection.chatId, modalIsActive]);
 
   const uploadIcon = async (e: any) => {
     let files: File[] = [];

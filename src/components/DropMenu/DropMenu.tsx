@@ -1,25 +1,29 @@
 import classNames from 'classnames';
 import React, { CSSProperties, useEffect, useState } from 'react';
-import { kec } from '../..';
-import { findDatasetInParents } from '../../common/utils/findDataInParents';
+import { findDatasetInParents } from '@common/utils/findDataInParents';
+import { FCChildren } from '@customTypes/common.types';
 import s from './dropmenu.module.css';
 
-type TProps = {
+type Props = {
   style?: CSSProperties;
   current: string | JSX.Element;
-};
+} & FCChildren;
 
-const DropMenu: React.FC<TProps> = ({ children, style, current }): JSX.Element => {
+const DropMenu: React.FC<Props> = ({ children, style, current }): JSX.Element => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    if (isOpen) {
-      kec.add('onmousedown', 'closeDropMenu', (e: any) => {
-        if (!findDatasetInParents(e.target, 'dropmenu')) setIsOpen(false);
-      });
-    } else {
-      kec.remove('onmousedown', 'closeDropMenu');
+    function onCloseDropMenuHandler(e: MouseEvent) {
+      if (!findDatasetInParents(e.target as HTMLElement, 'dropmenu')) setIsOpen(false);
     }
+
+    if (isOpen) {
+      window.addEventListener('mousedown', onCloseDropMenuHandler);
+    }
+
+    return () => {
+      window.removeEventListener('mousedown', onCloseDropMenuHandler);
+    };
   }, [isOpen]);
 
   useEffect(() => {

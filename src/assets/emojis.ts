@@ -1,9 +1,6 @@
-export type TEmoji = {
-  emoji: string;
-  shortname: string;
-};
+import { Emoji } from "../types/emoji.types";
 
-export let emojis: Record<string, TEmoji[]>[] = [
+export let emojis: Record<string, Emoji[]>[] = [
   {
     'Smileys & Emotion': [
       { emoji: '🤠', shortname: ':cowboy_hat_face:' },

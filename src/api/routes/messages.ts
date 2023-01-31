@@ -1,8 +1,8 @@
-import { TMessageContent, TMessageContext } from '../../store/chats/types';
+import { MessageContent, MessageContext } from '../../types/redux/chats.types';
 import { axiosInstance } from '../index';
 
 class MessagesAPI {
-  public async sendMessage({ content, context }: { content: TMessageContent; context: TMessageContext }) {
+  public async sendMessage({ content, context }: { content: MessageContent; context: MessageContext }) {
     const data = {
       content,
       context,
@@ -42,7 +42,7 @@ class MessagesAPI {
       });
   }
 
-  public async editMessage({ cid, mid, content }: { cid: string; mid: string; content: TMessageContent }) {
+  public async editMessage({ cid, mid, content }: { cid: string; mid: string; content: MessageContent }) {
     return axiosInstance
       .put(`/messages/edit`, { cid, mid, content })
       .then((res) => {

@@ -1,38 +1,37 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
 import reactStringReplace from 'react-string-replace';
-import TimeFormatter from '../../../common/utils/TimeFormatter';
-import { TMessageContent, TMessageContext, TMessageSystemType } from '../../../store/chats/types';
-import { TLoadedUser } from '../../../store/users/types';
-import { TStore } from '../../../types/common';
-import Tooltip from '../../TooltipWrapper/Tooltip/Tooltip';
-import TooltipWrapper from '../../TooltipWrapper/TooltipWrapper';
+import TimeFormatter from '@common/utils/TimeFormatter';
+import { Store } from '@customTypes/common.types';
+import { MessageContent, MessageContext, MessageSystemType } from '@customTypes/redux/chats.types';
+import { LoadedUser } from '@customTypes/redux/users.types';
+import Tooltip from '@components/Tooltip/Tooltip';
 import s from './channelsystemmessage.module.css';
 
-type TProps = {
-  content: TMessageContent | { text: React.ReactNodeArray };
+type Props = {
+  content: MessageContent | { text: ReactNode[] };
   uuid: string;
-  context: TMessageContext;
+  context: MessageContext;
   createdAt: number;
-  systemType: TMessageSystemType;
-  targetUser?: TLoadedUser;
+  systemType: MessageSystemType;
+  targetUser?: LoadedUser;
 };
 
-const replaceSystemTemplate = (text: string | React.ReactNodeArray, username: string, channelName: string) => {
+const replaceSystemTemplate = (text: string | ReactNode[], username: string, channelName: string) => {
   return reactStringReplace(text, /(:username:|:channel_name:)/gm, (match) => {
     const replaced = match === ':username:' ? username : channelName;
     return <span className={s.highlight}>{replaced}</span>;
   });
 };
 
-const ChannelSystemMessage: React.FC<TProps> = ({
+const ChannelSystemMessage: React.FC<Props> = ({
   content,
   context,
   createdAt,
   systemType,
   targetUser,
 }): JSX.Element => {
-  const channelName = useSelector((state: TStore) => state.channels[context.channelId].title);
+  const channelName = useSelector((state: Store) => state.channels[context.channelId].title);
 
   const renderContent = () => {
     if (['userJoin', 'userLeft'].includes(systemType) && targetUser) {
@@ -46,12 +45,9 @@ const ChannelSystemMessage: React.FC<TProps> = ({
   return (
     <div className={`${s.wrapper} ${s[systemType]}`}>
       <div className={s.time_wrapper}>
-        <TooltipWrapper
-          position="top"
-          tooltipContent={<Tooltip>{new TimeFormatter(createdAt).getFullMessageTime()}</Tooltip>}
-        >
+        <Tooltip position="top" text={new TimeFormatter(createdAt).getFullMessageTime()}>
           <div className={s.time}>{new TimeFormatter(createdAt).getMessageTimeShort()}</div>
-        </TooltipWrapper>
+        </Tooltip>
       </div>
       <div className={s.content_wrapper}>
         <div className={s.content}>{renderContent()}</div>

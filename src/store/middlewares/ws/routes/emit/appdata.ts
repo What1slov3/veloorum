@@ -1,9 +1,9 @@
-import { TStore } from '../../../../../types/common';
+import { Store } from '@customTypes/common.types';
 import { Socket } from 'socket.io-client';
 
 export const emitAppdata = (socket: Socket, action: any, store: any) => {
   const actionSplittedType = action.type.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     addTypingUsers: () => {

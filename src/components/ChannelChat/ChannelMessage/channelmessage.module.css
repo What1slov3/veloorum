@@ -110,27 +110,6 @@
   margin-left: 5px;
 }
 
-.attachments {
-  margin: 10px 0;
-}
-
-.attachment_image {
-  display: block;
-  height: 250px;
-  cursor: pointer;
-  margin-top: 10px;
-  opacity: 0;
-  transition: 0.5s opacity;
-}
-
-.img_loaded {
-  opacity: 1;
-  min-width: 100px;
-  max-width: 400px;
-  max-height: 400px;
-  height: auto;
-}
-
 .realtime {
   max-height: 0;
   overflow: hidden;

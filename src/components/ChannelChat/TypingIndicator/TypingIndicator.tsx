@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { undefinedUser } from '../../../common/undefinedUser';
-import { TMessageContext } from '../../../store/chats/types';
-import { TUsersStore } from '../../../store/users/types';
-import Spacer from '../../../templates/Spacer';
-import { TStore } from '../../../types/common';
+import { undefinedUser } from '@common/undefinedUser';
+import { Store } from '@customTypes/common.types';
+import { MessageContext } from '@customTypes/redux/chats.types';
+import { UsersStore } from '@customTypes/redux/users.types';
 
 import s from './typingindicator.module.css';
 
-type TProps = {
-  context: TMessageContext;
-  loadedUsers: TUsersStore;
+type Props = {
+  context: MessageContext;
+  loadedUsers: UsersStore;
   uid: string;
 };
 
-const TypingIndicator: React.FC<TProps> = ({ context, loadedUsers, uid }): JSX.Element => {
-  const typingUsers = useSelector((state: TStore) => state.appdata.typingUsers);
+const TypingIndicator: React.FC<Props> = ({ context, loadedUsers, uid }): JSX.Element => {
+  const typingUsers = useSelector((state: Store) => state.appdata.typingUsers);
 
   const [show, setShow] = useState(false);
-  const [hasMore, setHasMore] = useState(false);
 
   useEffect(() => {
-    if (typingUsers[context.chatId] && typingUsers[context.chatId].filter((typingUid) => typingUid !== uid).length) {
-      setShow(true);
-    } else {
-      setShow(false);
-    }
+    setShow(Boolean(typingUsers[context.chatId]?.filter((typingUid) => typingUid !== uid).length));
   }, [context, typingUsers]);
 
   const renderTypingUser = () => {
@@ -51,7 +45,6 @@ const TypingIndicator: React.FC<TProps> = ({ context, loadedUsers, uid }): JSX.E
       {show && (
         <>
           <div className={s.users}>{renderTypingUser()}</div>
-          <Spacer width={5} />
           <div className={s.indicator_animation}>
             <div></div>
             <div></div>

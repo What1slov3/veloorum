@@ -1,4 +1,4 @@
-import { TAxiosUpdateChannel, TAxiosUpdateChannelIcon } from './../types';
+import { AxiosUpdateChannel, AxiosUpdateChannelIcon } from '../../types/api.types';
 import { axiosInstance } from '../index';
 
 class ChannelAPI {
@@ -19,7 +19,7 @@ class ChannelAPI {
       });
   }
 
-  public async updateChannelIcon({ cid, icon }: TAxiosUpdateChannelIcon) {
+  public async updateChannelIcon({ cid, icon }: AxiosUpdateChannelIcon) {
     const data = new FormData();
     data.append('icon', icon);
     data.append('cid', cid);
@@ -35,7 +35,7 @@ class ChannelAPI {
       });
   }
 
-  public async updateChannel(data: TAxiosUpdateChannel) {
+  public async updateChannel(data: AxiosUpdateChannel) {
     return axiosInstance
       .put('/channels/update_channel', data)
       .then((res) => {

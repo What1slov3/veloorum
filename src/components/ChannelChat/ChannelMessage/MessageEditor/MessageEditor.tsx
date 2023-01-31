@@ -1,33 +1,29 @@
+import React, { useCallback, useEffect, useRef } from 'react';
 import DOMPurify from 'dompurify';
-import React, { MutableRefObject, useCallback, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { kec } from '../../../..';
-import { MAX_SYMBOLS_LIMIT_DEFAULT } from '../../../../common/constants';
-import { unwrapAllFormatting } from '../../../../common/utils/contentMessageWrapper';
-import { setDisableMessageAutofocus } from '../../../../store/appdata';
-import { fetchEditMessage } from '../../../../store/chats/thunk';
-import { TMessageContext } from '../../../../store/chats/types';
-import Spacer from '../../../../templates/Spacer';
-import EmojiMenu from '../../../EmojiMenu/EmojiMenu';
+import { MAX_SYMBOLS_LIMIT_DEFAULT } from '@common/constants';
+import { unwrapAllFormatting } from '@common/utils/contentMessageWrapper';
+import { setDisableMessageAutofocus } from '@store/appdata';
+import { fetchEditMessage } from '@store/chats/thunk';
+import { MessageContext } from '@customTypes/redux/chats.types';
+import EmojiMenu from '@components/EmojiMenu/EmojiMenu';
+import { LimitModal } from '@components/ChannelChat/ChannelChat';
 import s from './messageeditor.module.css';
 
-type TProps = {
+// ! НЕ ИСПОЛЬЗОВАТЬ
+// TODO переделать под quill и новую логику работы
+
+type Props = {
   placeholder?: string;
   uid: string;
-  context: TMessageContext;
+  context: MessageContext;
   messageContent: string;
   mid: string;
   setEditingMode: (uuid: string | null) => void;
-  openSymbolLimitModal: (payload: [number, number]) => void;
+  openSymbolLimitModal: (payload: LimitModal) => void;
 };
 
-const focusInEnd = (ref: MutableRefObject<any>) => {
-  ref.current.focus();
-  document.execCommand('selectAll', false, undefined);
-  document.getSelection()!.collapseToEnd();
-};
-
-const ChannelInput: React.FC<TProps> = ({
+const ChannelInput: React.FC<Props> = ({
   placeholder,
   uid,
   context,
@@ -36,28 +32,29 @@ const ChannelInput: React.FC<TProps> = ({
   mid,
   openSymbolLimitModal,
 }): JSX.Element => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const pressedKeysRef = useRef<string[]>([]);
   const inputRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
-    focusInEnd(inputRef);
-    kec.add('onkeydown', 'closeMessageEditor', (e: KeyboardEvent) => {
-      if (e.code === 'Escape') {
-        dispatch(setEditingMode(null));
-      }
-    });
+    inputRef.current.focus();
+
+    function closeMessageEditor(e: KeyboardEvent) {
+      e.code === 'Escape' && setEditingMode(null);
+    }
+
+    window.addEventListener('keydown', closeMessageEditor);
 
     return () => {
-      kec.remove('onkeydown', 'closeMessageEditor');
+      window.removeEventListener('keydown', closeMessageEditor);
     };
   }, []);
 
   const onMessageEdit = () => {
     const it = inputRef.current.innerText;
     if (it.length > MAX_SYMBOLS_LIMIT_DEFAULT) {
-      openSymbolLimitModal([it.length, MAX_SYMBOLS_LIMIT_DEFAULT]);
+      openSymbolLimitModal({ length: it.length, limit: MAX_SYMBOLS_LIMIT_DEFAULT });
     } else {
       if (it && it.trim() && it.trim() !== DOMPurify.sanitize(messageContent, { USE_PROFILES: { html: false } })) {
         dispatch(
@@ -136,10 +133,8 @@ const ChannelInput: React.FC<TProps> = ({
         >
           {DOMPurify.sanitize(unwrapAllFormatting(messageContent.toString()), { USE_PROFILES: { html: false } })}
         </div>
-        <Spacer width={10} />
         <EmojiMenu emojiSetter={writeEmoji} />
       </div>
-      <Spacer height={5} />
       <div className={s.control}>
         <span onClick={() => setEditingMode(null)}>esc</span> для отмены, <span onClick={onMessageEdit}>enter</span>{' '}
         редактировать

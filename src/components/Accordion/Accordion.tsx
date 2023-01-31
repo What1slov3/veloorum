@@ -1,16 +1,16 @@
 import React, { CSSProperties, ReactElement, useState } from 'react';
-import Spacer from '../../templates/Spacer';
+import { FCChildren } from '@customTypes/common.types';
 import s from './accordion.module.css';
 
-type TProps = {
+type Props = {
   title: string | ReactElement<HTMLSpanElement>;
   openByDefault?: boolean;
   titleStyle?: CSSProperties;
   extraButton?: JSX.Element;
   activeBlock?: JSX.Element;
-};
+} & FCChildren;
 
-const Accordion: React.FC<TProps> = ({
+const Accordion: React.FC<Props> = ({
   children,
   title,
   titleStyle,
@@ -29,26 +29,16 @@ const Accordion: React.FC<TProps> = ({
       <div className={s.control}>
         <div className={s.control_title_wrapper} onClick={onClick}>
           <i className={`fas fa-chevron-down ${s.arrow}`} id={isOpen ? s.open : undefined}></i>
-          <Spacer width={10} />
           <div className={s.title} style={titleStyle}>
             {title}
           </div>
         </div>
-        <div>
-          <Spacer width={10} />
-          {extraButton}
-        </div>
+        <div>{extraButton}</div>
       </div>
       <div className={s.list} id={!isOpen ? undefined : s.open_list}>
-        <Spacer height={5} />
         {children}
       </div>
-      {!isOpen && (
-        <>
-          <Spacer height={5} />
-          <div className={s.active_block}>{activeBlock}</div>
-        </>
-      )}
+      {!isOpen && <div className={s.active_block}>{activeBlock}</div>}
     </div>
   );
 };

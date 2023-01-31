@@ -1,44 +1,36 @@
-import { TDefaultAction } from './../../types/reducers';
-import { fetchUserInit, fetchLeaveChannel } from './../user/thunk';
-import { fetchCreateChannel } from './../channels/thunk';
-import {
-  fetchSendMessage,
-  fetchGetHistory,
-  fetchDeleteMessage,
-  fetchPreloadAllChats,
-  fetchCreateChat,
-  fetchDeleteChat,
-} from './thunk';
+import { fetchUserInit, fetchLeaveChannel } from '@store/user/thunk';
+import { fetchCreateChannel } from '@store/channels/thunk';
+import { fetchSendMessage, fetchGetHistory, fetchDeleteMessage, fetchCreateChat, fetchDeleteChat } from './thunk';
 import { fetchFindChatsForChannel, fetchUpdateChat, fetchEditMessage } from './thunk';
-import { TChats, TChat, TMessage, TMessageContext } from './types';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Chat, Chats, Message, MessageContext } from '@customTypes/redux/chats.types';
 
-const initialState: TChats = {};
+const initialState: Chats = {};
 
 const chatsSlice: any = createSlice({
   name: 'textCommunications',
   initialState,
   reducers: {
-    chatSendMessage: (state, action: TDefaultAction<TMessage>) => {
+    chatSendMessage: (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history.push({ ...action.payload, realtime: true });
     },
-    chatDeleteMessage: (state, action: TDefaultAction<TMessage>) => {
+    chatDeleteMessage: (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history.splice(
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid),
         1
       );
     },
-    chatEditMessage: (state, action: TDefaultAction<TMessage>) => {
+    chatEditMessage: (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history[
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid)
       ] = action.payload;
     },
-    resetRealtimeStatus: (state, action: TDefaultAction<{ context: TMessageContext; uuid: string }>) => {
+    resetRealtimeStatus: (state, action: PayloadAction<{ context: MessageContext; uuid: string }>) => {
       state[action.payload.context.chatId].history[
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid)
       ].realtime = false;
     },
-    addChat: (state, action: TDefaultAction<TChat>) => {
+    addChat: (state, action: PayloadAction<Chat>) => {
       state[action.payload.uuid] = action.payload;
     },
   },
@@ -48,25 +40,25 @@ const chatsSlice: any = createSlice({
     });
     builder.addCase(fetchFindChatsForChannel.fulfilled, (state, action) => {
       const loadedChats: Record<string, any> = {};
-      action.payload.forEach((chat: TChat) => (loadedChats[chat.uuid] = chat));
+      action.payload.forEach((chat: Chat) => (loadedChats[chat.uuid] = chat));
       return { ...state, ...loadedChats };
     });
-    builder.addCase(fetchSendMessage.fulfilled, (state, action: TDefaultAction<TMessage>) => {
+    builder.addCase(fetchSendMessage.fulfilled, (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history.push({ ...action.payload, realtime: true });
     });
     builder.addCase(
       fetchGetHistory.fulfilled,
-      (state, action: TDefaultAction<{ history: TMessage[]; chatId: string; hasMore: boolean }>) => {
+      (state, action: PayloadAction<{ history: Message[]; chatId: string; hasMore: boolean }>) => {
         state[action.payload.chatId].history.unshift(...action.payload.history);
       }
     );
-    builder.addCase(fetchDeleteMessage.fulfilled, (state, action: TDefaultAction<TMessage>) => {
+    builder.addCase(fetchDeleteMessage.fulfilled, (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history.splice(
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid),
         1
       );
     });
-    builder.addCase(fetchEditMessage.fulfilled, (state, action: TDefaultAction<TMessage>) => {
+    builder.addCase(fetchEditMessage.fulfilled, (state, action: PayloadAction<Message>) => {
       state[action.payload.context.chatId].history[
         state[action.payload.context.chatId].history.findIndex((message) => message.uuid === action.payload.uuid)
       ] = action.payload;
@@ -74,9 +66,8 @@ const chatsSlice: any = createSlice({
     builder.addCase(fetchCreateChannel.fulfilled, (state, action) => {
       state[action.payload.chat.uuid] = action.payload.chat;
     });
-    builder.addCase(fetchPreloadAllChats.fulfilled, (state, action) => {});
     builder.addCase(fetchLeaveChannel.fulfilled, (state, action) => {
-      const newState: TChats = {};
+      const newState: Chats = {};
       for (let cid in state) {
         if (state[cid].owningChannelId !== action.payload.cid) {
           newState[cid] = state[cid];
@@ -96,6 +87,5 @@ const chatsSlice: any = createSlice({
   },
 });
 
-export const { chatSendMessage, chatDeleteMessage, chatEditMessage, resetRealtimeStatus, addChat } =
-  chatsSlice.actions;
+export const { chatSendMessage, chatDeleteMessage, chatEditMessage, resetRealtimeStatus, addChat } = chatsSlice.actions;
 export default chatsSlice.reducer;

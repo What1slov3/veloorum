@@ -1,28 +1,55 @@
 import React from 'react';
 import ChannelName from './ChannelName/ChannelName';
 import ChannelChatList from './ChannelChatList/ChannelChatList';
-import useModal from '../../common/hooks/useModal';
-import InviteLinkModal from '../Modals/InviteLinkModal/InviteLinkModal';
-import CreateChatModal from '../Modals/CreateChatModal/CreateChatModal';
-import { TChat } from '../../store/chats/types';
-import ChatSettingsModal from '../Modals/ChatSettingsModal/ChatSettingsModal';
-import ChannelSettingsModal from '../Modals/ChannelSettingsModal/ChannelSettingsModal';
-import { TActiveConnection } from '../../store/appdata/types';
+import { Chat } from '@customTypes/redux/chats.types';
+import { ActiveConnection } from '@customTypes/redux/appdata.types';
+import { useDispatch } from 'react-redux';
+import { setModal } from '@store/appdata';
+import { MODAL_NAMES } from '@common/constants';
+import {
+  ChannelSettingsPayload,
+  ChatSettingsPayload,
+  CreateChatPayload,
+  InviteLinkPayload,
+} from '@customTypes/modals.types';
 import s from './channelsidebar.module.css';
 
-type TProps = {
+type Props = {
   channelName: string;
-  chats: TChat[] | null;
-  connection: TActiveConnection;
+  chats: Chat[] | null;
+  connection: ActiveConnection;
   channelId: string;
   isAdmin: boolean;
 };
 
-const ChannelSidebar: React.FC<TProps> = ({ channelName, chats, connection, channelId, isAdmin }): JSX.Element => {
-  const inviteModal = useModal<string>(channelId);
-  const chatCreatorModal = useModal();
-  const chatSettingsModal = useModal<string>();
-  const channelSettingsModal = useModal<string>();
+const ChannelSidebar: React.FC<Props> = ({ channelName, chats, connection, channelId, isAdmin }): JSX.Element => {
+  const dispatch = useDispatch<any>();
+
+  const openInviteModal = () => {
+    dispatch(setModal({ name: MODAL_NAMES.INVITE_LINK, payload: { cid: channelId } as InviteLinkPayload }));
+  };
+
+  const openCreateChatModal = () => {
+    dispatch(setModal({ name: MODAL_NAMES.CREATE_CHAT, payload: { cid: channelId } as CreateChatPayload }));
+  };
+
+  const openChatSettingsModal = (chatId: string) => {
+    dispatch(
+      setModal({
+        name: MODAL_NAMES.CHAT_SETTINGS,
+        payload: { chat: chats!.find((chat) => chat.uuid === chatId) } as ChatSettingsPayload,
+      })
+    );
+  };
+
+  const openChannelSettingsModal = (channelId: string) => {
+    dispatch(
+      setModal({
+        name: MODAL_NAMES.CHANNEL_SETTINGS,
+        payload: { channelId } as ChannelSettingsPayload,
+      })
+    );
+  };
 
   return (
     <>
@@ -30,37 +57,17 @@ const ChannelSidebar: React.FC<TProps> = ({ channelName, chats, connection, chan
         <ChannelName
           channelName={channelName}
           channelId={channelId}
-          openInvite={inviteModal.open}
-          openChannelSettings={channelSettingsModal.open}
+          openInvite={openInviteModal}
+          openChannelSettings={openChannelSettingsModal}
         />
         <ChannelChatList
           chats={chats}
           connection={connection}
-          openChatCreator={chatCreatorModal.open}
-          openChatSettings={chatSettingsModal.open}
+          openChatCreator={openCreateChatModal}
+          openChatSettings={openChatSettingsModal}
           isAdmin={isAdmin}
         />
       </div>
-      {inviteModal.isOpen && inviteModal.payload && (
-        <InviteLinkModal isFading={inviteModal.isFading} close={inviteModal.close} cid={inviteModal.payload} />
-      )}
-      {chatCreatorModal.isOpen && (
-        <CreateChatModal isFading={chatCreatorModal.isFading} close={chatCreatorModal.close} cid={channelId} />
-      )}
-      {chatSettingsModal.isOpen && chats && (
-        <ChatSettingsModal
-          isFading={chatSettingsModal.isFading}
-          close={chatSettingsModal.close}
-          chat={chats.find((chat) => chat.uuid === chatSettingsModal.payload)!}
-        />
-      )}
-      {channelSettingsModal.isOpen && channelId && (
-        <ChannelSettingsModal
-          isFading={channelSettingsModal.isFading}
-          close={channelSettingsModal.close}
-          channelId={channelSettingsModal.payload!}
-        />
-      )}
     </>
   );
 };

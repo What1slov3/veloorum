@@ -1,12 +1,12 @@
 import React from 'react';
 import s from './messagesymbollimit.module.css';
 
-type TProps = {
+type Props = {
   length: number;
   limit: number;
 };
 
-const MessageSymbolLimit: React.FC<TProps> = ({ length, limit }): JSX.Element => {
+const MessageSymbolLimit: React.FC<Props> = ({ length, limit }): JSX.Element => {
   return (
     <div className={s.wrapper}>
       {length}/{limit}

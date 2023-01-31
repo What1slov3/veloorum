@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:3001'
+
 window.onload = () => {
   if (localStorage.getItem('access_token')) {
     window.location.pathname = '/';
@@ -81,7 +83,7 @@ const handleLogIn = () => {
     return;
   }
 
-  fetch('http://localhost:5000/api/auth/login', {
+  fetch(`${BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -99,7 +101,7 @@ const handleLogIn = () => {
         return;
       }
       localStorage.setItem('access_token', json.access_token);
-      window.location.pathname = '/';
+      window.location.pathname = '/'; 
     })
     .catch((err) => setLoginError('Что-то пошло не так, повторите попытку позднее'));
 };
@@ -139,7 +141,7 @@ const handleSignIn = () => {
     return;
   }
 
-  fetch('http://localhost:5000/api/users/create', {
+  fetch(`${BASE_URL}/api/users/create`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -167,7 +169,7 @@ const handleSignIn = () => {
       signinResetPassword.value = '';
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
       setSigninError('Что-то пошло не так');
     });
 };

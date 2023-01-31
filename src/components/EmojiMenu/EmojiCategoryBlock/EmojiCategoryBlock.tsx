@@ -1,11 +1,11 @@
 import React, { useCallback, useMemo, useRef, useState } from 'react';
-import { TEmoji } from '../../../assets/emojis';
+import { Emoji } from '@customTypes/emoji.types';
 import EmojiIcon from '../EmojiIcon/EmojiIcon';
 import s from './emojicategoryblock.module.css';
 
-type TProps = {
-  ec: Record<string, TEmoji[]>;
-  hover: (emoji: TEmoji) => void;
+type Props = {
+  ec: Record<string, Emoji[]>;
+  hover: (emoji: Emoji) => void;
   emojiSetter: (shortname: string, emoji: string) => void;
   precalculatedHeight: number;
 };
@@ -21,18 +21,14 @@ const categoryNameRu: Record<string, string> = {
   'Travel & Places': 'Путешествия',
 };
 
-const EmojiCategoryBlock: React.FC<TProps> = ({ ec, hover, emojiSetter, precalculatedHeight }): JSX.Element => {
+const EmojiCategoryBlock: React.FC<Props> = ({ ec, hover, emojiSetter, precalculatedHeight }): JSX.Element => {
   const [show, setShow] = useState(false);
 
   const intersectionObserver = useRef<IntersectionObserver>();
-  const observer = useCallback((node) => {
+  const observer = useCallback((node: HTMLDivElement) => {
     if (intersectionObserver.current) intersectionObserver.current.disconnect();
     intersectionObserver.current = new IntersectionObserver((entries) => {
-      if (entries[0].isIntersecting) {
-        setShow(true);
-      } else {
-        setShow(false);
-      }
+      setShow(entries[0].isIntersecting);
     });
     if (node) intersectionObserver.current.observe(node);
   }, []);

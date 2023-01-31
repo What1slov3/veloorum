@@ -1,12 +1,12 @@
 import React from 'react';
+import TimeFormatter from '@common/utils/TimeFormatter';
 import s from './channelmessagedivider.module.css';
-import TimeFormatter from '../../../common/utils/TimeFormatter';
 
-type TProps = {
+type Props = {
   date: number;
 };
 
-const ChannelMessageDivider: React.FC<TProps> = ({ date }): JSX.Element => {
+const ChannelMessageDivider: React.FC<Props> = ({ date }): JSX.Element => {
   return <div className={s.wrapper}>{new TimeFormatter(date).getDateSeparator()}</div>;
 };
 

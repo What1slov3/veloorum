@@ -16,7 +16,7 @@
   white-space: pre-wrap;
   overflow-wrap: break-word;
   cursor: text;
-  transition: .2s;
+  transition: 0.2s;
 }
 
 .control {

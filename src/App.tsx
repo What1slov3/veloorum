@@ -1,30 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import GridMain from './templates/Grids/GridMain';
 import { useDispatch, useSelector } from 'react-redux';
-import Navbar from './components/Navbar/Navbar';
-import AppPreloader from './components/Preloaders/AppPreloader/AppPreloader';
+import Navbar from '@components/Navbar/Navbar';
+import Preloader from '@components/Preloaders/Preloader/Preloader';
 import ChannelPage from './pages/ChannelPage/ChannelPage';
 import SettingsPage from './pages/SettingsPage/SettingsPage';
-import { TStore } from './types/common';
-import { fetchUserInit } from './store/user/thunk';
-import DropAreaWrapper from './components/DropAreaWrapper/DropAreaWrapper';
+import { Store } from '@customTypes/common.types';
+import { fetchUserInit } from '@store/user/thunk';
+import DropAreaWrapper from '@components/DropAreaWrapper/DropAreaWrapper';
 import MainPage from './pages/MainPage/MainPage';
+import ActiveModal from '@components/Modals';
 import './App.css';
 
 function App() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<any>();
 
   const [showPreloader, setShowPreloader] = useState(true);
   const [inited, setInited] = useState(false);
 
-  const init = useSelector((state: TStore) => state.appdata.init); // Загруженны ли основные данные юзера
-  const wsConnected = useSelector((state: TStore) => state.appdata.wsData.wsConnected);
-  const wsConnectionError = useSelector((state: TStore) => state.appdata.wsData.wsConnectionError);
+  const init = useSelector((state: Store) => state.appdata.init); // Загруженны ли основные данные юзера
+  const wsConnected = useSelector((state: Store) => state.appdata.wsData.wsConnected);
+  const wsConnectionError = useSelector((state: Store) => state.appdata.wsData.wsConnectionError);
 
   const reInitRef = useRef<any>();
 
-  function handlePreloaderAnim() {
+  function handlePreloaderAnimation() {
     setTimeout(() => {
       setShowPreloader(false);
     }, 1000);
@@ -38,7 +39,7 @@ function App() {
     if (init.fulfilled && wsConnected) {
       if (reInitRef.current) clearInterval(reInitRef.current);
       setInited(true);
-      handlePreloaderAnim();
+      handlePreloaderAnimation();
     }
     if (wsConnectionError) {
       setInited(false);
@@ -47,52 +48,50 @@ function App() {
     if (init.rejectedWithError) {
       reInitRef.current = setInterval(() => dispatch(fetchUserInit()), 1000 * 5);
     }
-  }, [init, reInitRef, wsConnected, wsConnectionError]);
+  }, [init, wsConnected, wsConnectionError]);
 
   return (
-    <DropAreaWrapper>
-      <GridMain>
-        {showPreloader && (
-          <AppPreloader
-            show={!init.fulfilled || !wsConnected}
-            loadError={init.rejectedWithError || wsConnectionError}
-          />
-        )}
-        {inited && (
-          <Switch>
-            <Route
-              path="/channel/:id"
-              render={() => {
-                return (
+    <>
+      {showPreloader && (
+        <Preloader show={!init.fulfilled || !wsConnected} loadError={init.rejectedWithError || wsConnectionError} />
+      )}
+      <ActiveModal />
+      <DropAreaWrapper>
+        <GridMain>
+          {inited && (
+            <Routes>
+              <Route
+                path="/channel/:channelId/:chatId"
+                element={
                   <>
                     <Navbar />
-                    <Route path="/channel/:id" render={() => <ChannelPage />} />
+                    <ChannelPage />
                   </>
-                );
-              }}
-            />
-            <Route
-              path="/settings"
-              render={() => (
-                <>
-                  <Navbar />
-                  <SettingsPage />
-                </>
-              )}
-            />
-            <Route
-              path="/"
-              render={() => (
-                <>
-                  <Navbar />
-                  <MainPage />
-                </>
-              )}
-            />
-          </Switch>
-        )}
-      </GridMain>
-    </DropAreaWrapper>
+                }
+              />
+              <Route
+                path="/settings/*"
+                element={
+                  <>
+                    <Navbar />
+                    <SettingsPage />
+                  </>
+                }
+              />
+              <Route
+                path="/"
+                element={
+                  <>
+                    <Navbar />
+                    <MainPage />
+                  </>
+                }
+              />
+            </Routes>
+          )}
+        </GridMain>
+      </DropAreaWrapper>
+    </>
   );
 }
 

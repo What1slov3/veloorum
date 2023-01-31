@@ -3,12 +3,20 @@
   display: grid;
   grid-template-rows: 1fr;
   grid-template-columns: 400px 1fr;
+  gap: 10px;
   background: var(--charcoal);
   user-select: none;
 }
 
+.left_side {
+  display: flex;
+  align-items: center;
+}
+
 .logo_wrapper {
-  margin-right: 20px;
+  width: 60px;
+  height: 60px;
+  margin: 0 10px;
   padding: 10px;
   border-radius: 0;
   transition: 0.2s;
@@ -27,10 +35,12 @@
 }
 
 .userData {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-left: 15px;
+  gap: 10px;
+  padding: 0 10px;
 }
 
 .userData > div {
@@ -39,6 +49,7 @@
 }
 
 .userData_info {
+  margin-left: 10px;
   cursor: pointer;
 }
 
@@ -73,7 +84,7 @@
 }
 
 .line {
-  width: 3px;
+  min-width: 3px;
   height: 50px;
   border-radius: 3px;
   background: #34373f;
@@ -82,6 +93,7 @@
 .serversList_wrapper {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .serversList_wrapper > div {
@@ -108,6 +120,7 @@
   max-width: calc(100vw - 400px);
   overflow-x: auto;
   padding-bottom: 5px;
+  gap: 10px;
 }
 
 .serversList_list::-webkit-scrollbar {

@@ -1,10 +1,10 @@
-import { TStore } from '../../../../../types/common';
 import { Socket } from 'socket.io-client';
-import { addChannelMember, pullChannelMember } from '../../../../channels';
+import { Store } from '@customTypes/common.types';
+import { addChannelMember, pullChannelMember } from '@store/channels';
 
 export const receiveCommon = (socket: Socket, eventName: string, payload: any, store: any) => {
   const actionSplittedType = eventName.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     userJoin: () => {

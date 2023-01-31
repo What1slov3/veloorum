@@ -1,13 +1,12 @@
-import { TChat } from './../chats/types';
-import { TDefaultAction } from './../../types/reducers';
-import { fetchCreateChat } from './../chats/thunk';
-import { fetchLeaveChannel } from './../user/thunk';
+import { fetchCreateChat } from '@store/chats/thunk';
+import { fetchLeaveChannel } from '@store/user/thunk';
 import { fetchCreateChannel, fetchUpdateChannel, fetchUpdateChannelIcon } from './thunk';
-import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserInit } from '../user/thunk';
-import { TChannel } from './types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { fetchUserInit } from '@store/user/thunk';
+import { Channel } from '@customTypes/redux/channels.types';
+import { Chat } from '@customTypes/redux/chats.types';
 
-const initialState: Record<string, TChannel> = {};
+const initialState: Record<string, Channel> = {};
 
 const channelsSlice = createSlice({
   name: 'channels',
@@ -16,24 +15,24 @@ const channelsSlice = createSlice({
     addChannel: (state, action) => {
       state[action.payload.uuid] = action.payload;
     },
-    addChannelMember: (state, action: TDefaultAction<{ cid: string; uid: string }>) => {
+    addChannelMember: (state, action: PayloadAction<{ cid: string; uid: string }>) => {
       state[action.payload.cid].members.push(action.payload.uid);
     },
-    pullChannelMember: (state, action: TDefaultAction<{ cid: string; uid: string }>) => {
+    pullChannelMember: (state, action: PayloadAction<{ cid: string; uid: string }>) => {
       const deletingIndex = state[action.payload.cid].members.findIndex((uid) => uid === action.payload.uid)!;
       state[action.payload.cid].members.splice(deletingIndex, 1);
     },
-    updateChannel: (state, action: TDefaultAction<TChannel>) => {
+    updateChannel: (state, action: PayloadAction<Channel>) => {
       state[action.payload.uuid] = action.payload;
     },
-    pushNewChat: (state, action: TDefaultAction<TChat>) => {
+    pushNewChat: (state, action: PayloadAction<Chat>) => {
       state[action.payload.owningChannelId].chats.push(action.payload.uuid);
     },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchUserInit.fulfilled, (state, action) => {
-      const newState: Record<string, TChannel> = {};
-      action.payload.channels.forEach((channel: TChannel) => (newState[channel.uuid] = channel));
+      const newState: Record<string, Channel> = {};
+      action.payload.channels.forEach((channel: Channel) => (newState[channel.uuid] = channel));
       return newState;
     });
     builder.addCase(fetchCreateChannel.fulfilled, (state, action) => {
@@ -42,13 +41,13 @@ const channelsSlice = createSlice({
     builder.addCase(fetchLeaveChannel.fulfilled, (state, action) => {
       delete state[action.payload.cid];
     });
-    builder.addCase(fetchCreateChat.fulfilled, (state, action: TDefaultAction<TChat>) => {
+    builder.addCase(fetchCreateChat.fulfilled, (state, action: PayloadAction<Chat>) => {
       state[action.payload.owningChannelId].chats.push(action.payload.uuid);
     });
-    builder.addCase(fetchUpdateChannelIcon.fulfilled, (state, action: TDefaultAction<TChannel>) => {
+    builder.addCase(fetchUpdateChannelIcon.fulfilled, (state, action: PayloadAction<Channel>) => {
       state[action.payload.uuid] = action.payload;
     });
-    builder.addCase(fetchUpdateChannel.fulfilled, (state, action: TDefaultAction<TChannel>) => {
+    builder.addCase(fetchUpdateChannel.fulfilled, (state, action: PayloadAction<Channel>) => {
       state[action.payload.uuid] = action.payload;
     });
   },

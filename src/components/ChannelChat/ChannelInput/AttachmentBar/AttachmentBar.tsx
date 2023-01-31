@@ -1,15 +1,15 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setOpenedAttachment, setUploadedAttachments } from '../../../../store/appdata';
-import { TMessageContext } from '../../../../store/chats/types';
+import { setOpenedAttachment, setUploadedAttachments } from '@store/appdata';
+import { MessageContext } from '@customTypes/redux/chats.types';
 import s from './attachmentbar.module.css';
 
-type TProps = {
+type Props = {
   urls: string[];
-  context: TMessageContext;
+  context: MessageContext;
 };
 
-const AttachmentBar: React.FC<TProps> = ({ urls, context }): JSX.Element => {
+const AttachmentBar: React.FC<Props> = ({ urls, context }): JSX.Element => {
   const dispatch = useDispatch();
 
   const deleteAttachment = (index: number) => {
@@ -38,11 +38,7 @@ const AttachmentBar: React.FC<TProps> = ({ urls, context }): JSX.Element => {
     ));
   };
 
-  return (
-    <>
-      <div className={s.wrapper}>{renderAttachments()}</div>
-    </>
-  );
+  return <div className={s.wrapper}>{renderAttachments()}</div>;
 };
 
 export default AttachmentBar;

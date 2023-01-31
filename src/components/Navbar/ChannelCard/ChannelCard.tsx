@@ -1,31 +1,41 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { NavLink } from 'react-router-dom';
-import Spacer from '../../../templates/Spacer';
-import Avatar from '../../Avatar/Avatar';
-import { setActiveChannelId } from '../../../store/appdata/index';
+import Avatar from '@components/Avatar/Avatar';
+import { setActiveChannelId } from '@store/appdata/index';
+import classNames from 'classnames';
 import s from './channelcard.module.css';
 
-type TProps = {
+type Props = {
   uuid: string;
+  mainChatId: string;
   channelName: string;
   type: string;
   iconUrl: string;
   onlineCount: number;
   usersCount: number;
+  onClick: () => void;
+  isActive: boolean;
 };
 
-const ChannelCard: React.FC<TProps> = ({ uuid, channelName, type, iconUrl, onlineCount, usersCount }): JSX.Element => {
-  const dispatch = useDispatch();
-
-  const selectChannel = () => {
-    dispatch(setActiveChannelId(uuid));
-  };
-
+const ChannelCard: React.FC<Props> = ({
+  uuid,
+  channelName,
+  type,
+  iconUrl,
+  onlineCount,
+  usersCount,
+  mainChatId,
+  onClick,
+  isActive,
+}): JSX.Element => {
   return (
-    <NavLink to={`/channel/${uuid}`} className={s.wrapper} activeClassName={s.active_channel} onClick={selectChannel}>
+    <NavLink
+      to={`/channel/${uuid}/${mainChatId}`}
+      onClick={onClick}
+      className={classNames({ [s.wrapper]: true, [s.active_channel]: isActive })}
+    >
       <Avatar url={iconUrl} />
-      <Spacer width={10} />
       <div className={s.channel_info}>
         <div className={s.channel_name}>{channelName}</div>
         <div className={s.online_wrapper}>

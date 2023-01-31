@@ -1,12 +1,12 @@
 import React from 'react';
-import ModalHeader from '../../Modals/ModalWindow/ModalHeader/ModalHeader';
+import ModalHeader from '@components/Modals/ModalWindow/ModalHeader/ModalHeader';
 import s from './filedroparea.module.css';
 
-type TProps = {
+type Props = {
   title: string;
 };
 
-const FileDropArea: React.FC<TProps> = ({ title }): JSX.Element => {
+const FileDropArea: React.FC<Props> = ({ title }): JSX.Element => {
   return (
     <div className={s.wrapper}>
       <ModalHeader style={{ borderRadius: '5px' }}>

@@ -1,15 +1,14 @@
-import { TDefaultAction } from './../../types/reducers';
 import { fetchLoadedUsers } from './thunk';
-import { TLoadedUser, TUsersStore } from './types';
-import { createSlice, current } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { LoadedUser, UsersStore } from '@customTypes/redux/users.types';
 
-const initialState: TUsersStore = {};
+const initialState: UsersStore = {};
 
 const usersSlice = createSlice({
   name: 'users',
   initialState,
   reducers: {
-    updateUserData: (state, action: TDefaultAction<{ username: string; avatarUrl: string; uid: string }>) => {
+    updateUserData: (state, action: PayloadAction<{ username: string; avatarUrl: string; uid: string }>) => {
       state[action.payload.uid] = {
         ...state[action.payload.uid],
         username: action.payload.username || state[action.payload.uid].username,
@@ -18,7 +17,7 @@ const usersSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchLoadedUsers.fulfilled, (state, action: TDefaultAction<Record<string, TLoadedUser>>) => {
+    builder.addCase(fetchLoadedUsers.fulfilled, (state, action: PayloadAction<Record<string, LoadedUser>>) => {
       return { ...state, ...action.payload };
     });
   },

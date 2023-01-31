@@ -1,10 +1,10 @@
-import { TStore } from '../../../../../types/common';
+import { Store } from '@customTypes/common.types';
+import { updateChannel } from '@store/channels/index';
 import { Socket } from 'socket.io-client';
-import { updateChannel } from '../../../../channels/index';
 
 export const receiveChannels = (socket: Socket, eventName: string, payload: any, store: any) => {
   const actionSplittedType = eventName.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     updateChannel: () => {

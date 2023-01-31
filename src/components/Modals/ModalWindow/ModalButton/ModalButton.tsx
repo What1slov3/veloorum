@@ -1,26 +1,13 @@
-import React, { CSSProperties, useEffect } from 'react';
-import { kec } from '../../../..';
+import React from 'react';
+import { FCChildren, FCStyle } from '@customTypes/common.types';
 import s from './modalbutton.module.css';
 
-type TProps = {
-  style?: CSSProperties;
+type Props = {
   onClick: () => void;
-  onEnterPress?: boolean;
-};
+} & FCChildren &
+  FCStyle;
 
-const ModalButton: React.FC<TProps> = ({ children, style, onClick, onEnterPress }): JSX.Element => {
-  useEffect(() => {
-    if (onEnterPress) {
-      kec.add('onkeydown', 'pressEnter', (e: any) => {
-        if (e.key === 'Enter') onClick();
-      });
-    }
-
-    return () => {
-      kec.remove('onkeydown', 'pressEnter');
-    };
-  }, [onEnterPress, onClick]);
-
+const ModalButton: React.FC<Props> = ({ children, style, onClick }): JSX.Element => {
   return (
     <div className={s.wrapper} style={style} onClick={onClick}>
       {children}

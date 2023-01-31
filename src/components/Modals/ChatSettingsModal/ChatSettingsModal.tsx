@@ -1,42 +1,42 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { TModalWindowArgs } from '../../../types/hooks';
-import ModalWindow from '../ModalWindow/ModalWindow';
-import s from './chatsettingsmodal.module.css';
-import { TChat } from '../../../store/chats/types';
 import ModalHeader from '../ModalWindow/ModalHeader/ModalHeader';
 import InputTemplate from '../../../templates/Inputs/InputTemplate/InputTemplate';
 import ModalError from '../ModalWindow/ModalError/ModalError';
 import ModalControl from '../ModalWindow/ModalControl/ModalControl';
 import ModalButton from '../ModalWindow/ModalButton/ModalButton';
 import { useDispatch, useSelector } from 'react-redux';
-import { TStore } from '../../../types/common';
-import useInput from '../../../common/hooks/useInput';
-import { setStatus } from '../../../store/errors';
-import { fetchUpdateChat } from '../../../store/chats/thunk';
+import { Store } from '@customTypes/common.types';
+import useInput from '@common/hooks/useInput';
+import { setStatus } from '@store/errors';
+import { fetchUpdateChat } from '@store/chats/thunk';
+import { ChatSettingsPayload } from '@customTypes/modals.types';
+import s from './chatsettingsmodal.module.css';
 
-type TProps = {
-  chat: TChat;
-} & TModalWindowArgs;
+type Props = {
+  onClose: () => void;
+};
 
 const titleSetter = (value: string) => {
   return value.slice(0, 32).toLowerCase().replace(/\s+/g, '-');
 };
 
-const ChatSettingsModal: React.FC<TProps> = ({ isFading, close, chat }): JSX.Element => {
-  const dispatch = useDispatch();
+const ChatSettingsModal: React.FC<Props> = ({ onClose }): JSX.Element => {
+  const dispatch = useDispatch<any>();
 
-  const updateChatStatus = useSelector((state: TStore) => state.errors.updateChatStatus);
+  const updateChatStatus = useSelector((state: Store) => state.errors.updateChatStatus);
+  const { chat } = useSelector((state: Store) => state.appdata.activeModal.payload as ChatSettingsPayload);
 
   const titleInput = useInput({ initial: chat.title, setter: titleSetter });
 
-  const titleRef = useRef<HTMLInputElement>(null!);
   const [error, setError] = useState('');
+
+  const titleRef = useRef<HTMLInputElement>(null!);
 
   useEffect(() => {
     switch (updateChatStatus) {
       case 'success':
         dispatch(setStatus({ type: 'updateChatStatus', value: null }));
-        close();
+        onClose();
         break;
       case 'error':
         setError('Что-то пошло не так, повторите попытку');
@@ -47,11 +47,11 @@ const ChatSettingsModal: React.FC<TProps> = ({ isFading, close, chat }): JSX.Ele
   const saveChat = () => {
     if (!titleInput.value.trim()) return setError('Все поля должны быть заполнены');
     dispatch(fetchUpdateChat({ cid: chat.uuid, chat: { title: titleInput.value } }));
-    close();
+    onClose();
   };
 
   return (
-    <ModalWindow isFading={isFading} close={close}>
+    <>
       <ModalHeader style={{ padding: '20px' }}>
         <h5>Управление чатом</h5>
       </ModalHeader>
@@ -64,13 +64,13 @@ const ChatSettingsModal: React.FC<TProps> = ({ isFading, close, chat }): JSX.Ele
         </InputTemplate>
         {error && <ModalError>{error}</ModalError>}
         <ModalControl>
-          <ModalButton onClick={close}>Отмена</ModalButton>
-          <ModalButton style={{ background: 'var(--astro)' }} onClick={saveChat} onEnterPress>
+          <ModalButton onClick={onClose}>Отмена</ModalButton>
+          <ModalButton style={{ background: 'var(--astro)' }} onClick={saveChat}>
             Сохранить
           </ModalButton>
         </ModalControl>
       </div>
-    </ModalWindow>
+    </>
   );
 };
 

@@ -1,11 +1,11 @@
 import React from 'react';
 import s from './attachmentloader.module.css';
 
-type TProps = {
+type Props = {
   onChange: (e: any) => void;
 };
 
-const AttachmentLoader: React.FC<TProps> = ({onChange}): JSX.Element => {
+const AttachmentLoader: React.FC<Props> = ({ onChange }): JSX.Element => {
   return (
     <div>
       <label htmlFor="attachment_loader">

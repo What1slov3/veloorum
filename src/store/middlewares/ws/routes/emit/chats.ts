@@ -1,10 +1,10 @@
-import { TChat } from './../../../../chats/types';
-import { TStore } from '../../../../../types/common';
+import { Store } from '@customTypes/common.types';
+import { Chat } from '@customTypes/redux/chats.types';
 import { Socket } from 'socket.io-client';
 
 export const emitChats = (socket: Socket, action: any, store: any) => {
   const actionSplittedType = action.type.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     sendMessage: () => {
@@ -18,7 +18,7 @@ export const emitChats = (socket: Socket, action: any, store: any) => {
     },
     createChat: () => {
       socket.emit('createChat', action.payload);
-      socket.emit('joinChat', { cid: (action.payload as TChat).uuid });
+      socket.emit('joinChat', { cid: (action.payload as Chat).uuid });
     },
   };
 

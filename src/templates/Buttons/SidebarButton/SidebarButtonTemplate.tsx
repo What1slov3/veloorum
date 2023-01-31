@@ -1,10 +1,11 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
+import { FCChildren, FCStyle } from '@customTypes/common.types';
 import s from './sidebarbutton.module.css';
 
 type TProps = {
-  style?: CSSProperties;
   isActive?: boolean;
-};
+} & FCStyle &
+  FCChildren;
 
 const SidebarButtonTemplate: React.FC<TProps> = ({ children, style, isActive }): JSX.Element => {
   return (

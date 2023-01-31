@@ -1,24 +1,36 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { setActiveChatId } from '../../../store/appdata';
-import Spacer from '../../../templates/Spacer';
-import { TModalOpenFunc } from '../../../types/hooks';
-import Tooltip from '../../TooltipWrapper/Tooltip/Tooltip';
-import TooltipWrapper from '../../TooltipWrapper/TooltipWrapper';
+import { useNavigate } from 'react-router-dom';
+import { setActiveChatId } from '@store/appdata';
+import Tooltip from '@components/Tooltip/Tooltip';
 import s from './chatlink.module.css';
 
-type TProps = {
+type Props = {
   title: string;
   uuid: string;
   active?: boolean;
-  openChatSettings: TModalOpenFunc<string>;
+  openChatSettings: (chatId: string) => void;
   isAdmin: boolean;
+  activeChannelId: string;
 };
 
-const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings, isAdmin }): JSX.Element => {
-  const dispatch = useDispatch();
+const ChatLink: React.FC<Props> = ({
+  title,
+  uuid,
+  active,
+  openChatSettings,
+  isAdmin,
+  activeChannelId,
+}): JSX.Element => {
+  const dispatch = useDispatch<any>();
+  const navigate = useNavigate();
+
+  const setChatHistoryLink = () => {
+    navigate(`/channel/${activeChannelId}/${uuid}`);
+  };
 
   const selectChat = () => {
+    setChatHistoryLink();
     dispatch(setActiveChatId(uuid));
   };
 
@@ -34,9 +46,9 @@ const ChatLink: React.FC<TProps> = ({ title, uuid, active, openChatSettings, isA
       </div>
       {isAdmin && (
         <div className={s.context_menu}>
-          <TooltipWrapper position="top" tooltipContent={<Tooltip>Настройки</Tooltip>}>
+          <Tooltip position="top" text="Настройки">
             <i className={`fas fa-ellipsis-h ${s.chat_settings}`} onClick={openChatSettingsHandle}></i>
-          </TooltipWrapper>
+          </Tooltip>
         </div>
       )}
     </div>

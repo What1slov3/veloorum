@@ -1,23 +1,22 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import emojisShort from '../../assets/emojiList';
-import { emojis, TEmoji } from '../../assets/emojis';
-import Spacer from '../../templates/Spacer';
+import { emojis } from '../../assets/emojis';
 import EmojiCategoryBlock from './EmojiCategoryBlock/EmojiCategoryBlock';
 import EmojiIcon from './EmojiIcon/EmojiIcon';
 import { emojiListPreview } from '../../assets/emojiListPreview';
-import { kec } from '../..';
-import useInput from '../../common/hooks/useInput';
-import { findDatasetInParents } from '../../common/utils/findDataInParents';
+import useInput from '@common/hooks/useInput';
+import { findDatasetInParents } from '@common/utils/findDataInParents';
+import { Emoji } from '@customTypes/emoji.types';
 import s from './emojimenu.module.css';
 
 const precalculatedDefaultEmojiHeight = [723, 1953, 969, 600, 395, 641, 1092, 1010];
 
-type TProps = {
+type Props = {
   emojiSetter: (shortname: string, emoji: string) => void;
 };
 
-const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
-  const emojiSearch = useInput({ disableAstrofocus: true });
+const EmojiMenu: React.FC<Props> = ({ emojiSetter }): JSX.Element => {
+  const emojiSearch = useInput({ disableAutofocus: true });
 
   const getRandomEmoji = (): string => {
     return emojiListPreview[(Math.random() * emojiListPreview.length) >> 0];
@@ -25,12 +24,18 @@ const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
 
   const [previewEmoji, setPreviewEmoji] = useState<string>(getRandomEmoji());
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [reviewEmoji, setReviewEmoji] = useState<TEmoji>();
+  const [reviewEmoji, setReviewEmoji] = useState<Emoji>();
 
   useEffect(() => {
-    kec.add('onmousedown', 'emoji_close', (e: any) => {
-      if (isOpen && !findDatasetInParents(e.target, 'emoji')) setIsOpen(false);
-    });
+    function onEmojiCloseHandler(e: MouseEvent) {
+      if (isOpen && !findDatasetInParents(e.target as HTMLElement, 'emoji')) setIsOpen(false);
+    }
+
+    window.addEventListener('mousedown', onEmojiCloseHandler);
+
+    return () => {
+      window.removeEventListener('mousedown', onEmojiCloseHandler);
+    };
   }, [isOpen]);
 
   const handlePreviewHover = () => {
@@ -41,7 +46,7 @@ const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
     setIsOpen(!isOpen);
   };
 
-  const showEmojiReview = useCallback((emoji: TEmoji | { shortname: string; emoji: string }) => {
+  const showEmojiReview = useCallback((emoji: Emoji | { shortname: string; emoji: string }) => {
     setReviewEmoji(emoji);
   }, []);
 
@@ -65,8 +70,7 @@ const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
       if (name.includes(emojiSearch.value)) {
         result.push(
           <EmojiIcon
-            //@ts-ignore
-            emoji={{ shortname: name, emoji: emojisShort[name] }}
+            emoji={{ shortname: name, emoji: emojisShort[name as keyof typeof emojisShort] }}
             hover={showEmojiReview}
             onClick={emojiSetter}
           />
@@ -92,7 +96,6 @@ const EmojiMenu: React.FC<TProps> = ({ emojiSetter }): JSX.Element => {
         </div>
         <div className={s.emoji_review}>
           <div className={s.emoji_review_emoji}>{reviewEmoji?.emoji}</div>
-          <Spacer width={10} />
           <div className={s.emoji_review_name}>{reviewEmoji?.shortname}</div>
         </div>
       </div>

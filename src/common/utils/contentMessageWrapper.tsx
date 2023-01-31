@@ -1,123 +1,117 @@
 import reactStringReplace from 'react-string-replace';
 import emojiList from '../../assets/emojiList';
-import Tooltip from '../../components/TooltipWrapper/Tooltip/Tooltip';
-import TooltipWrapper from '../../components/TooltipWrapper/TooltipWrapper';
+import Tooltip from '@components/Tooltip/Tooltip';
 
-export const wrapUrl = (text: string) => {
-  return reactStringReplace(text, /(https?:\/\/\S+)/gim, (match, i) => {
-    return (
-      <a key={match + i} href={match} target="_blank" className="message_content_url">
-        {match}
-      </a>
-    );
-  });
-};
-
-export const wrapEmoji = (text: any) => {
-  const regex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gm;
-
-  return reactStringReplace(text, regex, (match, i) => {
-    //@ts-ignore
-    const shortname = Object.keys(emojiList).find((key: string) => emojiList[key] === match);
-    return (
-      <TooltipWrapper
-        key={match + i}
-        style={{ display: 'inline-block' }}
-        position="top"
-        tooltipContent={
-          <Tooltip>
-            {shortname || 'Данный символ не имеет полной поддержки Unicode \n Поэтому может быть видоизменен'}
-          </Tooltip>
-        }
-      >
-        {match}
-      </TooltipWrapper>
-    );
-  });
-};
-
-export const wrapEmojiShortname = (text: any) => {
-  const regex = /\:(.*?)\:/gm;
-
-  return reactStringReplace(text, regex, (match, i) => {
-    //@ts-ignore
-    const emoji = emojiList[`:${match}:`];
-    if (emoji) {
+// TODO переписать с нуля на лучшее решение
+export const contentWrappers = {
+  wrapUrl: (text: string) => {
+    return reactStringReplace(text, /(https?:\/\/\S+)/gim, (match, i) => {
       return (
-        <TooltipWrapper
+        <a key={match + i} href={match} target="_blank" className="message_content_url">
+          {match}
+        </a>
+      );
+    });
+  },
+  wrapEmoji: (text: string) => {
+    const regex = /(\u00a9|\u00ae|[\u2000-\u3300]|\ud83c[\ud000-\udfff]|\ud83d[\ud000-\udfff]|\ud83e[\ud000-\udfff])/gm;
+
+    return reactStringReplace(text, regex, (match, i) => {
+      const shortname = Object.keys(emojiList).find(
+        (key: string) => emojiList[key as keyof typeof emojiList] === match
+      );
+      return (
+        <Tooltip
           key={match + i}
           style={{ display: 'inline-block' }}
           position="top"
-          tooltipContent={
-            <Tooltip>
-              {match || 'Данный символ не имеет полной поддержки Unicode \n Поэтому может быть видоизменен'}
-            </Tooltip>
-          }
+          text={shortname || 'Данный символ не имеет полной поддержки Unicode \n Поэтому может быть видоизменен'}
         >
-          {emoji}
-        </TooltipWrapper>
+          {match}
+        </Tooltip>
       );
-    }
-    return text;
-  });
-};
+    });
+  },
+  wrapEmojiShortname: (text: any) => {
+    const regex = /\:(.*?)\:/gm;
 
-export const wrapBoldText = (text: any, saveSymbols?: boolean) => {
-  const regex = /\*\*(.*?)\*\*/gm;
+    return reactStringReplace(text, regex, (match, i) => {
+      const emoji = emojiList[`:${match}:` as keyof typeof emojiList];
+      if (emoji) {
+        return (
+          <Tooltip
+            key={match + i}
+            style={{ display: 'inline-block' }}
+            position="top"
+            text={match || 'Данный символ не имеет полной поддержки Unicode \n Поэтому может быть видоизменен'}
+          >
+            {emoji}
+          </Tooltip>
+        );
+      }
+      return text;
+    });
+  },
+  wrapBoldText: (text: any, saveSymbols?: boolean) => {
+    const regex = /\*\*(.*?)\*\*/gm;
 
-  return reactStringReplace(text, regex, (match, i) => {
-    return saveSymbols ? (
-      <span style={{ color: 'var(--campfire)' }}>
-        **<b key={match + i}>{match}</b>**
-      </span>
-    ) : (
-      <b key={match + i}>{match}</b>
-    );
-  });
-};
+    return reactStringReplace(text, regex, (match, i) => {
+      return saveSymbols ? (
+        <span style={{ color: 'var(--campfire)' }}>
+          **<b key={match + i}>{match}</b>**
+        </span>
+      ) : (
+        <b key={match + i}>{match}</b>
+      );
+    });
+  },
+  wrapItalicText: (text: any, saveSymbols?: boolean) => {
+    const regex = /\*(.*?)\*/gm;
 
-export const wrapItalicText = (text: any, saveSymbols?: boolean) => {
-  const regex = /\*(.*?)\*/gm;
+    return reactStringReplace(text, regex, (match, i) => {
+      return saveSymbols ? (
+        <span style={{ color: 'var(--campfire)' }}>
+          *<i key={match + i}>{match}</i>*
+        </span>
+      ) : (
+        <i key={match + i}>{match}</i>
+      );
+    });
+  },
+  wrapStrikeText: (text: any, saveSymbols?: boolean) => {
+    const regex = /\~\~(.*?)\~\~/gm;
 
-  return reactStringReplace(text, regex, (match, i) => {
-    return saveSymbols ? (
-      <span style={{ color: 'var(--campfire)' }}>
-        *<i key={match + i}>{match}</i>*
-      </span>
-    ) : (
-      <i key={match + i}>{match}</i>
-    );
-  });
-};
-
-export const wrapStrikeText = (text: any, saveSymbols?: boolean) => {
-  const regex = /\~\~(.*?)\~\~/gm;
-
-  return reactStringReplace(text, regex, (match, i) => {
-    return saveSymbols ? (
-      <span style={{ color: 'var(--campfire)' }}>
-        ~~
+    return reactStringReplace(text, regex, (match, i) => {
+      return saveSymbols ? (
+        <span style={{ color: 'var(--campfire)' }}>
+          ~~
+          <span key={match + i} style={{ textDecoration: 'line-through' }}>
+            {match}
+          </span>
+          ~~
+        </span>
+      ) : (
         <span key={match + i} style={{ textDecoration: 'line-through' }}>
           {match}
         </span>
-        ~~
-      </span>
-    ) : (
-      <span key={match + i} style={{ textDecoration: 'line-through' }}>
-        {match}
-      </span>
-    );
-  });
+      );
+    });
+  },
 };
 
-// TODO рефактор
-// TODO сделать независимым от ненужных атрибутов
 export const wrapAllFormatting = (text: any) => {
-  return wrapStrikeText(wrapItalicText(wrapBoldText(wrapEmojiShortname(wrapEmoji(wrapUrl(text))))));
+  for (let key in contentWrappers) {
+    text = contentWrappers[key as keyof typeof contentWrappers](text);
+  }
+  return text;
 };
 
 export const wrapAllFormattingInput = (text: any) => {
-  return wrapStrikeText(wrapItalicText(wrapBoldText(wrapEmojiShortname(wrapEmoji(text)), true), true), true);
+  for (let key in contentWrappers) {
+    //@ts-ignore
+    text = contentWrappers[key as keyof typeof contentWrappers](text, true);
+  }
+  return text;
 };
 
 const unwrapBold = (text: string) => {

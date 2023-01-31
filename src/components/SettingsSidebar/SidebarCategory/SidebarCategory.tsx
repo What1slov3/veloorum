@@ -1,16 +1,15 @@
 import React from 'react';
-import Spacer from '../../../templates/Spacer';
+import { FCChildren } from '@customTypes/common.types';
 import s from './sidebarcategory.module.css';
 
-type TProps = {
+type Props = {
   title: string;
-};
+} & FCChildren;
 
-const SidebarCategory: React.FC<TProps> = ({ title, children }): JSX.Element => {
+const SidebarCategory: React.FC<Props> = ({ title, children }): JSX.Element => {
   return (
     <div>
       <div className={s.title}>{title}</div>
-      <Spacer height={5} />
       <div className={s.button_list}>{children}</div>
     </div>
   );

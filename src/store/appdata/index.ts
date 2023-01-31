@@ -1,11 +1,11 @@
-import { TDefaultAction } from './../../types/reducers';
-import { fetchFindChatsForChannel, fetchGetHistory } from './../chats/thunk';
-import { fetchUserInit } from './../user/thunk';
-import { TAppData, TCurrentChatStatus } from './types';
-import { createSlice } from '@reduxjs/toolkit';
-import { TMessage } from '../chats/types';
+import { ModalName } from '@customTypes/modals.types';
+import { fetchFindChatsForChannel, fetchGetHistory } from '@store/chats/thunk';
+import { fetchUserInit } from '@store/user/thunk';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppData, CurrentChatStatus } from '@customTypes/redux/appdata.types';
+import { Message } from '@customTypes/redux/chats.types';
 
-const initialState: TAppData = {
+const initialState: AppData = {
   activeConnection: {
     channelId: null,
     chatId: null,
@@ -31,104 +31,107 @@ const initialState: TAppData = {
       isLoaded: null,
     },
   },
-  channelDropmenuIsOpen: false,
   fullLoadedChannels: [],
   disableMessageAutofocus: false,
   editingMessage: null,
   fullLoadedChats: [],
   preloadedChannels: [],
-  modalIsActive: false,
   failedToLoad: [],
   typingUsers: {},
   uploadedAttachments: {},
   openedAttachment: '',
+  openedUserCard: null,
+  activeModal: {
+    name: null,
+    payload: {},
+  },
 };
 
 const appdataSlice: any = createSlice({
   name: 'appdata',
   initialState,
   reducers: {
-    setActiveChannelId(state: TAppData, action: TDefaultAction<string | null>) {
+    setActiveChannelId(state: AppData, action: PayloadAction<string | null>) {
       state.activeConnection.channelId = action.payload;
     },
-    setActiveChatId(state: TAppData, action: TDefaultAction<string | null>) {
+    setActiveChatId(state: AppData, action: PayloadAction<string | null>) {
       state.activeConnection.chatId = action.payload;
     },
-    setActiveVoiceCommunication(state: TAppData, action) {
+    setActiveVoiceCommunication(state: AppData, action) {
       state.activeConnection.voiceCommunication = {
         channelId: action.payload.channelId,
         voiceId: action.payload.voiceId,
       };
     },
-    setCurrentChatStatus(state: TAppData, action: TDefaultAction<TCurrentChatStatus>) {
+    setCurrentChatStatus(state: AppData, action: PayloadAction<CurrentChatStatus>) {
       state.currentChatStatus = action.payload;
     },
-    setChannelDropmenu(state: TAppData, action: TDefaultAction<boolean>) {
-      state.channelDropmenuIsOpen = action.payload;
-    },
-    setDisableMessageAutofocus(state: TAppData, action: TDefaultAction<boolean>) {
+    setDisableMessageAutofocus(state: AppData, action: PayloadAction<boolean>) {
       state.disableMessageAutofocus = action.payload;
     },
-    setEditingMessage(state: TAppData, action: TDefaultAction<string | null>) {
+    setEditingMessage(state: AppData, action: PayloadAction<string | null>) {
       state.editingMessage = action.payload;
     },
-    setWsConnected(state: TAppData, action: TDefaultAction<boolean>) {
+    setWsConnected(state: AppData, action: PayloadAction<boolean>) {
       state.wsData.wsConnected = action.payload;
     },
-    setWsConnectionError(state: TAppData, action: TDefaultAction<boolean>) {
+    setWsConnectionError(state: AppData, action: PayloadAction<boolean>) {
       state.wsData.wsConnectionError = action.payload;
     },
-    setModalIsActive(state, action: TDefaultAction<boolean>) {
-      state.modalIsActive = action.payload;
+    setModal(state, action: PayloadAction<{ name: ModalName; payload: any }>) {
+      state.activeModal = action.payload;
     },
-    setFailedToLoad(state, action: TDefaultAction<string | string[]>) {
+    setFailedToLoad(state, action: PayloadAction<string | string[]>) {
       typeof action.payload === 'string'
         ? state.failedToLoad.push(action.payload)
         : state.failedToLoad.concat(action.payload);
     },
-    addTypingUsers(state, action: TDefaultAction<{ uid: string; cid: string }>) {
+    addTypingUsers(state, action: PayloadAction<{ uid: string; cid: string }>) {
       const { uid, cid } = action.payload;
 
       if (!state.typingUsers[cid]) state.typingUsers[cid] = [];
       if (!state.typingUsers[cid].includes(uid)) state.typingUsers[cid].push(uid);
     },
-    pullTypingUsers(state, action: TDefaultAction<{ uid: string; cid: string }>) {
+    pullTypingUsers(state, action: PayloadAction<{ uid: string; cid: string }>) {
       const { uid, cid } = action.payload;
 
       if (state.typingUsers[cid]) {
         state.typingUsers[cid].splice(
-          state.typingUsers[cid].findIndex((typingUid) => typingUid === uid),
+          state.typingUsers[cid].findIndex((typingUid: string) => typingUid === uid),
           1
         );
         if (!state.typingUsers[cid].length) delete state.typingUsers[cid];
       }
     },
-    setUploadedAttachments(state, action: TDefaultAction<{ urls: string[]; cid: string }>) {
+    setUploadedAttachments(state, action: PayloadAction<{ urls: string[]; cid: string }>) {
       state.uploadedAttachments[action.payload.cid] = action.payload.urls;
     },
-    resetAttachments(state, action: TDefaultAction<string>) {
+    resetAttachments(state, action: PayloadAction<string>) {
       delete state.uploadedAttachments[action.payload];
     },
-    setOpenedAttachment(state, action: TDefaultAction<string>) {
+    setOpenedAttachment(state, action: PayloadAction<string>) {
       state.openedAttachment = action.payload;
+    },
+    setOpenedUserCard(state, action: PayloadAction<string | null>) {
+      state.openedUserCard = action.payload;
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchUserInit.fulfilled, (state: TAppData, action) => {
+    builder.addCase(fetchUserInit.fulfilled, (state: AppData, action) => {
       state.init = {
         ...state.init,
         fulfilled: true,
         rejected: false,
       };
     });
-    builder.addCase(fetchUserInit.rejected, (state: TAppData, action) => {
+    builder.addCase(fetchUserInit.rejected, (state: AppData, action) => {
       state.init.rejected = true;
       if (action.error) state.init.rejectedWithError = true;
     });
-    builder.addCase(fetchFindChatsForChannel.fulfilled, (state: TAppData, action) => {
+    builder.addCase(fetchFindChatsForChannel.fulfilled, (state: AppData, action) => {
       state.preloadedChannels.push(action.meta.arg);
     });
-    builder.addCase(fetchGetHistory.pending, (state: TAppData, action) => {
+    builder.addCase(fetchGetHistory.pending, (state: AppData, action) => {
       state.currentChatStatus.loading = {
         isLoading: true,
         hasMore: null,
@@ -137,7 +140,7 @@ const appdataSlice: any = createSlice({
     });
     builder.addCase(
       fetchGetHistory.fulfilled,
-      (state: TAppData, action: TDefaultAction<{ history: TMessage[]; chatId: string; hasMore: boolean }>) => {
+      (state: AppData, action: PayloadAction<{ history: Message[]; chatId: string; hasMore: boolean }>) => {
         state.currentChatStatus.loading = {
           isLoading: false,
           hasMore: action.payload.hasMore,
@@ -154,12 +157,11 @@ export const {
   setActiveChannelId,
   setActiveChatId,
   setActiveVoiceCommunication,
-  setChannelDropmenu,
   setCurrentChatStatus,
   setDisableMessageAutofocus,
   setEditingMessage,
   setWsConnected,
-  setModalIsActive,
+  setModal,
   setFailedToLoad,
   addTypingUsers,
   pullTypingUsers,
@@ -167,5 +169,6 @@ export const {
   setUploadedAttachments,
   resetAttachments,
   setOpenedAttachment,
+  setOpenedUserCard,
 } = appdataSlice.actions;
 export default appdataSlice.reducer;

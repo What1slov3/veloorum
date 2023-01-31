@@ -1,10 +1,10 @@
-import { TStore } from '../../../../../types/common';
 import { Socket } from 'socket.io-client';
-import { updateUserData } from '../../../../users/index';
+import { Store } from '@customTypes/common.types';
+import { updateUserData } from '@store/users/index';
 
 export const receiveUsers = (socket: Socket, eventName: string, payload: any, store: any) => {
   const actionSplittedType = eventName.split('/');
-  const state: TStore = store.getState();
+  const state: Store = store.getState();
 
   const routes: Record<string, Function> = {
     updateUserData: () => {

@@ -1,0 +1,30 @@
+.wrapper {
+  max-width: 350px;
+  padding: 3px 8px;
+  background: var(--tooltip);
+  border-radius: 3px;
+  cursor: default;
+  user-select: none;
+  text-align: center;
+  box-shadow: #171718de 0px 2px 8px 0px;
+  animation: show 0.2s forwards;
+}
+
+.wrapper,
+.wrapper * {
+  z-index: 10000;
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.07);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}

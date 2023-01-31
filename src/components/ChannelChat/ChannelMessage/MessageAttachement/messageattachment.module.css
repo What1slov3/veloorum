@@ -1,0 +1,54 @@
+.wrapper {
+  margin: 10px 0;
+}
+
+.attachment_image {
+  display: block;
+  height: 250px;
+  cursor: pointer;
+  margin-top: 10px;
+  opacity: 0;
+  transition: 0.5s opacity;
+}
+
+.loaded_image,
+.failed_image {
+  opacity: 1;
+}
+
+.loaded_image {
+  min-width: 100px;
+  max-width: 400px;
+  max-height: 400px;
+  height: auto;
+}
+
+.failed_image {
+  width: 330px;
+  height: 100px;
+  border-radius: 5px;
+  padding: 40px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(-45deg, #e1606f7e, #c38fff73, #2b96de6b, #23d5ab7e);
+  background-size: 600% 600%;
+  animation: gradient 15s linear infinite;
+  user-select: none;
+}
+
+.img {
+  border-radius: 100px;
+}
+
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
